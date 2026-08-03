@@ -271,6 +271,15 @@ await run("Flirty-keuze excludes previously played cards when alternatives exist
   assert.equal(session.candidateCardIds.includes("flirty_001"), false);
 });
 
+await run("player choice specials use the active player name", () => {
+  const game = hooks.createNewGame("Kyra", "Timo");
+  game.currentPlayerIndex = 1;
+  hooks.setTestState(game, {}, { levelSystemEnabled: false });
+  const card = hooks.getCardById("special_tigger_001");
+  assert.equal(hooks.getDisplayCardTitle(card, hooks.getGame(), 1), "Timo’s keuze");
+  assert.equal(hooks.getDisplayCardText(card, hooks.getGame(), 1), "Timo bepaalt wat er de komende vijf minuten gebeurt.");
+});
+
 await run("Perfecte Run creates a bounded normal-card sequence", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   game.levelSystemEnabled = false;
@@ -454,7 +463,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.16");
+  assert.equal(exported.appVersion, "v1.3.17");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

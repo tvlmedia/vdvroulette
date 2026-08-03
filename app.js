@@ -11,7 +11,7 @@ const STORAGE_KEYS = {
   corruptBackupPrefix: "dateRoulette_corruptBackup_"
 };
 
-const APP_VERSION = "v1.3.16";
+const APP_VERSION = "v1.3.17";
 const STATE_VERSION = 6;
 const MAX_LEVEL = 5;
 const ACTIVE_TIMERS_LIMIT = 12;
@@ -1231,11 +1231,37 @@ function hasRequiredCardTemplateTargets(card, state = game, player = getCurrentP
 }
 
 function getDisplayCardTitle(card, state = game, playerIndex = state.currentPlayerIndex) {
+  if (isPlayerChoiceSpecialType(card?.specialType)) {
+    return getPlayerChoiceTitle(state, playerIndex);
+  }
+
   return resolveCardTemplateText(card?.title || "", state, playerIndex);
 }
 
 function getDisplayCardText(card, state = game, playerIndex = state.currentPlayerIndex) {
+  if (isPlayerChoiceSpecialType(card?.specialType)) {
+    return getPlayerChoiceInstruction(state, playerIndex);
+  }
+
   return resolveCardTemplateText(card?.text || "", state, playerIndex);
+}
+
+function isPlayerChoiceSpecialType(type) {
+  return type === "winnieChoice" || type === "tijgertjeChoice";
+}
+
+function getPlayerChoiceTitle(state = game, playerIndex = state.currentPlayerIndex) {
+  return `${getPlayerChoiceName(state, playerIndex)}’s keuze`;
+}
+
+function getPlayerChoiceInstruction(state = game, playerIndex = state.currentPlayerIndex) {
+  return `${getPlayerChoiceName(state, playerIndex)} bepaalt wat er de komende vijf minuten gebeurt.`;
+}
+
+function getPlayerChoiceName(state = game, playerIndex = state.currentPlayerIndex) {
+  const players = getStatePlayers(state);
+  const index = clampPlayerIndex(playerIndex);
+  return players[index]?.name || players[0]?.name || "Speler";
 }
 
 function resolveCardTemplateText(value, state = game, playerIndex = state.currentPlayerIndex) {
@@ -1940,9 +1966,7 @@ function renderGiftResolve(session) {
 }
 
 function renderRoleChoiceInput(session) {
-  const roleIndex = session.type === "winnieChoice" ? 0 : 1;
-  const roleName = roleIndex === 0 ? "Winnie" : "Tijgertje";
-  renderSpecialHeader(`${roleName}’s keuze`, `${roleName} bepaalt wat er de komende vijf minuten gebeurt.`);
+  renderSpecialHeader(getPlayerChoiceTitle(game, session.playerIndex), getPlayerChoiceInstruction(game, session.playerIndex));
   const input = createTextArea("Typ hier de opdracht");
   input.value = session.customText || "";
   input.addEventListener("input", () => {
@@ -2039,11 +2063,12 @@ function startCustomSpecialTask(seconds) {
 function renderCustomTask(session) {
   const titleMap = {
     golden: "Golden Card",
-    wild: "Wild Card",
-    winnieChoice: "Winnie’s keuze",
-    tijgertjeChoice: "Tijgertjes keuze"
+    wild: "Wild Card"
   };
-  renderSpecialHeader(titleMap[session.type] || "Eigen opdracht", "Rond de opdracht af wanneer jullie klaar zijn.");
+  const title = isPlayerChoiceSpecialType(session.type)
+    ? getPlayerChoiceTitle(game, session.playerIndex)
+    : titleMap[session.type] || "Eigen opdracht";
+  renderSpecialHeader(title, "Rond de opdracht af wanneer jullie klaar zijn.");
   const task = createElement("div", "special-task-card");
   task.append(
     createElement("strong", "special-task-title", session.customText || "Eigen opdracht"),

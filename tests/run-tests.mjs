@@ -103,7 +103,7 @@ await run("isCardEligible respects levels", () => {
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_003"), state, player), true);
 });
 
-await run("Jacuzzi filter uses only Jacuzzi source cards", () => {
+await run("Jacuzzi filter includes regular jacuzziAllowed cards", () => {
   const player = { id: "player_1", name: "Winnie" };
   const state = { levelSystemEnabled: false, currentLevel: 5, jacuzziMode: false };
   assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_fun_001"), state, player), false);
@@ -113,20 +113,25 @@ await run("Jacuzzi filter uses only Jacuzzi source cards", () => {
   assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_bubble_001"), state, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_special_001"), state, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("makeup_001"), state, player), false);
-  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_002"), state, player), false);
-  assert.equal(hooks.isCardEligible(hooks.getCardById("flirty_001"), state, player), false);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_002"), state, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("flirty_001"), state, player), true);
 });
 
-await run("Jacuzzi draw excludes regular jacuzziAllowed cards", () => {
+await run("Jacuzzi draw includes regular jacuzziAllowed cards", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   game.levelSystemEnabled = false;
   game.currentLevel = 5;
   game.jacuzziMode = true;
   game.usedCardIds = deck.cards
-    .filter((card) => !["jacuzzi_fun_001", "flirty_001"].includes(card.id))
+    .filter((card) => card.id !== "flirty_001")
     .map((card) => card.id);
   hooks.setTestState(game, {}, { levelSystemEnabled: false });
-  assert.equal(hooks.pickRandomCard().id, "jacuzzi_fun_001");
+  assert.equal(hooks.pickRandomCard().id, "flirty_001");
+});
+
+await run("make-up cards use reduced draw weight", () => {
+  assert.equal(hooks.getCardWeight(hooks.getCardById("makeup_001")), 0.65);
+  assert.equal(hooks.getCardWeight(hooks.getCardById("cute_001")), 1);
 });
 
 await run("flirty_020 is male-only and targets the female player name", () => {
@@ -449,7 +454,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.14");
+  assert.equal(exported.appVersion, "v1.3.15");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

@@ -31,6 +31,10 @@ export const GAME_RULES = {
   jacuzziMode: {
     includeRequiresJacuzzi: true,
     includeBubbleCards: true,
-    includeWellnessOrChaos: true
+    includeWellnessOrChaos: true,
+    includeRegularJacuzziAllowed: true
+  },
+  categoryWeightMultipliers: {
+    makeup: 0.65
   }
 };

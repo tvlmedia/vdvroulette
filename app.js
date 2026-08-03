@@ -11,7 +11,7 @@ const STORAGE_KEYS = {
   corruptBackupPrefix: "dateRoulette_corruptBackup_"
 };
 
-const APP_VERSION = "v1.3.14";
+const APP_VERSION = "v1.3.15";
 const STATE_VERSION = 6;
 const MAX_LEVEL = 5;
 const ACTIVE_TIMERS_LIMIT = 12;
@@ -26,6 +26,7 @@ const THEMES = new Set(["dark", "soft"]);
 const RATING_TYPES = ["liked", "neutral", "disliked", "impractical", "unclear"];
 const SPECIAL_RULES = GAME_RULES.specialRules || {};
 const JACUZZI_MODE_RULES = GAME_RULES.jacuzziMode || {};
+const CATEGORY_WEIGHT_MULTIPLIERS = GAME_RULES.categoryWeightMultipliers || {};
 const ROULETTE_CANDIDATE_COUNT = Math.max(1, Number(SPECIAL_RULES.roulette?.candidateCount) || 10);
 const ROULETTE_REQUIRED_COUNT = Math.max(1, Number(SPECIAL_RULES.roulette?.requiredCount) || 3);
 const PERFECT_RUN_REQUIRED_COUNT = Math.max(1, Number(SPECIAL_RULES.perfectRun?.requiredCount) || 5);
@@ -959,7 +960,7 @@ function reshuffleCards() {
 
 function reshuffleJacuzziCards() {
   const jacuzziCardIds = deck.cards
-    .filter(isJacuzziModeCard)
+    .filter(isJacuzziCompatibleCard)
     .map((card) => card.id);
   game.usedCardIds = game.usedCardIds.filter((id) => !jacuzziCardIds.includes(id));
   game.temporaryRejectedCardIds = [];
@@ -1108,7 +1109,7 @@ function isCardEligible(card, state = game, player = getCurrentPlayer()) {
   }
 
   if (state.jacuzziMode) {
-    return isJacuzziModeCard(card);
+    return isJacuzziCompatibleCard(card);
   }
 
   if (isJacuzziModeCard(card)) {
@@ -1116,6 +1117,18 @@ function isCardEligible(card, state = game, player = getCurrentPlayer()) {
   }
 
   return true;
+}
+
+function isJacuzziCompatibleCard(card) {
+  if (!card) {
+    return false;
+  }
+
+  if (isJacuzziModeCard(card)) {
+    return true;
+  }
+
+  return Boolean(JACUZZI_MODE_RULES.includeRegularJacuzziAllowed && card.jacuzziAllowed === true && !card.requiresJacuzzi);
 }
 
 function isJacuzziModeCard(card) {
@@ -1137,11 +1150,22 @@ function getCardWeight(card) {
     return 0;
   }
 
+  const categoryMultiplier = getCategoryWeightMultiplier(card.category);
   if (card.weight === undefined || card.weight === null) {
+    return categoryMultiplier;
+  }
+
+  const baseWeight = Math.min(2, Math.max(0, Number(card.weight) || 0));
+  return baseWeight * categoryMultiplier;
+}
+
+function getCategoryWeightMultiplier(category) {
+  const multiplier = Number(CATEGORY_WEIGHT_MULTIPLIERS[category]);
+  if (!Number.isFinite(multiplier)) {
     return 1;
   }
 
-  return Math.min(2, Math.max(0, Number(card.weight) || 0));
+  return Math.min(2, Math.max(0, multiplier));
 }
 
 function getHistoricallyPlayedCardIds() {
@@ -3119,7 +3143,7 @@ function getCardProgressLabel(currentCard) {
     return "Special actief";
   }
 
-  if (game.jacuzziMode && isJacuzziModeCard(currentCard)) {
+  if (game.jacuzziMode && isJacuzziCompatibleCard(currentCard)) {
     return "Jacuzzi-proof";
   }
 
@@ -3966,7 +3990,7 @@ function triggerKissAnimation() {
 function recordCardDraw(card) {
   stats.totalDrawn += 1;
   stats.categoryDraws[card.category] = (stats.categoryDraws[card.category] || 0) + 1;
-  if (isJacuzziModeCard(card)) {
+  if (game.jacuzziMode && isJacuzziCompatibleCard(card)) {
     stats.jacuzziCardsDrawn += 1;
   }
   debugLog("card_drawn", { cardId: card.id, category: card.category, playerIndex: game.currentPlayerIndex });
@@ -5443,6 +5467,8 @@ window.DateRouletteTestHooks = {
   getActiveTimerRemainingSeconds,
   getDisplayCardTitle,
   getDisplayCardText,
+  getCardWeight,
+  isJacuzziCompatibleCard,
   stopTimerForResolvedCard,
   normalizeActiveTimers,
   stopActiveTimerInterval,

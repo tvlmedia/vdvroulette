@@ -84,7 +84,7 @@ export const CUTE_CARDS = [
     "category": "cute",
     "emoji": "❤️",
     "title": "Spontane Slowdance",
-    "text": "Geef elkaar een spontane slowdance.",
+    "text": "Doe een sensuele dans voor de ander",
     "level": 1,
     "timerSeconds": null,
     "jacuzziAllowed": true,

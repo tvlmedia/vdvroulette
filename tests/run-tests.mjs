@@ -164,6 +164,12 @@ await run("playerRestriction can target player gender", () => {
   assert.equal(validation.errors.length, 0, validation.errors.join("\n"));
 });
 
+await run("reported cute_005 text is corrected", () => {
+  const card = hooks.getCardById("cute_005");
+  assert.equal(card.title, "Spontane Slowdance");
+  assert.equal(card.text, "Doe een sensuele dans voor de ander");
+});
+
 await run("getAvailableCards excludes used cards", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   game.levelSystemEnabled = false;
@@ -400,7 +406,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.5");
+  assert.equal(exported.appVersion, "v1.3.6");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

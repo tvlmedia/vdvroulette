@@ -176,6 +176,12 @@ await run("reported cute_014 text is corrected", () => {
   assert.equal(card.text, "Ga naar het hotelwinkeltje en koop iets lekkers. De ander heeft ondertussen even tijd voor zichzelf of om zich om te kleden.");
 });
 
+await run("reported flirty_022 text is corrected", () => {
+  const card = hooks.getCardById("flirty_022");
+  assert.equal(card.title, "Pantyhandschoenen");
+  assert.equal(card.text, "Trek een panty over je handen en streel daarmee twee minuten langzaam over het lichaam van de ander.");
+});
+
 await run("getAvailableCards excludes used cards", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   game.levelSystemEnabled = false;
@@ -416,7 +422,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.8");
+  assert.equal(exported.appVersion, "v1.3.9");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

@@ -433,7 +433,7 @@ export const FLIRTY_CARDS = [
     "category": "flirty",
     "emoji": "😏",
     "title": "Pantyhandschoenen",
-    "text": "Trek een panty over je handen en streel daarmee twee minuten langzaam over de blote armen en benen van de ander.",
+    "text": "Trek een panty over je handen en streel daarmee twee minuten langzaam over het lichaam van de ander.",
     "level": 2,
     "timerSeconds": 120,
     "jacuzziAllowed": false,

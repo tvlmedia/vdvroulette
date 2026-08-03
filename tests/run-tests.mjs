@@ -202,6 +202,13 @@ await run("reported oohlala_011 text is corrected", () => {
   assert.equal(card.safetyNote, "Alleen met iets dat direct los kan. Stop meteen bij WALIBI.");
 });
 
+await run("reported chaos_009 text is corrected", () => {
+  const card = hooks.getCardById("chaos_009");
+  assert.equal(card.title, "Slok en Kus");
+  assert.equal(card.text, "Eén van jullie neemt een klein slokje, zet het glas weg en geeft het drankje met een kus door. Wissel daarna. Probeer niet te knoeien.");
+  assert.equal(card.safetyNote, null);
+});
+
 await run("getAvailableCards excludes used cards", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   game.levelSystemEnabled = false;
@@ -442,7 +449,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.13");
+  assert.equal(exported.appVersion, "v1.3.14");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

@@ -171,7 +171,7 @@ export const CHAOS_CARDS = [
     "category": "chaos",
     "emoji": "😂",
     "title": "Slok en Kus",
-    "text": "Neem allebei een klein slokje, zet je glas weg en geef elkaar daarna een kus.",
+    "text": "Eén van jullie neemt een klein slokje, zet het glas weg en geeft het drankje met een kus door. Wissel daarna. Probeer niet te knoeien.",
     "level": 1,
     "timerSeconds": null,
     "jacuzziAllowed": true,
@@ -185,7 +185,7 @@ export const CHAOS_CARDS = [
       "kissing",
       "drink"
     ],
-    "safetyNote": "Slik eerst door voordat jullie zoenen."
+    "safetyNote": null
   },
   {
     "id": "chaos_010",

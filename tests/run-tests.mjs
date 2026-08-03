@@ -189,6 +189,12 @@ await run("reported chaos_012 text is corrected", () => {
   assert.equal(card.safetyNote, "Niet om de nek leggen en trek niet hard.");
 });
 
+await run("reported blindfold_005 text is corrected", () => {
+  const card = hooks.getCardById("blindfold_005");
+  assert.equal(card.title, "Make-upkwast Challenge");
+  assert.equal(card.text, "Blijf geblinddoekt. De ander mag met een zachte make-upkwast langzaam langs je lichaam strijken en je speels kietelen op afgesproken plekken.");
+});
+
 await run("getAvailableCards excludes used cards", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   game.levelSystemEnabled = false;
@@ -429,7 +435,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.11");
+  assert.equal(exported.appVersion, "v1.3.12");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

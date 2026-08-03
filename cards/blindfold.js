@@ -88,7 +88,7 @@ export const BLINDFOLD_CARDS = [
     "category": "blindfold",
     "emoji": "🙈",
     "title": "Make-upkwast Challenge",
-    "text": "Raad geblinddoekt waar en hoe vaak de make-upkwast je aanraakt.",
+    "text": "Blijf geblinddoekt. De ander mag met een zachte make-upkwast langzaam langs je lichaam strijken en je speels kietelen op afgesproken plekken.",
     "level": 3,
     "timerSeconds": null,
     "jacuzziAllowed": false,

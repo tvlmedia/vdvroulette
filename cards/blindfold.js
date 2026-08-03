@@ -109,7 +109,7 @@ export const BLINDFOLD_CARDS = [
     "category": "blindfold",
     "emoji": "🙈",
     "title": "Raad het Voorwerp",
-    "text": "Voel geblinddoekt één voorwerp en raad wat het is.",
+    "text": "Eén speler is geblinddoekt. De ander geeft één veilig voorwerp in de hand. Raad wat het is.",
     "level": 3,
     "timerSeconds": null,
     "jacuzziAllowed": true,

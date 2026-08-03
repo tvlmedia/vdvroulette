@@ -8,7 +8,7 @@ export const GAME_RULES = {
     1: 0,
     2: 4,
     3: 8,
-    4: 12,
+    4: 10,
     5: 16
   },
   categoryUnlocks: {
@@ -17,5 +17,19 @@ export const GAME_RULES = {
     3: ["blindfold"],
     4: ["oohlala"],
     5: ["special"]
+  },
+  specialRules: {
+    roulette: {
+      candidateCount: 10,
+      requiredCount: 3
+    },
+    perfectRun: {
+      requiredCount: 5
+    }
+  },
+  jacuzziMode: {
+    includeRequiresJacuzzi: true,
+    includeBubbleCards: true,
+    includeWellnessOrChaos: true
   }
 };

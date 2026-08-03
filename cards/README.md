@@ -43,13 +43,15 @@ console.log(validateCards());
 
 - `level`: 1 t/m 5
 - `timerSeconds`: compacte timer in de app
-- `jacuzziAllowed`: gewone kaart mag in Jacuzzi-modus verschijnen
+- `jacuzziAllowed`: Jacuzzi-geschiktheidsmetadata; `false` betekent nooit gebruiken in Jacuzzi-gerelateerde selectie
 - `requiresJacuzzi`: kaart verschijnt alleen in Jacuzzi-modus
-- `playerRestriction`: bijvoorbeeld `player_1`
+- `playerRestriction`: bijvoorbeeld `player_1`, `man`, `vrouw`, `male` of `female`
 - `specialType`: koppeling met speciale softwareflow
 - `upgradeText`: spannendere variant
 - `lighterText`: lichtere variant
 - `safetyNote`: korte veiligheidsmelding
+- `enabled`: optioneel, `false` schakelt een kaart tijdelijk uit zonder hem te verwijderen
+- `weight`: optioneel, 0 t/m 2 voor lokale zeldzaamheid
 - `contentTags`: toekomstige filtering
 - `intensity`: alleen bij Jacuzzi-kaarten
 

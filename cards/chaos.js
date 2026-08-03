@@ -171,7 +171,7 @@ export const CHAOS_CARDS = [
     "category": "chaos",
     "emoji": "😂",
     "title": "Slok en Kus",
-    "text": "Neem allebei een klein slokje, slik het door en geef elkaar daarna direct een kus zonder te knoeien.",
+    "text": "Neem allebei een klein slokje, zet je glas weg en geef elkaar daarna een kus.",
     "level": 1,
     "timerSeconds": null,
     "jacuzziAllowed": true,

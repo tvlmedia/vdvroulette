@@ -6,7 +6,7 @@ Datum: 2026-08-03
 
 - Totaal aantal kaarten: 144
 - Aantal per categorie: chaos 13, makeup 12, blindfold 16, cute 19, flirty 24, oohlala 19, disney 2, jacuzzi 28, special 11
-- Aantal per level: level 1: 65, level 2: 38, level 3: 17, level 4: 21, level 5: 3
+- Aantal per level: level 1: 65, level 2: 38, level 3: 17, level 4: 20, level 5: 4
 - Aantal Specials: 11
 - Aantal Jacuzzi-kaarten: 28
 - Aantal restricted kaarten: 1
@@ -107,7 +107,7 @@ Datum: 2026-08-03
 | 84 | flirty_024 | flirty | Bijna Kussen | 2 | 60 | - | false | true | - | Nee | Nee | Nee |
 | 85 | oohlala_001 | oohlala | Twee Minuten Kusregie | 4 | 120 | - | false | true | - | Nee | Ja | Nee |
 | 86 | oohlala_002 | oohlala | Handen Geleid | 4 | 120 | - | false | true | - | Nee | Nee | Ja |
-| 87 | oohlala_003 | oohlala | Drie Minuten Knuffelregie | 4 | 180 | - | false | true | - | Nee | Nee | Nee |
+| 87 | oohlala_003 | oohlala | Drie Minuten Knuffelregie | 5 | 180 | - | false | true | - | Nee | Nee | Nee |
 | 88 | oohlala_004 | oohlala | Eén Laag Minder | 4 | - | - | false | false | - | Nee | Nee | Nee |
 | 89 | oohlala_005 | oohlala | Langzaam Begeleiden | 4 | - | - | false | true | - | Nee | Nee | Nee |
 | 90 | oohlala_006 | oohlala | Kus Terug | 4 | - | - | false | true | - | Nee | Nee | Nee |

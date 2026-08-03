@@ -46,7 +46,7 @@ export const OOHLALA_CARDS = [
     "emoji": "🔥",
     "title": "Drie Minuten Knuffelregie",
     "text": "De ander bepaalt drie minuten hoe jullie knuffelen.",
-    "level": 4,
+    "level": 5,
     "timerSeconds": 180,
     "jacuzziAllowed": true,
     "requiresJacuzzi": false,

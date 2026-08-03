@@ -69,9 +69,35 @@
           <form id="setup-form" class="glass-panel form-panel">
             <label class="field-label" for="setup-player-one">Naam speler 1</label>
             <input id="setup-player-one" name="playerOne" type="text" autocomplete="off" maxlength="24" required>
+            <fieldset class="gender-field">
+              <legend>Geslacht speler 1</legend>
+              <div class="segmented-control">
+                <label>
+                  <input type="radio" name="setupPlayerOneGender" value="vrouw" checked>
+                  <span>Vrouw</span>
+                </label>
+                <label>
+                  <input type="radio" name="setupPlayerOneGender" value="man">
+                  <span>Man</span>
+                </label>
+              </div>
+            </fieldset>
 
             <label class="field-label" for="setup-player-two">Naam speler 2</label>
             <input id="setup-player-two" name="playerTwo" type="text" autocomplete="off" maxlength="24" required>
+            <fieldset class="gender-field">
+              <legend>Geslacht speler 2</legend>
+              <div class="segmented-control">
+                <label>
+                  <input type="radio" name="setupPlayerTwoGender" value="vrouw">
+                  <span>Vrouw</span>
+                </label>
+                <label>
+                  <input type="radio" name="setupPlayerTwoGender" value="man" checked>
+                  <span>Man</span>
+                </label>
+              </div>
+            </fieldset>
 
             <button class="primary-button" type="submit">Spel starten</button>
           </form>
@@ -139,9 +165,11 @@
             <span class="card-face card-back">
               <span class="deck-mark">DR</span>
               <span class="deck-title">Tik om een kaart te trekken</span>
+              <span id="deck-player" class="deck-player">Winnie trekt</span>
               <span id="deck-count" class="deck-count">0 kaarten klaar</span>
             </span>
             <span class="card-face card-front">
+              <span id="card-player" class="card-player">Winnie is aan de beurt</span>
               <span class="card-context">
                 <span id="card-category" class="card-category">Cute</span>
                 <span id="card-progress" class="card-progress" hidden></span>
@@ -163,6 +191,14 @@
             </div>
           </div>
 
+          <div id="active-timers-panel" class="active-timers-panel glass-panel" hidden>
+            <div class="active-timers-head">
+              <strong>Lopende timers</strong>
+              <span id="active-timers-count">0</span>
+            </div>
+            <div id="active-timers-list" class="active-timers-list"></div>
+          </div>
+
           <div id="empty-state" class="empty-state glass-panel" hidden>
             <p id="empty-message">Alle beschikbare kaarten zijn gespeeld.</p>
             <div id="normal-empty-actions" class="empty-actions">
@@ -179,8 +215,20 @@
             <button id="done-button" class="primary-button success-button" type="button">✓ Gedaan</button>
             <button id="not-done-button" class="secondary-button kiss-button" type="button">💋 Niet gedaan</button>
             <button id="jacuzzi-replace-button" class="ghost-button" type="button">🔄 Niet handig in de jacuzzi</button>
+            <button id="card-report-button" class="ghost-button report-button" type="button">⚠️ Report kaart</button>
             <button id="new-card-button" class="ghost-button" type="button">Nieuwe kaart</button>
           </div>
+
+          <details id="card-rating-panel" class="card-rating-panel glass-panel" hidden>
+            <summary>Kaart beoordelen</summary>
+            <div class="rating-actions">
+              <button type="button" data-card-rating="liked">👍 Leuk</button>
+              <button type="button" data-card-rating="neutral">😐 Matig</button>
+              <button type="button" data-card-rating="disliked">👎 Niet leuk</button>
+              <button type="button" data-card-rating="impractical">🛠️ Werkte niet</button>
+              <button type="button" data-card-rating="unclear">❓ Onduidelijk</button>
+            </div>
+          </details>
         </section>
 
         <section id="settings-screen" class="screen" data-screen="settings">
@@ -192,9 +240,35 @@
           <form id="settings-form" class="glass-panel form-panel">
             <label class="field-label" for="settings-player-one">Naam speler 1</label>
             <input id="settings-player-one" name="playerOne" type="text" autocomplete="off" maxlength="24" required>
+            <fieldset class="gender-field">
+              <legend>Geslacht speler 1</legend>
+              <div class="segmented-control">
+                <label>
+                  <input type="radio" name="settingsPlayerOneGender" value="vrouw">
+                  <span>Vrouw</span>
+                </label>
+                <label>
+                  <input type="radio" name="settingsPlayerOneGender" value="man">
+                  <span>Man</span>
+                </label>
+              </div>
+            </fieldset>
 
             <label class="field-label" for="settings-player-two">Naam speler 2</label>
             <input id="settings-player-two" name="playerTwo" type="text" autocomplete="off" maxlength="24" required>
+            <fieldset class="gender-field">
+              <legend>Geslacht speler 2</legend>
+              <div class="segmented-control">
+                <label>
+                  <input type="radio" name="settingsPlayerTwoGender" value="vrouw">
+                  <span>Vrouw</span>
+                </label>
+                <label>
+                  <input type="radio" name="settingsPlayerTwoGender" value="man">
+                  <span>Man</span>
+                </label>
+              </div>
+            </fieldset>
 
             <label class="field-label" for="theme-setting">Thema</label>
             <select id="theme-setting" name="theme">
@@ -227,6 +301,17 @@
               <input id="wake-lock-setting" name="wakeLockEnabled" type="checkbox">
             </label>
 
+            <label class="switch-row" for="card-ratings-setting">
+              <span>Kaarten beoordelen tijdens spelen</span>
+              <input id="card-ratings-setting" name="cardRatingsEnabled" type="checkbox">
+            </label>
+
+            <div class="export-tools">
+              <p>Speeltest</p>
+              <button id="export-playtest-json" class="mini-button" type="button">Exporteer speeltest</button>
+              <button id="export-playtest-report" class="mini-button" type="button">Exporteer leesbaar rapport</button>
+            </div>
+
             <label class="switch-row" for="developer-setting">
               <span>Ontwikkelmodus</span>
               <input id="developer-setting" name="developerMode" type="checkbox">
@@ -240,7 +325,7 @@
               <button id="dev-unlock-all" class="mini-button" type="button">Alle levels vrijspelen</button>
               <button id="dev-reset-jacuzzi" class="mini-button" type="button">Jacuzzi-deck resetten</button>
               <button id="dev-log-state" class="mini-button" type="button">Hele game state tonen in console</button>
-              <button id="dev-add-skips" class="mini-button" type="button">Voeg drie voorbeeld-skips toe</button>
+              <button id="dev-add-skips" class="mini-button" type="button">Voeg drie niet-gedaan voorbeelden toe</button>
               <button id="dev-add-upgrades" class="mini-button" type="button">Voeg drie voorbeeld-completions met upgradeText toe</button>
               <button id="dev-start-roulette" class="mini-button" type="button">Start Roulette direct</button>
               <button id="dev-start-perfect-run" class="mini-button" type="button">Start Perfecte Run direct</button>
@@ -254,6 +339,7 @@
             </div>
 
             <button class="primary-button" type="submit">Opslaan</button>
+            <p id="app-version-label" class="app-version-label">Date Roulette v1.3.4</p>
           </form>
         </section>
 
@@ -355,6 +441,10 @@
               <p>Gedaan telt als voltooid. Niet gedaan telt ook mee voor voortgang, maar de speler krijgt volgens jullie spelregel een lippenstiftkus.</p>
             </details>
             <details>
+              <summary>Spelers</summary>
+              <p>Kies per speler Man of Vrouw. Kaarten die voor één geslacht bedoeld zijn verschijnen alleen bij de juiste speler.</p>
+            </details>
+            <details>
               <summary>Levels</summary>
               <p>Nieuwe categorieën openen zodra beide spelers genoeg kaarten hebben afgerond. Het laagste spelersaantal bepaalt het level.</p>
             </details>
@@ -383,6 +473,11 @@
           </div>
 
           <div id="end-summary-list" class="glass-panel stats-list end-summary-list"></div>
+
+          <div class="glass-panel end-notes-panel">
+            <label class="field-label" for="round-notes">Wat moeten we de volgende keer verbeteren?</label>
+            <textarea id="round-notes" maxlength="2000" rows="4" placeholder="Korte notitie voor de volgende speeltest"></textarea>
+          </div>
 
           <div class="button-stack">
             <button id="end-home-button" class="primary-button" type="button">Terug naar homescreen</button>
@@ -438,6 +533,39 @@
             <p id="level-modal-text">Nieuwe categorieën zijn nu beschikbaar.</p>
             <div id="level-modal-categories" class="unlock-categories" aria-hidden="true"></div>
             <button id="level-continue-button" class="primary-button" type="button">Verder spelen</button>
+          </div>
+        </div>
+        <div id="card-report-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="card-report-title" hidden>
+          <div class="card-report-modal glass-panel">
+            <div class="report-header">
+              <p class="eyebrow">Kaartfout</p>
+              <h3 id="card-report-title">Report kaart</h3>
+              <p id="card-report-original" class="report-original">Geen kaart geselecteerd.</p>
+            </div>
+            <label class="report-field">
+              <span>Wat klopt er niet?</span>
+              <textarea id="card-report-issue" rows="3" placeholder="Bijvoorbeeld: onduidelijk, onveilig, rare formulering..."></textarea>
+            </label>
+            <label class="report-field">
+              <span>Correcte titel</span>
+              <input id="card-report-title-input" type="text">
+            </label>
+            <label class="report-field">
+              <span>Correcte opdracht</span>
+              <textarea id="card-report-text-input" rows="5"></textarea>
+            </label>
+            <label class="report-field">
+              <span>Correcte veiligheidsnotitie</span>
+              <textarea id="card-report-safety-input" rows="2" placeholder="Leeg laten als er geen veiligheidsnotitie nodig is."></textarea>
+            </label>
+            <label class="report-field">
+              <span>JSON voor Codex/ChatGPT</span>
+              <textarea id="card-report-json" class="report-json" rows="7" readonly></textarea>
+            </label>
+            <div class="report-actions">
+              <button id="card-report-copy-button" class="primary-button" type="button">JSON kopiëren</button>
+              <button id="card-report-close-button" class="ghost-button" type="button">Sluiten</button>
+            </div>
           </div>
         </div>
         <div id="special-modal" class="modal-backdrop special-backdrop" role="dialog" aria-modal="true" aria-labelledby="special-modal-title" hidden>

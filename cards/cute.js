@@ -226,7 +226,7 @@ export const CUTE_CARDS = [
     "category": "cute",
     "emoji": "❤️",
     "title": "Samen uit het Raam",
-    "text": "Kijk twee minuten samen uit het raam zonder iets te zeggen.",
+    "text": "Kijk twee minuten samen stil uit het raam.",
     "level": 1,
     "timerSeconds": 120,
     "jacuzziAllowed": false,

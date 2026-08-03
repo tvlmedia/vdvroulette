@@ -6,18 +6,33 @@ import { GAME_RULES } from "./cards/rules.js";
 const STORAGE_KEYS = {
   game: "dateRoulette.game",
   settings: "dateRoulette.settings",
+  cardRatings: "dateRoulette.cardRatings",
   stats: "dateRoulette.stats",
   corruptBackupPrefix: "dateRoulette_corruptBackup_"
 };
 
-const STATE_VERSION = 3;
+const APP_VERSION = "v1.3.4";
+const STATE_VERSION = 6;
 const MAX_LEVEL = 5;
+const ACTIVE_TIMERS_LIMIT = 12;
 const DEFAULT_PLAYERS = ["Winnie", "Tijgertje"];
+const DEFAULT_PLAYER_GENDERS = ["vrouw", "man"];
+const PLAYER_GENDERS = new Set(["vrouw", "man"]);
 const CARD_ANIMATION_LOCK_MS = 620;
 const ACTION_LOCK_MS = 420;
 const KISS_ANIMATION_MS = 1500;
 const INSTALL_PROMPT_DELAY_MS = 1200;
 const THEMES = new Set(["dark", "soft"]);
+const RATING_TYPES = ["liked", "neutral", "disliked", "impractical", "unclear"];
+const SPECIAL_RULES = GAME_RULES.specialRules || {};
+const JACUZZI_MODE_RULES = GAME_RULES.jacuzziMode || {};
+const ROULETTE_CANDIDATE_COUNT = Math.max(1, Number(SPECIAL_RULES.roulette?.candidateCount) || 10);
+const ROULETTE_REQUIRED_COUNT = Math.max(1, Number(SPECIAL_RULES.roulette?.requiredCount) || 3);
+const PERFECT_RUN_REQUIRED_COUNT = Math.max(1, Number(SPECIAL_RULES.perfectRun?.requiredCount) || 5);
+const SAFE_WORD = GAME_RULES.safeWord || "WALIBI";
+const CONSENT_NOTICE = GAME_RULES.consentNotice || `${SAFE_WORD} betekent onmiddellijk stoppen.`;
+const LIPSTICK_RULE = GAME_RULES.lipstickRule || "Durf of wil je een opdracht niet doen? Dan krijgt de huidige speler één lippenstiftkus.";
+const LIPSTICK_PENALTY_MESSAGE = "💋 Lippenstiftstraf!";
 
 const CATEGORY_STYLES = {
   chaos: {
@@ -96,11 +111,11 @@ const ONBOARDING_STEPS = [
   },
   {
     title: "Alles is optioneel",
-    text: "Een opdracht aanpassen of overslaan mag altijd. WALIBI betekent direct stoppen."
+    text: CONSENT_NOTICE
   },
   {
     title: "Niet gedaan?",
-    text: "Dan krijgt de speler volgens jullie spelregel een lippenstiftkus."
+    text: LIPSTICK_RULE
   }
 ];
 
@@ -112,13 +127,7 @@ const DATE_ROULETTE_LEVELS = Object.entries(GAME_RULES.categoryUnlocks || {}).re
   return levels;
 }, {});
 
-const levelRequirements = GAME_RULES.levelRequirementsPerPlayer || {
-  1: 0,
-  2: 4,
-  3: 8,
-  4: 12,
-  5: 16
-};
+const levelRequirements = GAME_RULES.levelRequirementsPerPlayer || {};
 
 const deck = {
   cards: ALL_CARDS,
@@ -155,6 +164,7 @@ const LEVEL_UNLOCK_COPY = {
 
 let recoveryNotice = null;
 let settings = loadSettings();
+let cardRatings = loadCardRatings();
 let stats = loadStats();
 let game = loadGame();
 stats = mergeStats(game.statistics, stats);
@@ -165,9 +175,11 @@ syncStatsWithPlayers();
 let activeScreen = "home";
 let timerTickId = null;
 let specialTimerTickId = null;
+let activeTimerTickId = null;
 let toastTimeoutId = null;
 let cardDrawLocked = false;
 let actionLocked = false;
+let turnAdvanceTimeoutId = null;
 let deferredInstallPrompt = null;
 let serviceWorkerRegistration = null;
 let wakeLockSentinel = null;
@@ -175,6 +187,7 @@ let onboardingStepIndex = 0;
 let audioContext = null;
 let kissAnimationTimeoutId = null;
 let updateWaitingWorker = null;
+let randomSource = Math.random;
 
 const ui = {};
 
@@ -188,6 +201,8 @@ function init() {
   registerServiceWorker();
   setupInstallPrompt();
   runCardValidation(false);
+  resumePendingTurnAdvance();
+  resumeActiveTimers();
   saveGame();
   saveStats();
   showScreen(game.activeGame && game.specialSession ? "game" : "home");
@@ -213,6 +228,8 @@ function cacheElements() {
   ui.setupForm = document.querySelector("#setup-form");
   ui.setupPlayerOne = document.querySelector("#setup-player-one");
   ui.setupPlayerTwo = document.querySelector("#setup-player-two");
+  ui.setupPlayerOneGender = document.querySelectorAll("input[name='setupPlayerOneGender']");
+  ui.setupPlayerTwoGender = document.querySelectorAll("input[name='setupPlayerTwoGender']");
 
   ui.turnPlayer = document.querySelector("#turn-player");
   ui.endGameButton = document.querySelector("#end-game-button");
@@ -234,9 +251,11 @@ function cacheElements() {
   ui.kissAnimation = document.querySelector("#kiss-animation");
   ui.kissAnimationText = document.querySelector("#kiss-animation-text");
   ui.cardStack = document.querySelector("#card-stack");
+  ui.deckPlayer = document.querySelector("#deck-player");
   ui.deckCount = document.querySelector("#deck-count");
   ui.cardCategory = document.querySelector("#card-category");
   ui.cardProgress = document.querySelector("#card-progress");
+  ui.cardPlayer = document.querySelector("#card-player");
   ui.cardEmoji = document.querySelector("#card-emoji");
   ui.cardTitle = document.querySelector("#card-title");
   ui.cardText = document.querySelector("#card-text");
@@ -247,6 +266,9 @@ function cacheElements() {
   ui.timerStart = document.querySelector("#timer-start");
   ui.timerPause = document.querySelector("#timer-pause");
   ui.timerReset = document.querySelector("#timer-reset");
+  ui.activeTimersPanel = document.querySelector("#active-timers-panel");
+  ui.activeTimersCount = document.querySelector("#active-timers-count");
+  ui.activeTimersList = document.querySelector("#active-timers-list");
   ui.emptyState = document.querySelector("#empty-state");
   ui.emptyMessage = document.querySelector("#empty-message");
   ui.normalEmptyActions = document.querySelector("#normal-empty-actions");
@@ -258,11 +280,16 @@ function cacheElements() {
   ui.doneButton = document.querySelector("#done-button");
   ui.notDoneButton = document.querySelector("#not-done-button");
   ui.jacuzziReplaceButton = document.querySelector("#jacuzzi-replace-button");
+  ui.cardReportButton = document.querySelector("#card-report-button");
   ui.newCardButton = document.querySelector("#new-card-button");
+  ui.cardRatingPanel = document.querySelector("#card-rating-panel");
+  ui.cardRatingButtons = document.querySelectorAll("[data-card-rating]");
 
   ui.settingsForm = document.querySelector("#settings-form");
   ui.settingsPlayerOne = document.querySelector("#settings-player-one");
   ui.settingsPlayerTwo = document.querySelector("#settings-player-two");
+  ui.settingsPlayerOneGender = document.querySelectorAll("input[name='settingsPlayerOneGender']");
+  ui.settingsPlayerTwoGender = document.querySelectorAll("input[name='settingsPlayerTwoGender']");
   ui.themeSetting = document.querySelector("#theme-setting");
   ui.soundSetting = document.querySelector("#sound-setting");
   ui.vibrationSetting = document.querySelector("#vibration-setting");
@@ -271,6 +298,10 @@ function cacheElements() {
   ui.fullscreenSetting = document.querySelector("#fullscreen-setting");
   ui.fullscreenSettingState = document.querySelector("#fullscreen-setting-state");
   ui.wakeLockSetting = document.querySelector("#wake-lock-setting");
+  ui.cardRatingsSetting = document.querySelector("#card-ratings-setting");
+  ui.exportPlaytestJson = document.querySelector("#export-playtest-json");
+  ui.exportPlaytestReport = document.querySelector("#export-playtest-report");
+  ui.appVersionLabel = document.querySelector("#app-version-label");
   ui.developerSetting = document.querySelector("#developer-setting");
   ui.developerTools = document.querySelector("#developer-tools");
   ui.devAddPlayerOne = document.querySelector("#dev-add-player-one");
@@ -314,6 +345,7 @@ function cacheElements() {
   ui.navButtons = document.querySelectorAll("[data-nav-screen]");
   ui.endWinnerLine = document.querySelector("#end-winner-line");
   ui.endSummaryList = document.querySelector("#end-summary-list");
+  ui.roundNotes = document.querySelector("#round-notes");
   ui.endHomeButton = document.querySelector("#end-home-button");
   ui.endNewRoundButton = document.querySelector("#end-new-round-button");
   ui.endStatsButton = document.querySelector("#end-stats-button");
@@ -337,6 +369,15 @@ function cacheElements() {
   ui.levelModalText = document.querySelector("#level-modal-text");
   ui.levelModalCategories = document.querySelector("#level-modal-categories");
   ui.levelContinueButton = document.querySelector("#level-continue-button");
+  ui.cardReportModal = document.querySelector("#card-report-modal");
+  ui.cardReportOriginal = document.querySelector("#card-report-original");
+  ui.cardReportIssue = document.querySelector("#card-report-issue");
+  ui.cardReportTitleInput = document.querySelector("#card-report-title-input");
+  ui.cardReportTextInput = document.querySelector("#card-report-text-input");
+  ui.cardReportSafetyInput = document.querySelector("#card-report-safety-input");
+  ui.cardReportJson = document.querySelector("#card-report-json");
+  ui.cardReportCopyButton = document.querySelector("#card-report-copy-button");
+  ui.cardReportCloseButton = document.querySelector("#card-report-close-button");
   ui.specialModal = document.querySelector("#special-modal");
   ui.specialModalContent = document.querySelector("#special-modal-content");
 }
@@ -357,12 +398,16 @@ function bindEvents() {
   ui.themeSetting.addEventListener("change", handleThemePreview);
   ui.fullscreenSetting.addEventListener("change", handleFullscreenSettingToggle);
   ui.wakeLockSetting.addEventListener("change", handleWakeLockSettingToggle);
+  ui.cardRatingsSetting.addEventListener("change", handleCardRatingsSettingToggle);
+  ui.exportPlaytestJson.addEventListener("click", exportPlaytestJson);
+  ui.exportPlaytestReport.addEventListener("click", exportPlaytestMarkdown);
   ui.endGameButton.addEventListener("click", requestEndGame);
   ui.cardStack.addEventListener("click", drawCard);
   ui.cardStack.addEventListener("pointerdown", handleDeckPointerDown);
   ui.doneButton.addEventListener("click", () => resolveCurrentCard(true));
   ui.notDoneButton.addEventListener("click", () => resolveCurrentCard(false));
   ui.jacuzziReplaceButton.addEventListener("click", replaceJacuzziCard);
+  ui.cardReportButton.addEventListener("click", openCardReportModal);
   ui.newCardButton.addEventListener("click", drawReplacementCard);
   ui.reshuffleButton.addEventListener("click", reshuffleCards);
   ui.jacuzziOffEmptyButton.addEventListener("click", turnOffJacuzziFromEmpty);
@@ -373,6 +418,16 @@ function bindEvents() {
   ui.timerPause.addEventListener("click", pauseTimer);
   ui.timerReset.addEventListener("click", resetTimer);
   ui.levelContinueButton.addEventListener("click", continueAfterLevelUnlock);
+  ui.cardReportCloseButton.addEventListener("click", closeCardReportModal);
+  ui.cardReportCopyButton.addEventListener("click", copyCardReportJson);
+  ui.cardReportModal.addEventListener("click", (event) => {
+    if (event.target === ui.cardReportModal) {
+      closeCardReportModal();
+    }
+  });
+  [ui.cardReportIssue, ui.cardReportTitleInput, ui.cardReportTextInput, ui.cardReportSafetyInput].forEach((field) => {
+    field.addEventListener("input", updateCardReportJson);
+  });
   ui.developerSetting.addEventListener("change", handleDeveloperToggle);
   ui.devAddPlayerOne.addEventListener("click", () => addDeveloperCompletion(0));
   ui.devAddPlayerTwo.addEventListener("click", () => addDeveloperCompletion(1));
@@ -394,6 +449,10 @@ function bindEvents() {
   ui.navButtons.forEach((button) => {
     button.addEventListener("click", () => requestBottomNavigation(button.dataset.navScreen));
   });
+  ui.cardRatingButtons.forEach((button) => {
+    button.addEventListener("click", () => rateCurrentCard(button.dataset.cardRating));
+  });
+  ui.roundNotes.addEventListener("input", handleRoundNotesInput);
   ui.endHomeButton.addEventListener("click", () => showScreen("home"));
   ui.endNewRoundButton.addEventListener("click", startAnotherRound);
   ui.endStatsButton.addEventListener("click", () => showScreen("stats"));
@@ -468,6 +527,12 @@ function handleWakeLockSettingToggle() {
   renderGame();
 }
 
+function handleCardRatingsSettingToggle() {
+  settings.cardRatingsEnabled = ui.cardRatingsSetting.checked;
+  saveSettings();
+  renderGame();
+}
+
 function handleFullscreenChange() {
   settings.fullscreenEnabled = Boolean(document.fullscreenElement);
   saveSettings();
@@ -478,6 +543,8 @@ function openSetup() {
   const players = game.players || createDefaultPlayers();
   ui.setupPlayerOne.value = players[0].name || DEFAULT_PLAYERS[0];
   ui.setupPlayerTwo.value = players[1].name || DEFAULT_PLAYERS[1];
+  setRadioValue(ui.setupPlayerOneGender, normalizePlayerGender(players[0].gender, DEFAULT_PLAYER_GENDERS[0]));
+  setRadioValue(ui.setupPlayerTwoGender, normalizePlayerGender(players[1].gender, DEFAULT_PLAYER_GENDERS[1]));
   showScreen("setup");
 }
 
@@ -493,8 +560,10 @@ function handleSetupSubmit(event) {
   event.preventDefault();
   const playerOne = cleanName(ui.setupPlayerOne.value, DEFAULT_PLAYERS[0]);
   const playerTwo = cleanName(ui.setupPlayerTwo.value, DEFAULT_PLAYERS[1]);
+  const playerOneGender = getRadioValue(ui.setupPlayerOneGender, DEFAULT_PLAYER_GENDERS[0]);
+  const playerTwoGender = getRadioValue(ui.setupPlayerTwoGender, DEFAULT_PLAYER_GENDERS[1]);
 
-  game = createNewGame(playerOne, playerTwo);
+  game = createNewGame(playerOne, playerTwo, playerOneGender, playerTwoGender);
   stats = createDefaultStats();
   game.statistics = stats;
   saveGame();
@@ -509,16 +578,21 @@ function handleSettingsSubmit(event) {
   event.preventDefault();
   const playerOne = cleanName(ui.settingsPlayerOne.value, DEFAULT_PLAYERS[0]);
   const playerTwo = cleanName(ui.settingsPlayerTwo.value, DEFAULT_PLAYERS[1]);
+  const playerOneGender = getRadioValue(ui.settingsPlayerOneGender, DEFAULT_PLAYER_GENDERS[0]);
+  const playerTwoGender = getRadioValue(ui.settingsPlayerTwoGender, DEFAULT_PLAYER_GENDERS[1]);
   const levelSystemWasEnabled = game.levelSystemEnabled;
 
   game.players[0].name = playerOne;
   game.players[1].name = playerTwo;
+  game.players[0].gender = playerOneGender;
+  game.players[1].gender = playerTwoGender;
   settings.theme = normalizeTheme(ui.themeSetting.value);
   settings.soundEnabled = ui.soundSetting.checked;
   settings.vibrationEnabled = ui.vibrationSetting.checked;
   settings.levelSystemEnabled = ui.levelsSetting.checked;
   settings.fullscreenEnabled = Boolean(ui.fullscreenSetting.checked && isFullscreenSupported());
   settings.wakeLockEnabled = ui.wakeLockSetting.checked;
+  settings.cardRatingsEnabled = ui.cardRatingsSetting.checked;
   settings.developerMode = ui.developerSetting.checked;
   game.levelSystemEnabled = settings.levelSystemEnabled;
   applyTheme(settings.theme);
@@ -563,6 +637,8 @@ function requestEndGame() {
   game.endedAt = Date.now();
   game.specialSession = null;
   game.activePerfectRun = null;
+  game.pendingTurnAdvance = false;
+  game.turnAdvanceDueAt = null;
   game.jacuzziMode = false;
   game.jacuzziModeStartedAt = null;
   saveGame();
@@ -574,7 +650,12 @@ function requestEndGame() {
 function startAnotherRound() {
   const previousPlayers = game.players || createDefaultPlayers();
   const resetKisses = window.confirm("Kusjestellers resetten voor de nieuwe ronde?");
-  const nextGame = createNewGame(previousPlayers[0].name, previousPlayers[1].name);
+  const nextGame = createNewGame(
+    previousPlayers[0].name,
+    previousPlayers[1].name,
+    previousPlayers[0].gender,
+    previousPlayers[1].gender
+  );
   if (!resetKisses) {
     nextGame.players[0].lipstickKisses = Number(previousPlayers[0].lipstickKisses) || 0;
     nextGame.players[0].kisses = nextGame.players[0].lipstickKisses;
@@ -643,7 +724,7 @@ function disableJacuzziMode() {
   vibrate(12);
 
   const currentCard = getCurrentCard();
-  if (currentCard && currentCard.requiresJacuzzi) {
+  if (currentCard && isJacuzziModeCard(currentCard)) {
     clearCurrentCard({ releaseUsed: true });
   }
 }
@@ -743,7 +824,7 @@ function resolveCurrentCard(wasDone) {
   }
 
   lockAction();
-  pauseTimer();
+  stopTimerForResolvedCard({ persist: wasDone });
   game.cardResolved = true;
   const player = getCurrentPlayer();
   player.completedCards += 1;
@@ -794,14 +875,58 @@ function resolveCurrentCard(wasDone) {
 }
 
 function finishTurn(delayMs) {
-  window.setTimeout(() => {
-    switchTurn();
-    clearCurrentCard();
-    game.temporaryRejectedCardIds = [];
-    game.emptyDeckReason = null;
-    saveGame();
+  schedulePendingTurnAdvance(delayMs);
+}
+
+function schedulePendingTurnAdvance(delayMs) {
+  if (turnAdvanceTimeoutId) {
+    window.clearTimeout(turnAdvanceTimeoutId);
+  }
+
+  game.pendingTurnAdvance = true;
+  game.turnAdvanceDueAt = Date.now() + Math.max(0, Number(delayMs) || 0);
+  saveGame();
+  turnAdvanceTimeoutId = window.setTimeout(completePendingTurnAdvance, Math.max(0, Number(delayMs) || 0));
+}
+
+function resumePendingTurnAdvance() {
+  if (!game.pendingTurnAdvance || game.pendingUnlockLevel) {
+    return;
+  }
+
+  const remainingMs = Math.max(0, Number(game.turnAdvanceDueAt || 0) - Date.now());
+  if (remainingMs <= 0) {
+    completePendingTurnAdvance();
+    return;
+  }
+
+  if (turnAdvanceTimeoutId) {
+    window.clearTimeout(turnAdvanceTimeoutId);
+  }
+  turnAdvanceTimeoutId = window.setTimeout(completePendingTurnAdvance, remainingMs);
+}
+
+function completePendingTurnAdvance() {
+  if (!game.pendingTurnAdvance || game.pendingUnlockLevel) {
+    return false;
+  }
+
+  if (turnAdvanceTimeoutId) {
+    window.clearTimeout(turnAdvanceTimeoutId);
+    turnAdvanceTimeoutId = null;
+  }
+
+  switchTurn();
+  clearCurrentCard();
+  game.pendingTurnAdvance = false;
+  game.turnAdvanceDueAt = null;
+  game.temporaryRejectedCardIds = [];
+  game.emptyDeckReason = null;
+  saveGame();
+  if (activeScreen === "game") {
     renderGame();
-  }, delayMs);
+  }
+  return true;
 }
 
 function continueAfterLevelUnlock() {
@@ -833,7 +958,7 @@ function reshuffleCards() {
 
 function reshuffleJacuzziCards() {
   const jacuzziCardIds = deck.cards
-    .filter((card) => card.requiresJacuzzi)
+    .filter(isJacuzziModeCard)
     .map((card) => card.id);
   game.usedCardIds = game.usedCardIds.filter((id) => !jacuzziCardIds.includes(id));
   game.temporaryRejectedCardIds = [];
@@ -886,8 +1011,40 @@ function pickRandomCard(options = {}) {
     return null;
   }
 
-  const index = Math.floor(Math.random() * cards.length);
-  return cards[index];
+  return pickWeightedCard(cards);
+}
+
+function pickWeightedCard(cards) {
+  const weightedCards = cards
+    .map((card) => ({
+      card,
+      weight: getCardWeight(card)
+    }))
+    .filter((entry) => entry.weight > 0);
+
+  if (!weightedCards.length) {
+    return null;
+  }
+
+  const totalWeight = weightedCards.reduce((total, entry) => total + entry.weight, 0);
+  let cursor = getRandomValue() * totalWeight;
+  for (const entry of weightedCards) {
+    cursor -= entry.weight;
+    if (cursor <= 0) {
+      return entry.card;
+    }
+  }
+
+  return weightedCards[weightedCards.length - 1].card;
+}
+
+function getRandomValue() {
+  const value = Number(randomSource());
+  if (!Number.isFinite(value)) {
+    return Math.random();
+  }
+
+  return Math.min(0.999999, Math.max(0, value));
 }
 
 function getAvailableCards(options = {}) {
@@ -897,6 +1054,9 @@ function getAvailableCards(options = {}) {
   }
   if (!options.ignoreTemporaryRejected) {
     game.temporaryRejectedCardIds.forEach((id) => excludedIds.add(id));
+  }
+  if (options.excludeHistory) {
+    getHistoricallyPlayedCardIds().forEach((id) => excludedIds.add(id));
   }
 
   return deck.cards.filter((card) => {
@@ -929,6 +1089,10 @@ function isCardEligible(card, state = game, player = getCurrentPlayer()) {
     return false;
   }
 
+  if (card.enabled === false || getCardWeight(card) <= 0) {
+    return false;
+  }
+
   const effectiveLevel = state.levelSystemEnabled ? state.currentLevel : MAX_LEVEL;
   if (Number(card.level || 1) > effectiveLevel) {
     return false;
@@ -938,19 +1102,58 @@ function isCardEligible(card, state = game, player = getCurrentPlayer()) {
     return false;
   }
 
-  if (state.jacuzziMode) {
-    if (card.requiresJacuzzi) {
-      return true;
-    }
-
-    return card.jacuzziAllowed === true;
+  if (!hasRequiredCardTemplateTargets(card, state, player)) {
+    return false;
   }
 
-  if (card.requiresJacuzzi) {
+  if (state.jacuzziMode) {
+    return isJacuzziModeCard(card);
+  }
+
+  if (isJacuzziModeCard(card)) {
     return false;
   }
 
   return true;
+}
+
+function isJacuzziModeCard(card) {
+  if (!card) {
+    return false;
+  }
+
+  const tags = Array.isArray(card.contentTags) ? card.contentTags : [];
+  const specialType = normalizeSpecialType(card.specialType);
+  return Boolean(
+    (JACUZZI_MODE_RULES.includeRequiresJacuzzi !== false && card.requiresJacuzzi) ||
+    (JACUZZI_MODE_RULES.includeBubbleCards && tags.includes("bubble")) ||
+    (JACUZZI_MODE_RULES.includeWellnessOrChaos && specialType === "wellnessOrChaos")
+  );
+}
+
+function getCardWeight(card) {
+  if (!card || card.enabled === false) {
+    return 0;
+  }
+
+  if (card.weight === undefined || card.weight === null) {
+    return 1;
+  }
+
+  return Math.min(2, Math.max(0, Number(card.weight) || 0));
+}
+
+function getHistoricallyPlayedCardIds() {
+  const ids = new Set([
+    ...filterKnownCardIds(game.completedCardIds),
+    ...filterKnownCardIds(game.skippedCardIds)
+  ]);
+  (game.cardHistory || []).forEach((entry) => {
+    if (entry?.cardId && getCardById(entry.cardId)) {
+      ids.add(entry.cardId);
+    }
+  });
+  return ids;
 }
 
 function isPlayerAllowed(card, player) {
@@ -961,6 +1164,7 @@ function isPlayerAllowed(card, player) {
 
   const normalizedRestriction = String(restriction).trim().toLowerCase();
   const normalizedName = String(player.name || "").trim().toLowerCase();
+  const normalizedGender = normalizePlayerGender(player.gender, null);
   if (normalizedRestriction === player.id || normalizedRestriction === normalizedName) {
     return true;
   }
@@ -973,7 +1177,82 @@ function isPlayerAllowed(card, player) {
     return player.id === "player_2";
   }
 
+  const restrictedGender = normalizeRestrictionGender(normalizedRestriction);
+  if (restrictedGender) {
+    return normalizedGender === restrictedGender;
+  }
+
   return false;
+}
+
+function hasRequiredCardTemplateTargets(card, state = game, player = getCurrentPlayer()) {
+  const templateText = [
+    card?.title,
+    card?.text,
+    card?.upgradeText,
+    card?.lighterText,
+    card?.safetyNote
+  ].filter(Boolean).join(" ");
+
+  if (/\{\{\s*femalePlayer\s*\}\}/i.test(templateText)) {
+    return Boolean(getPlayerNameByGender("vrouw", state, getPlayerIndex(player, state)));
+  }
+
+  if (/\{\{\s*malePlayer\s*\}\}/i.test(templateText)) {
+    return Boolean(getPlayerNameByGender("man", state, getPlayerIndex(player, state)));
+  }
+
+  return true;
+}
+
+function getDisplayCardTitle(card, state = game, playerIndex = state.currentPlayerIndex) {
+  return resolveCardTemplateText(card?.title || "", state, playerIndex);
+}
+
+function getDisplayCardText(card, state = game, playerIndex = state.currentPlayerIndex) {
+  return resolveCardTemplateText(card?.text || "", state, playerIndex);
+}
+
+function resolveCardTemplateText(value, state = game, playerIndex = state.currentPlayerIndex) {
+  const text = String(value || "");
+  if (!text.includes("{{")) {
+    return text;
+  }
+
+  return text
+    .replace(/\{\{\s*femalePlayer\s*\}\}/gi, getPlayerNameByGender("vrouw", state, playerIndex) || "de vrouwelijke speler")
+    .replace(/\{\{\s*malePlayer\s*\}\}/gi, getPlayerNameByGender("man", state, playerIndex) || "de mannelijke speler");
+}
+
+function getPlayerNameByGender(gender, state = game, preferredExcludeIndex = null) {
+  const players = getStatePlayers(state);
+  const normalizedGender = normalizePlayerGender(gender, null);
+  if (!normalizedGender) {
+    return "";
+  }
+
+  const excludedIndex = Number.isInteger(preferredExcludeIndex) ? preferredExcludeIndex : null;
+  const target = players.find((player, index) => index !== excludedIndex && normalizePlayerGender(player.gender, null) === normalizedGender) ||
+    players.find((player) => normalizePlayerGender(player.gender, null) === normalizedGender);
+  return target?.name || "";
+}
+
+function getPlayerIndex(player, state = game) {
+  const players = getStatePlayers(state);
+  const index = players.findIndex((candidate) => candidate.id === player?.id);
+  return index >= 0 ? index : Number(state?.currentPlayerIndex ?? game.currentPlayerIndex) || 0;
+}
+
+function getStatePlayers(state = game) {
+  if (Array.isArray(state?.players) && state.players.length) {
+    return state.players;
+  }
+
+  if (Array.isArray(game?.players) && game.players.length) {
+    return game.players;
+  }
+
+  return createDefaultPlayers();
 }
 
 function updateLevelAfterCompletedCard() {
@@ -1074,9 +1353,9 @@ function handleSpecialCard(card, gameState) {
       return startSelectionSpecial(baseSession, {
         stat: "rouletteCardsStarted",
         title: "Roulette",
-        instruction: `${getOtherPlayerName()} kiest precies drie opdrachten voor ${getCurrentPlayer().name}.`,
-        cards: getShuffledAvailableNormalCards().slice(0, 10),
-        requiredCount: 3,
+        instruction: `${getOtherPlayerName()} kiest precies ${formatDutchCount(ROULETTE_REQUIRED_COUNT)} opdrachten voor ${getCurrentPlayer().name}.`,
+        cards: getShuffledAvailableNormalCards().slice(0, ROULETTE_CANDIDATE_COUNT),
+        requiredCount: ROULETTE_REQUIRED_COUNT,
         fallbackText: "Geen geschikte Roulette-kaarten beschikbaar.",
         autoSelectWhenBelowRequired: true
       });
@@ -1084,7 +1363,7 @@ function handleSpecialCard(card, gameState) {
       return startSelectionSpecial(baseSession, {
         title: "Flirty-keuze",
         instruction: `${getOtherPlayerName()} kiest één flirty opdracht voor ${getCurrentPlayer().name}.`,
-        cards: getShuffledAvailableNormalCards({ category: "flirty" }).slice(0, 5),
+        cards: getFreshSpecialSelectionCards({ category: "flirty" }).slice(0, 5),
         requiredCount: 1,
         fallbackText: "Geen geschikte Flirty-kaarten beschikbaar."
       });
@@ -1187,7 +1466,7 @@ function startSimpleSpecial(baseSession, options) {
 }
 
 function startPerfectRun(baseSession) {
-  const cards = getShuffledAvailableNormalCards().slice(0, 5);
+  const cards = getShuffledAvailableNormalCards().slice(0, PERFECT_RUN_REQUIRED_COUNT);
   stats.perfectRunsStarted += 1;
 
   if (!cards.length) {
@@ -1248,6 +1527,15 @@ function getShuffledAvailableNormalCards(options = {}) {
   }));
 }
 
+function getFreshSpecialSelectionCards(options = {}) {
+  const freshCards = getShuffledAvailableNormalCards({
+    ...options,
+    excludeHistory: true
+  });
+
+  return freshCards.length ? freshCards : getShuffledAvailableNormalCards(options);
+}
+
 function getHistoryCards(result, options = {}) {
   const seenIds = new Set();
   const cards = [];
@@ -1282,6 +1570,7 @@ function renderSpecialSession() {
     if (ui.specialModal) {
       ui.specialModal.hidden = true;
       delete ui.specialModal.dataset.specialType;
+      ui.specialModal.classList.remove("is-selection-flow");
       ui.specialModalContent.textContent = "";
     }
     return;
@@ -1292,6 +1581,7 @@ function renderSpecialSession() {
 
   const session = game.specialSession;
   ui.specialModal.dataset.specialType = session.type;
+  ui.specialModal.classList.toggle("is-selection-flow", session.phase === "select");
   ui.specialModalContent.dataset.specialType = session.type;
   if (session.phase === "select") {
     renderSpecialSelection(session);
@@ -1378,8 +1668,8 @@ function renderSpecialSelection(session) {
     button.style.setProperty("--item-index", index);
     button.style.setProperty("--card-accent", category.color);
     button.append(
-      createElement("span", "selection-card-title", `${category.emoji} ${card.title}`),
-      createElement("span", "selection-card-text", card.text),
+      createElement("span", "selection-card-title", `${category.emoji} ${getDisplayCardTitle(card, game, session.playerIndex)}`),
+      createElement("span", "selection-card-text", getDisplayCardText(card, game, session.playerIndex)),
       createElement("span", "selection-indicator", selectedIds.has(card.id) ? "Geselecteerd" : "Tik om te kiezen")
     );
     button.addEventListener("click", () => toggleSpecialSelection(card.id));
@@ -1450,7 +1740,7 @@ function getSpecialTaskCopy(session, card) {
     return {
       title: `Roulette: ${session.currentStep + 1} / ${session.selectedCardIds.length}`,
       instruction: `${game.players[session.playerIndex].name} probeert de gekozen opdracht.`,
-      variantText: card.text
+      variantText: getDisplayCardText(card, game, session.playerIndex)
     };
   }
 
@@ -1459,7 +1749,7 @@ function getSpecialTaskCopy(session, card) {
       title: "Spelen met spanning",
       instruction: "Probeer deze eerder geweigerde opdracht opnieuw.",
       skipLabel: "Nog steeds niet",
-      variantText: card.text
+      variantText: getDisplayCardText(card, game, session.playerIndex)
     };
   }
 
@@ -1467,7 +1757,7 @@ function getSpecialTaskCopy(session, card) {
     return {
       title: "Dubbel zo spannend",
       instruction: "De upgrade-opdracht telt nu.",
-      variantText: card.upgradeText
+      variantText: resolveCardTemplateText(card.upgradeText, game, session.playerIndex)
     };
   }
 
@@ -1475,14 +1765,14 @@ function getSpecialTaskCopy(session, card) {
     return {
       title: "Lichtere versie",
       instruction: "De lichtere opdracht telt nu.",
-      variantText: card.lighterText
+      variantText: resolveCardTemplateText(card.lighterText, game, session.playerIndex)
     };
   }
 
   return {
     title: "Flirty-keuze",
     instruction: `${game.players[session.playerIndex].name} voert de gekozen opdracht uit.`,
-    variantText: card.text
+    variantText: getDisplayCardText(card, game, session.playerIndex)
   };
 }
 
@@ -1493,11 +1783,11 @@ function renderTaskCard(card, activeText, session = game.specialSession) {
   panel.style.setProperty("--card-accent", category.color);
   panel.append(
     createElement("span", "card-category", `${category.emoji} ${category.label} · Level ${card.level}`),
-    createElement("strong", "special-task-title", card.title),
-    createElement("p", "special-original-text", card.text)
+    createElement("strong", "special-task-title", getDisplayCardTitle(card, game, session?.playerIndex)),
+    createElement("p", "special-original-text", getDisplayCardText(card, game, session?.playerIndex))
   );
 
-  if (activeText && activeText !== card.text) {
+  if (activeText && activeText !== getDisplayCardText(card, game, session?.playerIndex)) {
     panel.append(createElement("span", "special-transform", "↓"));
     panel.append(createElement("p", "special-active-text", activeText));
   }
@@ -1751,6 +2041,9 @@ function finishCustomSpecial(wasDone) {
   }
 
   const session = game.specialSession;
+  if (wasDone) {
+    promoteSpecialTimerToActiveTimer(session);
+  }
   stopSpecialTimerInterval();
   if (wasDone) {
     stats.doneCount += 1;
@@ -1787,8 +2080,11 @@ function renderPerfectRunTask(session) {
   }
 
   markCardUsed(card.id);
-  renderSpecialHeader(`Perfecte Run: ${session.currentStep + 1} / 5`, "Vijf gewone kaarten achter elkaar. Eén skip stopt de reeks direct.");
-  ui.specialModalContent.append(renderTaskCard(card, card.text, session));
+  renderSpecialHeader(
+    `Perfecte Run: ${session.currentStep + 1} / ${PERFECT_RUN_REQUIRED_COUNT}`,
+    `${capitalizeFirst(formatDutchCount(PERFECT_RUN_REQUIRED_COUNT))} gewone kaarten achter elkaar. Eén keer niet gedaan stopt de reeks direct.`
+  );
+  ui.specialModalContent.append(renderTaskCard(card, getDisplayCardText(card, game, session.playerIndex), session));
   const actions = createElement("div", "special-actions sticky-actions");
   actions.append(
     createButton("Gedaan", "primary-button", () => resolvePerfectRunStep(true)),
@@ -1843,7 +2139,7 @@ function resolvePerfectRunStep(wasDone) {
   session.successes += 1;
   session.currentStep += 1;
 
-  if (session.successes >= 5 || session.currentStep >= session.selectedCardIds.length) {
+  if (session.successes >= PERFECT_RUN_REQUIRED_COUNT || session.currentStep >= session.selectedCardIds.length) {
     stats.perfectRunsCompleted += 1;
     const player = game.players[session.playerIndex];
     if (player.lipstickKisses > 0) {
@@ -1969,10 +2265,10 @@ function addLipstickKiss(playerIndex, reason) {
   ];
   debugLog("lipstick_kiss_added", { playerIndex, reason, total: player.lipstickKisses });
   if (ui.kissAnimation) {
-    triggerKissAnimation(player.name);
+    triggerKissAnimation();
   }
   if (ui.toast) {
-    showToast(`💋 ${player.name} krijgt een lippenstiftkus!`);
+    showToast(LIPSTICK_PENALTY_MESSAGE);
   }
 }
 
@@ -2148,8 +2444,8 @@ function startSpecialTimerInterval() {
     }
 
     const remainingSeconds = getSpecialTimerRemainingSeconds();
-    game.specialSession.timer.remainingSeconds = remainingSeconds;
     if (remainingSeconds <= 0) {
+      game.specialSession.timer.remainingSeconds = 0;
       game.specialSession.timer.isRunning = false;
       game.specialSession.timer.startedAt = null;
       stopSpecialTimerInterval();
@@ -2226,11 +2522,21 @@ function resetTimer() {
   renderTimer();
 }
 
+function stopTimerForResolvedCard(options = {}) {
+  if (options.persist) {
+    promoteCurrentTimerToActiveTimer(getCurrentCard());
+  }
+  stopTimerInterval();
+  game.timer = createDefaultTimer();
+  if (ui.timerPanel) {
+    ui.timerPanel.hidden = true;
+  }
+}
+
 function startTimerInterval() {
   stopTimerInterval();
   timerTickId = window.setInterval(() => {
     const remainingSeconds = getTimerRemainingSeconds();
-    game.timer.remainingSeconds = remainingSeconds;
 
     if (remainingSeconds <= 0) {
       completeTimer();
@@ -2238,7 +2544,7 @@ function startTimerInterval() {
     }
 
     renderTimer();
-  }, 250);
+  }, 1000);
   renderTimer();
 }
 
@@ -2263,22 +2569,32 @@ function getTimerRemainingSeconds() {
 }
 
 function completeTimer() {
+  if (!game.timer) {
+    return;
+  }
+
   game.timer.remainingSeconds = 0;
   game.timer.isRunning = false;
   game.timer.startedAt = null;
   saveGame();
   stopTimerInterval();
   renderTimer();
-  ui.timerPanel.classList.add("timer-done");
-  window.setTimeout(() => ui.timerPanel.classList.remove("timer-done"), 750);
+  if (ui.timerPanel) {
+    ui.timerPanel.classList.add("timer-done");
+    window.setTimeout(() => ui.timerPanel.classList.remove("timer-done"), 750);
+  }
   showToast("Timer klaar!");
   playTimerSound();
   vibrate([80, 40, 80]);
 }
 
 function renderTimer() {
+  if (!ui.timerPanel) {
+    return;
+  }
+
   const currentCard = getCurrentCard();
-  if (!currentCard || !currentCard.timerSeconds) {
+  if (!currentCard || !currentCard.timerSeconds || game.cardResolved) {
     ui.timerPanel.hidden = true;
     return;
   }
@@ -2287,6 +2603,283 @@ function renderTimer() {
   ui.timerReadout.textContent = formatSeconds(getTimerRemainingSeconds());
   ui.timerStart.disabled = game.timer.isRunning || getTimerRemainingSeconds() <= 0;
   ui.timerPause.disabled = !game.timer.isRunning;
+}
+
+function promoteCurrentTimerToActiveTimer(card) {
+  if (!card || !card.timerSeconds || !game.timer?.isRunning || game.timer.cardId !== card.id) {
+    return false;
+  }
+
+  const remainingSeconds = getTimerRemainingSeconds();
+  if (remainingSeconds <= 0) {
+    return false;
+  }
+
+  const now = Date.now();
+  const player = getCurrentPlayer();
+  const displayTitle = getDisplayCardTitle(card, game, game.currentPlayerIndex);
+  const displayText = getDisplayCardText(card, game, game.currentPlayerIndex);
+  const activeTimer = {
+    id: createActiveTimerId(card.id),
+    cardId: card.id,
+    title: displayTitle,
+    text: displayText,
+    playerIndex: game.currentPlayerIndex,
+    playerName: player.name,
+    durationSeconds: Number(card.timerSeconds) || remainingSeconds,
+    remainingSeconds,
+    startedAt: now,
+    endsAt: now + (remainingSeconds * 1000),
+    isRunning: true,
+    completedAt: null,
+    source: "card"
+  };
+
+  game.activeTimers = normalizeActiveTimers([...(game.activeTimers || []), activeTimer]);
+  startActiveTimerInterval();
+  renderActiveTimers();
+  return true;
+}
+
+function promoteSpecialTimerToActiveTimer(session) {
+  if (!session?.timer?.isRunning) {
+    return false;
+  }
+
+  const remainingSeconds = getSpecialTimerRemainingSeconds();
+  if (remainingSeconds <= 0) {
+    return false;
+  }
+
+  const now = Date.now();
+  const playerIndex = clampPlayerIndex(session.playerIndex);
+  const player = game.players[playerIndex] || createDefaultPlayers()[playerIndex];
+  const parentCard = getCardById(session.parentCardId);
+  const title = session.customText ? "Eigen timer" : parentCard?.title || "Special timer";
+  const text = session.customText || parentCard?.text || "Speciale opdracht";
+  const activeTimer = {
+    id: createActiveTimerId(session.parentCardId || session.type || "special"),
+    cardId: getCardById(session.parentCardId) ? session.parentCardId : null,
+    title,
+    text,
+    playerIndex,
+    playerName: player.name,
+    durationSeconds: Number(session.timer.durationSeconds || session.timer.remainingSeconds) || remainingSeconds,
+    remainingSeconds,
+    startedAt: now,
+    endsAt: now + (remainingSeconds * 1000),
+    isRunning: true,
+    completedAt: null,
+    source: "special"
+  };
+
+  game.activeTimers = normalizeActiveTimers([...(game.activeTimers || []), activeTimer]);
+  startActiveTimerInterval();
+  renderActiveTimers();
+  return true;
+}
+
+function resumeActiveTimers() {
+  game.activeTimers = normalizeActiveTimers(game.activeTimers);
+  updateActiveTimers({ notify: false });
+  startActiveTimerInterval();
+}
+
+function startActiveTimerInterval() {
+  stopActiveTimerInterval();
+  if (!hasRunningActiveTimers()) {
+    return;
+  }
+
+  activeTimerTickId = window.setInterval(() => {
+    updateActiveTimers();
+    renderActiveTimers();
+    if (!hasRunningActiveTimers()) {
+      stopActiveTimerInterval();
+    }
+  }, 1000);
+}
+
+function stopActiveTimerInterval() {
+  if (activeTimerTickId) {
+    window.clearInterval(activeTimerTickId);
+    activeTimerTickId = null;
+  }
+}
+
+function hasRunningActiveTimers() {
+  return (game.activeTimers || []).some((timer) => timer.isRunning && getActiveTimerRemainingSeconds(timer) > 0);
+}
+
+function updateActiveTimers(options = {}) {
+  const notify = options.notify !== false;
+  const shouldSave = options.save !== false;
+  const now = Date.now();
+  let completedCount = 0;
+
+  game.activeTimers = normalizeActiveTimers(game.activeTimers).map((timer) => {
+    if (!timer.isRunning || getActiveTimerRemainingSeconds(timer) > 0) {
+      return timer;
+    }
+
+    completedCount += 1;
+    return {
+      ...timer,
+      remainingSeconds: 0,
+      isRunning: false,
+      completedAt: now
+    };
+  });
+
+  if (completedCount > 0) {
+    if (shouldSave) {
+      saveGame();
+    }
+    if (notify) {
+      showToast(completedCount === 1 ? "Een lopende timer is klaar." : `${completedCount} lopende timers zijn klaar.`);
+      playTimerSound();
+      vibrate([80, 40, 80]);
+    }
+  }
+
+  return completedCount;
+}
+
+function dismissActiveTimer(timerId) {
+  game.activeTimers = (game.activeTimers || []).filter((timer) => timer.id !== timerId);
+  saveGame();
+  renderActiveTimers();
+  startActiveTimerInterval();
+}
+
+function renderActiveTimers() {
+  if (!ui.activeTimersPanel || !ui.activeTimersList || !ui.activeTimersCount) {
+    return;
+  }
+
+  updateActiveTimers({ notify: false });
+  const timers = normalizeActiveTimers(game.activeTimers);
+  game.activeTimers = timers;
+  ui.activeTimersPanel.hidden = timers.length === 0;
+  ui.activeTimersCount.textContent = String(timers.length);
+  ui.activeTimersList.replaceChildren(
+    ...timers.map((timer) => {
+      const remainingSeconds = getActiveTimerRemainingSeconds(timer);
+      const isComplete = Boolean(timer.completedAt || remainingSeconds <= 0);
+      const card = createElement("div", `active-timer-card${isComplete ? " is-complete" : ""}`);
+      const heading = createElement("div", "active-timer-top");
+      const title = createElement("strong", "active-timer-title", timer.title);
+      const dismissButton = createButton(isComplete ? "Weg" : "Stop", "timer-dismiss-button", () => dismissActiveTimer(timer.id));
+      dismissButton.setAttribute("aria-label", `Verwijder timer ${timer.title}`);
+      heading.append(title, dismissButton);
+
+      const meta = createElement("div", "active-timer-meta");
+      meta.append(
+        createElement("span", "active-timer-time", isComplete ? "Klaar" : formatSeconds(remainingSeconds)),
+        createElement("span", "active-timer-end", timer.endsAt ? `Tot ${formatActiveTimerEndTime(timer)}` : "Geen eindtijd"),
+        createElement("span", "active-timer-player", timer.playerName)
+      );
+
+      card.append(heading, meta);
+      if (timer.text) {
+        card.append(createElement("p", "active-timer-text", timer.text));
+      }
+      return card;
+    })
+  );
+}
+
+function normalizeActiveTimers(timers = [], playersForTimers = null) {
+  const sourceTimers = Array.isArray(timers) ? timers : [];
+  const now = Date.now();
+  const seenIds = new Set();
+  const normalized = sourceTimers
+    .map((timer) => normalizeActiveTimer(timer, now, playersForTimers))
+    .filter((timer) => {
+      if (!timer || seenIds.has(timer.id)) {
+        return false;
+      }
+      seenIds.add(timer.id);
+      return true;
+    });
+
+  return normalized.slice(-ACTIVE_TIMERS_LIMIT);
+}
+
+function normalizeActiveTimer(timer, now = Date.now(), playersForTimers = null) {
+  if (!timer || typeof timer !== "object") {
+    return null;
+  }
+
+  const card = getCardById(timer.cardId);
+  const playerIndex = clampPlayerIndex(timer.playerIndex);
+  const fallbackPlayer = playersForTimers?.[playerIndex] || game.players?.[playerIndex] || createDefaultPlayers()[playerIndex];
+  const rawDuration = Number(timer.durationSeconds || card?.timerSeconds || timer.remainingSeconds) || 0;
+  const durationSeconds = Math.max(0, Math.round(rawDuration));
+  const completedAt = Number(timer.completedAt) || null;
+  const startedAt = Number(timer.startedAt) || now;
+  const fallbackRemaining = Number(timer.remainingSeconds) || durationSeconds;
+  const endsAt = Number(timer.endsAt) || (timer.isRunning && fallbackRemaining > 0 ? now + (fallbackRemaining * 1000) : null);
+  const isRunning = Boolean(timer.isRunning && endsAt && !completedAt);
+  const remainingSeconds = isRunning
+    ? Math.max(0, Math.ceil((endsAt - now) / 1000))
+    : Math.max(0, Math.round(fallbackRemaining));
+  const title = String(timer.title || card?.title || "Timer").slice(0, 90);
+  const text = String(timer.text || card?.text || "").slice(0, 600);
+  const id = String(timer.id || createActiveTimerId(card?.id || timer.cardId || title));
+
+  if (!title || (!durationSeconds && !remainingSeconds && !endsAt)) {
+    return null;
+  }
+
+  return {
+    id,
+    cardId: card?.id || null,
+    title,
+    text,
+    playerIndex,
+    playerName: cleanName(timer.playerName, fallbackPlayer.name),
+    durationSeconds: durationSeconds || remainingSeconds,
+    remainingSeconds,
+    startedAt,
+    endsAt,
+    isRunning,
+    completedAt,
+    source: timer.source || (card ? "card" : "custom")
+  };
+}
+
+function getActiveTimerRemainingSeconds(timer) {
+  if (!timer) {
+    return 0;
+  }
+
+  if (timer.completedAt) {
+    return 0;
+  }
+
+  if (timer.isRunning && timer.endsAt) {
+    return Math.max(0, Math.ceil((Number(timer.endsAt) - Date.now()) / 1000));
+  }
+
+  return Math.max(0, Math.round(Number(timer.remainingSeconds) || 0));
+}
+
+function createActiveTimerId(sourceId) {
+  const safeSource = String(sourceId || "timer").replace(/[^a-z0-9_-]+/gi, "_").slice(0, 40) || "timer";
+  return `timer_${safeSource}_${Date.now()}_${Math.floor(getRandomValue() * 100000)}`;
+}
+
+function formatActiveTimerEndTime(timer) {
+  const date = new Date(Number(timer?.endsAt));
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
+
+  return date.toLocaleTimeString("nl-NL", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 }
 
 function playTimerSound() {
@@ -2326,6 +2919,12 @@ function renderGame() {
   ui.scorePlayerOne.textContent = `${players[0].name}: ${players[0].lipstickKisses || 0} 💋`;
   ui.scorePlayerTwo.textContent = `${players[1].name}: ${players[1].lipstickKisses || 0} 💋`;
   ui.gameLevel.textContent = String(getEffectiveLevel());
+  if (ui.deckPlayer) {
+    ui.deckPlayer.textContent = `${currentPlayer.name} trekt`;
+  }
+  if (ui.cardPlayer) {
+    ui.cardPlayer.textContent = `${currentPlayer.name} is aan de beurt`;
+  }
   ui.jacuzziToggle.checked = game.jacuzziMode;
   document.body.classList.toggle("is-jacuzzi-mode", game.jacuzziMode && activeScreen === "game");
   ui.jacuzziStatus.hidden = !game.jacuzziMode;
@@ -2343,20 +2942,26 @@ function renderGame() {
   ui.newCardButton.disabled = !currentCard || game.cardResolved || cardDrawLocked || specialActive;
   ui.jacuzziReplaceButton.hidden = !game.jacuzziMode;
   ui.jacuzziReplaceButton.disabled = !currentCard || game.cardResolved || cardDrawLocked || specialActive;
+  ui.cardReportButton.hidden = !currentCard || specialActive;
+  ui.cardReportButton.disabled = !currentCard || specialActive;
+  renderCardRatingPanel(currentCard, specialActive);
 
   renderLevelProgress();
   renderAvailableCategories();
 
   if (currentCard) {
     const category = deck.categories[currentCard.category] || deck.categories.special;
+    const displayTitle = getDisplayCardTitle(currentCard, game, game.currentPlayerIndex);
+    const displayText = getDisplayCardText(currentCard, game, game.currentPlayerIndex);
     applyCardCategoryPresentation(currentCard.category);
     ui.cardStack.style.setProperty("--card-accent", category.color);
-    ui.cardStack.setAttribute("aria-label", `${category.label}: ${currentCard.title}`);
+    ui.cardStack.setAttribute("aria-label", `${currentPlayer.name}: ${category.label}: ${displayTitle}`);
     ui.cardCategory.textContent = `${category.emoji} ${category.label} · Level ${currentCard.level}`;
     renderCardProgress(currentCard);
     ui.cardEmoji.textContent = currentCard.emoji || category.emoji;
-    ui.cardTitle.textContent = currentCard.title;
-    ui.cardText.textContent = currentCard.text;
+    ui.cardTitle.textContent = displayTitle;
+    fitCardTitle(displayTitle);
+    ui.cardText.textContent = displayText;
     if (ui.cardTimerBadge) {
       ui.cardTimerBadge.textContent = currentCard.timerSeconds ? `Timer ${formatDuration(currentCard.timerSeconds)}` : "";
       ui.cardTimerBadge.hidden = !currentCard.timerSeconds;
@@ -2368,8 +2973,9 @@ function renderGame() {
     ui.emptyState.hidden = true;
   } else {
     applyCardCategoryPresentation(null);
-    ui.cardStack.setAttribute("aria-label", "Trek een kaart");
+    ui.cardStack.setAttribute("aria-label", `${currentPlayer.name}: trek een kaart`);
     ui.cardStack.style.setProperty("--card-accent", deck.categories.cute.color);
+    fitCardTitle("");
     if (ui.cardProgress) {
       ui.cardProgress.textContent = "";
       ui.cardProgress.hidden = true;
@@ -2386,6 +2992,7 @@ function renderGame() {
   }
 
   renderTimer();
+  renderActiveTimers();
   renderLevelModal();
   renderSpecialSession();
 }
@@ -2476,6 +3083,32 @@ function renderCardProgress(currentCard) {
   ui.cardProgress.hidden = !progressLabel;
 }
 
+function fitCardTitle(title) {
+  if (!ui.cardTitle) {
+    return;
+  }
+
+  const text = String(title || "").trim();
+  if (!text) {
+    ui.cardTitle.style.removeProperty("--card-title-size");
+    return;
+  }
+
+  const longestWordLength = text
+    .split(/\s+/)
+    .reduce((longest, word) => Math.max(longest, word.length), 0);
+  let size = "2.35rem";
+  if (longestWordLength >= 18 || text.length >= 32) {
+    size = "1.45rem";
+  } else if (longestWordLength >= 14 || text.length >= 24) {
+    size = "1.8rem";
+  } else if (longestWordLength >= 11 || text.length >= 18) {
+    size = "2.05rem";
+  }
+
+  ui.cardTitle.style.setProperty("--card-title-size", size);
+}
+
 function getCardProgressLabel(currentCard) {
   if (!currentCard) {
     return "";
@@ -2485,11 +3118,23 @@ function getCardProgressLabel(currentCard) {
     return "Special actief";
   }
 
-  if (game.jacuzziMode && (currentCard.requiresJacuzzi || currentCard.jacuzziAllowed)) {
+  if (game.jacuzziMode && isJacuzziModeCard(currentCard)) {
     return "Jacuzzi-proof";
   }
 
   return "";
+}
+
+function renderCardRatingPanel(currentCard, specialActive) {
+  if (!ui.cardRatingPanel) {
+    return;
+  }
+
+  const canRate = Boolean(settings.cardRatingsEnabled && currentCard && !specialActive);
+  ui.cardRatingPanel.hidden = !canRate;
+  if (!canRate) {
+    ui.cardRatingPanel.open = false;
+  }
 }
 
 function getUnlockedCategoryIds() {
@@ -2525,6 +3170,8 @@ function renderSettings() {
   const players = game.players || createDefaultPlayers();
   ui.settingsPlayerOne.value = players[0].name || DEFAULT_PLAYERS[0];
   ui.settingsPlayerTwo.value = players[1].name || DEFAULT_PLAYERS[1];
+  setRadioValue(ui.settingsPlayerOneGender, normalizePlayerGender(players[0].gender, DEFAULT_PLAYER_GENDERS[0]));
+  setRadioValue(ui.settingsPlayerTwoGender, normalizePlayerGender(players[1].gender, DEFAULT_PLAYER_GENDERS[1]));
   ui.themeSetting.value = normalizeTheme(settings.theme);
   ui.soundSetting.checked = settings.soundEnabled;
   ui.vibrationSetting.checked = settings.vibrationEnabled;
@@ -2539,6 +3186,8 @@ function renderSettings() {
       : "Uit";
   ui.wakeLockSetting.checked = settings.wakeLockEnabled;
   ui.wakeLockSetting.disabled = !isWakeLockSupported();
+  ui.cardRatingsSetting.checked = settings.cardRatingsEnabled;
+  ui.appVersionLabel.textContent = `Date Roulette ${APP_VERSION}`;
   ui.developerSetting.checked = settings.developerMode;
   ui.developerTools.hidden = !settings.developerMode;
   ui.devAddPlayerOne.textContent = `+1 afgeronde kaart voor ${players[0].name}`;
@@ -2676,6 +3325,15 @@ function validateDeckCards(cards = deck.cards) {
     if ("repeatable" in card && typeof card.repeatable !== "boolean") {
       errors.push(`${label}: repeatable moet boolean zijn.`);
     }
+    if ("enabled" in card && typeof card.enabled !== "boolean") {
+      errors.push(`${label}: enabled moet boolean zijn wanneer aanwezig.`);
+    }
+    if ("weight" in card) {
+      const weight = Number(card.weight);
+      if (!Number.isFinite(weight) || weight < 0 || weight > 2) {
+        errors.push(`${label}: weight moet tussen 0 en 2 liggen.`);
+      }
+    }
     if (!isNullableText(card.upgradeText)) {
       errors.push(`${label}: upgradeText moet null of tekst zijn.`);
     }
@@ -2701,8 +3359,11 @@ function validateDeckCards(cards = deck.cards) {
     if (card.category === "jacuzzi" && (!card.requiresJacuzzi || !card.jacuzziAllowed)) {
       errors.push(`${label}: Jacuzzi-kaarten moeten requiresJacuzzi en jacuzziAllowed op true hebben.`);
     }
-    if (card.id === "flirty_020" && card.playerRestriction !== "player_1") {
-      errors.push("flirty_020: moet playerRestriction player_1 hebben.");
+    if (card.id === "flirty_020" && card.playerRestriction !== "man") {
+      errors.push("flirty_020: moet playerRestriction man hebben.");
+    }
+    if (card.id === "flirty_020" && /tijgertje/i.test(`${card.title} ${card.text}`)) {
+      errors.push("flirty_020: mag geen vaste spelernaam Tijgertje bevatten.");
     }
     if (containsHtmlLikeText(card.text) || containsHtmlLikeText(card.title)) {
       errors.push(`${label}: titel of tekst bevat mogelijke HTML.`);
@@ -2758,7 +3419,7 @@ function createCardSummary(cards = []) {
     if (card.category === "special") {
       summary.specials += 1;
     }
-    if (card.category === "jacuzzi" || card.requiresJacuzzi) {
+    if (isJacuzziModeCard(card)) {
       summary.jacuzziCards += 1;
     }
     if (card.playerRestriction) {
@@ -2830,6 +3491,10 @@ function showScreen(screenName) {
     startTimerInterval();
   }
 
+  if (screenName === "game") {
+    startActiveTimerInterval();
+  }
+
   render();
   updateWakeLock();
 }
@@ -2892,6 +3557,8 @@ function renderEndScreen() {
     createSummaryRow("Bereikt level", game.levelSystemEnabled ? `Level ${game.currentLevel}` : "Level 5 (levels uit)"),
     createSummaryRow("Jacuzzi-kaarten", String(stats.jacuzziCardsDrawn))
   );
+
+  ui.roundNotes.value = game.roundNotes || "";
 }
 
 function createSummaryRow(label, value) {
@@ -2904,6 +3571,352 @@ function getRoundDurationSeconds() {
   const startedAt = Number(game.startedAt) || Date.now();
   const endedAt = Number(game.endedAt) || Date.now();
   return Math.max(0, Math.round((endedAt - startedAt) / 1000));
+}
+
+function handleRoundNotesInput() {
+  game.roundNotes = String(ui.roundNotes.value || "").slice(0, 2000);
+  saveGame();
+}
+
+function rateCurrentCard(ratingType) {
+  const currentCard = getCurrentCard();
+  if (!currentCard || !RATING_TYPES.includes(ratingType)) {
+    return;
+  }
+
+  const cardRating = normalizeCardRating(cardRatings[currentCard.id]);
+  cardRating.ratings[ratingType] += 1;
+  cardRatings[currentCard.id] = cardRating;
+  saveCardRatings();
+  showToast("Kaartbeoordeling opgeslagen.");
+}
+
+function openCardReportModal() {
+  const currentCard = getCurrentCard();
+  if (!currentCard || !ui.cardReportModal) {
+    return;
+  }
+
+  const category = deck.categories[currentCard.category] || deck.categories.special;
+  ui.cardReportModal.dataset.cardId = currentCard.id;
+  ui.cardReportOriginal.textContent = `${currentCard.id} · ${category.label} · Level ${currentCard.level}`;
+  ui.cardReportIssue.value = "";
+  ui.cardReportTitleInput.value = currentCard.title || "";
+  ui.cardReportTextInput.value = currentCard.text || "";
+  ui.cardReportSafetyInput.value = currentCard.safetyNote || "";
+  updateCardReportJson();
+  ui.cardReportModal.hidden = false;
+  window.setTimeout(() => ui.cardReportIssue.focus(), 80);
+}
+
+function closeCardReportModal() {
+  if (!ui.cardReportModal) {
+    return;
+  }
+
+  ui.cardReportModal.hidden = true;
+  delete ui.cardReportModal.dataset.cardId;
+}
+
+function updateCardReportJson() {
+  if (!ui.cardReportJson) {
+    return "";
+  }
+
+  const card = getCardById(ui.cardReportModal?.dataset.cardId) || getCurrentCard();
+  if (!card) {
+    ui.cardReportJson.value = "";
+    return "";
+  }
+
+  const payload = createCardReportPayload(card, getCardReportFormValues());
+  const json = JSON.stringify(payload, null, 2);
+  ui.cardReportJson.value = json;
+  return json;
+}
+
+function getCardReportFormValues() {
+  return {
+    problem: ui.cardReportIssue?.value || "",
+    title: ui.cardReportTitleInput?.value || "",
+    text: ui.cardReportTextInput?.value || "",
+    safetyNote: ui.cardReportSafetyInput?.value || ""
+  };
+}
+
+function createCardReportPayload(card, values = {}) {
+  const original = createCardReportSnapshot(card);
+  const suggested = {
+    title: String(values.title ?? card.title ?? "").trim(),
+    text: String(values.text ?? card.text ?? "").trim(),
+    safetyNote: normalizeReportNullableText(values.safetyNote ?? card.safetyNote)
+  };
+  const changedFields = Object.entries(suggested)
+    .filter(([field, value]) => normalizeReportNullableText(original[field]) !== normalizeReportNullableText(value))
+    .map(([field]) => field);
+
+  return {
+    type: "date_roulette_card_report",
+    appVersion: APP_VERSION,
+    reportedAt: new Date().toISOString(),
+    targetFile: getCardSourceFile(card),
+    instruction: "Fix deze Date Roulette-kaart in de kaartdatabase. Behoud id, category, level en metadata tenzij hieronder expliciet anders staat.",
+    problem: String(values.problem || "").trim(),
+    original,
+    suggested,
+    changedFields
+  };
+}
+
+function createCardReportSnapshot(card) {
+  return {
+    id: card.id,
+    category: card.category,
+    title: card.title,
+    text: card.text,
+    emoji: card.emoji,
+    level: card.level,
+    timerSeconds: card.timerSeconds,
+    playerRestriction: card.playerRestriction,
+    jacuzziAllowed: card.jacuzziAllowed,
+    requiresJacuzzi: card.requiresJacuzzi,
+    specialType: card.specialType,
+    upgradeText: card.upgradeText,
+    lighterText: card.lighterText,
+    contentTags: Array.isArray(card.contentTags) ? [...card.contentTags] : [],
+    repeatable: card.repeatable,
+    safetyNote: card.safetyNote || null
+  };
+}
+
+function getCardSourceFile(card) {
+  const category = String(card?.category || "").replace(/[^a-z0-9_-]/gi, "");
+  return category ? `cards/${category}.js` : "cards/index.js";
+}
+
+function normalizeReportNullableText(value) {
+  const text = String(value ?? "").trim();
+  return text || null;
+}
+
+async function copyCardReportJson() {
+  const json = updateCardReportJson();
+  if (!json) {
+    return;
+  }
+
+  const copied = await copyTextToClipboard(json);
+  if (copied) {
+    showToast("Report-JSON gekopieerd.");
+    return;
+  }
+
+  ui.cardReportJson.focus();
+  ui.cardReportJson.select();
+  showToast("Kopieer de geselecteerde JSON.");
+}
+
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (error) {
+      debugLog("clipboard_write_failed", { error });
+    }
+  }
+
+  if (!document.body) {
+    return false;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  textarea.style.pointerEvents = "none";
+  document.body.appendChild(textarea);
+  textarea.select();
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } catch (error) {
+    debugLog("clipboard_fallback_failed", { error });
+  }
+  textarea.remove();
+  return copied;
+}
+
+function createPlaytestExportData() {
+  const players = game.players || createDefaultPlayers();
+  return {
+    appVersion: APP_VERSION,
+    exportedAt: new Date().toISOString(),
+    stateVersion: STATE_VERSION,
+    playTimeSeconds: getRoundDurationSeconds(),
+    players: players.map((player, index) => ({
+      id: player.id,
+      role: `speler ${index + 1}`,
+      displayName: player.name || `Speler ${index + 1}`,
+      gender: normalizePlayerGender(player.gender, DEFAULT_PLAYER_GENDERS[index]),
+      completedCards: Number(player.completedCards) || 0,
+      lipstickKisses: Number(player.lipstickKisses) || 0
+    })),
+    cardHistory: game.cardHistory || [],
+    completedCardIds: game.completedCardIds || [],
+    skippedCardIds: game.skippedCardIds || [],
+    lipstickEvents: game.lipstickEvents || [],
+    ratings: cardRatings,
+    levelProgression: {
+      currentLevel: game.currentLevel,
+      levelSystemEnabled: game.levelSystemEnabled,
+      unlockedLevels: game.unlockedLevels,
+      requirements: levelRequirements
+    },
+    jacuzzi: {
+      enabled: game.jacuzziMode,
+      useCount: stats.jacuzziUseCount,
+      cardsDrawn: stats.jacuzziCardsDrawn,
+      replacementCount: stats.jacuzziReplacementCount,
+      timeSeconds: getJacuzziTimeSecondsForDisplay(),
+      rules: JACUZZI_MODE_RULES
+    },
+    specials: {
+      rouletteCardsStarted: stats.rouletteCardsStarted,
+      rouletteCardsCompleted: stats.rouletteCardsCompleted,
+      rouletteSubtasksCompleted: stats.rouletteSubtasksCompleted,
+      rouletteSubtasksSkipped: stats.rouletteSubtasksSkipped,
+      perfectRunsStarted: stats.perfectRunsStarted,
+      perfectRunsCompleted: stats.perfectRunsCompleted,
+      perfectRunsFailed: stats.perfectRunsFailed,
+      tensionCardsStarted: stats.tensionCardsStarted,
+      upgradedCardsStarted: stats.upgradedCardsStarted
+    },
+    roundNotes: game.roundNotes || "",
+    settings: {
+      theme: settings.theme,
+      soundEnabled: settings.soundEnabled,
+      vibrationEnabled: settings.vibrationEnabled,
+      levelSystemEnabled: settings.levelSystemEnabled,
+      cardRatingsEnabled: settings.cardRatingsEnabled,
+      wakeLockEnabled: settings.wakeLockEnabled,
+      fullscreenEnabled: settings.fullscreenEnabled
+    },
+    recentErrors: recoveryNotice ? [recoveryNotice] : []
+  };
+}
+
+function exportPlaytestJson() {
+  const data = createPlaytestExportData();
+  downloadTextFile(
+    `date-roulette-playtest-${formatExportDate()}.json`,
+    JSON.stringify(data, null, 2),
+    "application/json"
+  );
+}
+
+function exportPlaytestMarkdown() {
+  downloadTextFile(
+    `date-roulette-playtest-${formatExportDate()}.md`,
+    createPlaytestMarkdownReport(),
+    "text/markdown"
+  );
+}
+
+function createPlaytestMarkdownReport() {
+  const topLiked = getRatedCards("liked");
+  const leastLiked = getRatedCards("disliked");
+  const impractical = getRatedCards("impractical");
+  const unclear = getRatedCards("unclear");
+  return [
+    `# Date Roulette Speeltest ${APP_VERSION}`,
+    "",
+    `Export: ${new Date().toLocaleString("nl-NL")}`,
+    `Speeltijd: ${formatDuration(getRoundDurationSeconds())}`,
+    `Meest gespeelde categorie: ${getTopCategoryLabel()}`,
+    "",
+    "## Leukste kaarten",
+    formatRatedList(topLiked),
+    "",
+    "## Minst leuke kaarten",
+    formatRatedList(leastLiked),
+    "",
+    "## Vaakst niet gedaan",
+    formatSkippedCards(),
+    "",
+    "## Praktisch niet uitvoerbaar",
+    formatRatedList(impractical),
+    "",
+    "## Onduidelijk",
+    formatRatedList(unclear),
+    "",
+    "## Kaarten per level",
+    formatCardsPerLevel(),
+    "",
+    "## Notities",
+    game.roundNotes || "Geen notities ingevuld."
+  ].join("\n");
+}
+
+function getRatedCards(ratingType) {
+  return Object.entries(cardRatings)
+    .map(([cardId, rating]) => ({
+      card: getCardById(cardId),
+      count: Number(rating?.ratings?.[ratingType]) || 0
+    }))
+    .filter((entry) => entry.card && entry.count > 0)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 8);
+}
+
+function formatRatedList(entries) {
+  if (!entries.length) {
+    return "- Geen gegevens.";
+  }
+
+  return entries
+    .map((entry) => `- ${entry.card.id} — ${entry.card.title}: ${entry.count}`)
+    .join("\n");
+}
+
+function formatSkippedCards() {
+  const counts = {};
+  (game.cardHistory || []).forEach((entry) => {
+    if (entry.result === "skipped") {
+      counts[entry.cardId] = (counts[entry.cardId] || 0) + 1;
+    }
+  });
+  const entries = Object.entries(counts)
+    .map(([cardId, count]) => ({ card: getCardById(cardId), count }))
+    .filter((entry) => entry.card)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 8);
+  return formatRatedList(entries);
+}
+
+function formatCardsPerLevel() {
+  const summary = deck.createCardSummary ? deck.createCardSummary(deck.cards) : createCardSummary(deck.cards);
+  return Object.entries(summary.byLevel)
+    .sort((a, b) => Number(a[0]) - Number(b[0]))
+    .map(([level, count]) => `- Level ${level}: ${count}`)
+    .join("\n");
+}
+
+function downloadTextFile(filename, text, mimeType) {
+  const blob = new Blob([text], { type: `${mimeType};charset=utf-8` });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function formatExportDate() {
+  return new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
 }
 
 function debugLog(eventName, payload = {}) {
@@ -2930,13 +3943,13 @@ function showToast(message) {
   }, 2200);
 }
 
-function triggerKissAnimation(playerName = getCurrentPlayer().name) {
+function triggerKissAnimation() {
   if (kissAnimationTimeoutId) {
     window.clearTimeout(kissAnimationTimeoutId);
   }
 
   if (ui.kissAnimationText) {
-    ui.kissAnimationText.textContent = `💋 ${playerName} krijgt een lippenstiftkus!`;
+    ui.kissAnimationText.textContent = LIPSTICK_PENALTY_MESSAGE;
   }
   ui.kissAnimation.classList.remove("is-active");
   window.requestAnimationFrame(() => {
@@ -2952,7 +3965,7 @@ function triggerKissAnimation(playerName = getCurrentPlayer().name) {
 function recordCardDraw(card) {
   stats.totalDrawn += 1;
   stats.categoryDraws[card.category] = (stats.categoryDraws[card.category] || 0) + 1;
-  if (card.requiresJacuzzi || card.category === "jacuzzi") {
+  if (isJacuzziModeCard(card)) {
     stats.jacuzziCardsDrawn += 1;
   }
   debugLog("card_drawn", { cardId: card.id, category: card.category, playerIndex: game.currentPlayerIndex });
@@ -3028,7 +4041,7 @@ function addDeveloperSkips() {
     });
   });
   saveGame();
-  showToast("Drie voorbeeld-skips toegevoegd.");
+  showToast("Drie niet-gedaan voorbeelden toegevoegd.");
 }
 
 function addDeveloperUpgradeCompletions() {
@@ -3109,7 +4122,7 @@ function recalculateStatsFromHistory(state, previousStats = {}) {
     if (card) {
       rebuilt.categoryDraws[card.category] = (rebuilt.categoryDraws[card.category] || 0) + 1;
       unresolvedDrawIds.delete(card.id);
-      if (card.requiresJacuzzi || card.category === "jacuzzi") {
+      if (isJacuzziModeCard(card)) {
         rebuilt.jacuzziCardsDrawn += 1;
       }
       if (isSpecialCard(card) && entry.result === "completed") {
@@ -3133,7 +4146,7 @@ function recalculateStatsFromHistory(state, previousStats = {}) {
       return;
     }
     rebuilt.categoryDraws[card.category] = (rebuilt.categoryDraws[card.category] || 0) + 1;
-    if (card.requiresJacuzzi || card.category === "jacuzzi") {
+    if (isJacuzziModeCard(card)) {
       rebuilt.jacuzziCardsDrawn += 1;
     }
   });
@@ -3200,15 +4213,16 @@ function countHistoryVariant(targetStats, entry) {
   }
 }
 
-function createNewGame(playerOneName, playerTwoName) {
+function createNewGame(playerOneName, playerTwoName, playerOneGender = DEFAULT_PLAYER_GENDERS[0], playerTwoGender = DEFAULT_PLAYER_GENDERS[1]) {
   return {
     stateVersion: STATE_VERSION,
+    appVersion: APP_VERSION,
     activeGame: true,
     startedAt: Date.now(),
     endedAt: null,
     players: [
-      createPlayer("player_1", playerOneName, 0, 0),
-      createPlayer("player_2", playerTwoName, 0, 0)
+      createPlayer("player_1", playerOneName, 0, 0, playerOneGender),
+      createPlayer("player_2", playerTwoName, 0, 0, playerTwoGender)
     ],
     currentPlayerIndex: 0,
     currentLevel: 1,
@@ -3223,12 +4237,15 @@ function createNewGame(playerOneName, playerTwoName) {
     currentCardId: null,
     cardResolved: false,
     pendingTurnAdvance: false,
+    turnAdvanceDueAt: null,
     pendingUnlockLevel: null,
     emptyDeckReason: null,
     specialSession: null,
     cardHistory: [],
     activePerfectRun: null,
+    activeTimers: [],
     lipstickEvents: [],
+    roundNotes: "",
     completedByPlayer: [0, 0],
     settingsSnapshot: {},
     timer: createDefaultTimer(),
@@ -3236,10 +4253,11 @@ function createNewGame(playerOneName, playerTwoName) {
   };
 }
 
-function createPlayer(id, name, completedCards, lipstickKisses) {
+function createPlayer(id, name, completedCards, lipstickKisses, gender = "vrouw") {
   return {
     id,
     name,
+    gender: normalizePlayerGender(gender, id === "player_2" ? DEFAULT_PLAYER_GENDERS[1] : DEFAULT_PLAYER_GENDERS[0]),
     completedCards,
     lipstickKisses,
     kisses: lipstickKisses
@@ -3248,8 +4266,8 @@ function createPlayer(id, name, completedCards, lipstickKisses) {
 
 function createDefaultPlayers() {
   return [
-    createPlayer("player_1", DEFAULT_PLAYERS[0], 0, 0),
-    createPlayer("player_2", DEFAULT_PLAYERS[1], 0, 0)
+    createPlayer("player_1", DEFAULT_PLAYERS[0], 0, 0, DEFAULT_PLAYER_GENDERS[0]),
+    createPlayer("player_2", DEFAULT_PLAYERS[1], 0, 0, DEFAULT_PLAYER_GENDERS[1])
   ];
 }
 
@@ -3270,6 +4288,7 @@ function createDefaultSettings() {
     levelSystemEnabled: true,
     fullscreenEnabled: false,
     wakeLockEnabled: false,
+    cardRatingsEnabled: false,
     onboardingCompleted: false,
     installPromptDismissed: false,
     developerMode: false
@@ -3331,12 +4350,21 @@ function migrateGameState(oldState) {
   const currentCardId = getCardById(oldState.currentCardId)
     ? oldState.currentCardId
     : specialSession?.parentCardId || null;
-  const timer = currentCardId ? normalizeTimer(oldState.timer) : createDefaultTimer();
+  const cardResolved = Boolean(oldState.cardResolved);
+  const shouldResumeTurnAdvance = Boolean(
+    oldState.activeGame &&
+    currentCardId &&
+    cardResolved &&
+    !specialSession &&
+    !oldState.pendingUnlockLevel
+  );
+  const timer = currentCardId && !cardResolved ? normalizeTimer(oldState.timer) : createDefaultTimer();
 
   return {
     ...fallbackGame,
     ...oldState,
     stateVersion: STATE_VERSION,
+    appVersion: APP_VERSION,
     activeGame: Boolean(oldState.activeGame),
     startedAt: Number(oldState.startedAt) || Date.now(),
     endedAt: oldState.endedAt ? Number(oldState.endedAt) : null,
@@ -3352,14 +4380,17 @@ function migrateGameState(oldState) {
     skippedCardIds: filterKnownCardIds(oldState.skippedCardIds),
     temporaryRejectedCardIds: filterKnownCardIds(oldState.temporaryRejectedCardIds),
     currentCardId,
-    cardResolved: Boolean(oldState.cardResolved),
-    pendingTurnAdvance: Boolean(oldState.pendingTurnAdvance),
+    cardResolved,
+    pendingTurnAdvance: Boolean(oldState.pendingTurnAdvance || shouldResumeTurnAdvance),
+    turnAdvanceDueAt: Number(oldState.turnAdvanceDueAt) || (shouldResumeTurnAdvance ? Date.now() : null),
     pendingUnlockLevel: oldState.pendingUnlockLevel ? clampLevel(oldState.pendingUnlockLevel) : null,
     emptyDeckReason: oldState.emptyDeckReason || null,
     specialSession,
     cardHistory: normalizeCardHistory(oldState.cardHistory, oldState.completedCardIds, oldState.skippedCardIds),
     activePerfectRun: specialSession?.type === "perfectRun" ? normalizeActivePerfectRun(oldState.activePerfectRun, specialSession) : null,
+    activeTimers: normalizeActiveTimers(oldState.activeTimers, players),
     lipstickEvents: Array.isArray(oldState.lipstickEvents) ? oldState.lipstickEvents : [],
+    roundNotes: String(oldState.roundNotes || "").slice(0, 2000),
     completedByPlayer: players.map((player) => player.completedCards),
     timer,
     statistics: normalizeStats(oldState.statistics)
@@ -3368,6 +4399,28 @@ function migrateGameState(oldState) {
 
 function loadSettings() {
   return normalizeSettings(loadJson(STORAGE_KEYS.settings, {}));
+}
+
+function loadCardRatings() {
+  const rawRatings = loadJson(STORAGE_KEYS.cardRatings, {});
+  if (!rawRatings || typeof rawRatings !== "object") {
+    return {};
+  }
+
+  return Object.entries(rawRatings).reduce((normalized, [cardId, rating]) => {
+    if (getCardById(cardId)) {
+      normalized[cardId] = normalizeCardRating(rating);
+    }
+    return normalized;
+  }, {});
+}
+
+function normalizeCardRating(rating = {}) {
+  const ratings = {};
+  RATING_TYPES.forEach((type) => {
+    ratings[type] = Math.max(0, Number(rating?.ratings?.[type]) || 0);
+  });
+  return { ratings };
 }
 
 function normalizeSettings(rawSettings = {}) {
@@ -3382,6 +4435,7 @@ function normalizeSettings(rawSettings = {}) {
     levelSystemEnabled: readBoolean(source.levelSystemEnabled, defaults.levelSystemEnabled),
     fullscreenEnabled: readBoolean(source.fullscreenEnabled, defaults.fullscreenEnabled),
     wakeLockEnabled: readBoolean(source.wakeLockEnabled, defaults.wakeLockEnabled),
+    cardRatingsEnabled: readBoolean(source.cardRatingsEnabled, defaults.cardRatingsEnabled),
     onboardingCompleted: readBoolean(source.onboardingCompleted, defaults.onboardingCompleted),
     installPromptDismissed: readBoolean(source.installPromptDismissed, defaults.installPromptDismissed),
     developerMode: readBoolean(source.developerMode, defaults.developerMode)
@@ -3601,12 +4655,14 @@ function normalizePlayer(player, index, completedByPlayer) {
   const legacyCompleted = Array.isArray(completedByPlayer) ? completedByPlayer[index] : null;
   const completedCards = Number(player?.completedCards ?? legacyCompleted) || 0;
   const lipstickKisses = Number(player?.lipstickKisses ?? player?.kisses) || 0;
+  const gender = normalizePlayerGender(player?.gender, DEFAULT_PLAYER_GENDERS[index]);
 
   return createPlayer(
     player?.id || fallbackId,
     cleanName(player?.name, fallbackName),
     completedCards,
-    lipstickKisses
+    lipstickKisses,
+    gender
   );
 }
 
@@ -3631,6 +4687,8 @@ function normalizeUnlockedLevels(levels, currentLevel) {
 
 function saveGame() {
   syncLegacyFields();
+  game.stateVersion = STATE_VERSION;
+  game.appVersion = APP_VERSION;
   game.statistics = stats;
   game.levelSystemEnabled = settings.levelSystemEnabled;
   localStorage.setItem(STORAGE_KEYS.game, JSON.stringify(game));
@@ -3643,6 +4701,10 @@ function saveGame() {
 
 function saveSettings() {
   localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(settings));
+}
+
+function saveCardRatings() {
+  localStorage.setItem(STORAGE_KEYS.cardRatings, JSON.stringify(cardRatings));
 }
 
 function saveStats() {
@@ -3704,6 +4766,7 @@ function getJacuzziTimeSecondsForDisplay() {
 function handleVisibilityChange() {
   if (document.visibilityState === "hidden") {
     finalizeJacuzziTime();
+    updateActiveTimers({ notify: false });
     saveGame();
     saveStats();
     updateWakeLock();
@@ -3711,12 +4774,14 @@ function handleVisibilityChange() {
   }
 
   resumeJacuzziClock();
+  resumeActiveTimers();
   saveGame();
   updateWakeLock();
 }
 
 function handlePageExit() {
   finalizeJacuzziTime();
+  updateActiveTimers({ notify: false });
   releaseWakeLock();
   saveGame();
   saveStats();
@@ -3823,6 +4888,46 @@ function backupCorruptStorageValue(key, rawValue, error) {
 function cleanName(value, fallback) {
   const trimmedValue = String(value || "").trim();
   return trimmedValue || fallback;
+}
+
+function normalizePlayerGender(value, fallback = "vrouw") {
+  const normalizedValue = String(value || "").trim().toLowerCase();
+  const aliases = {
+    vrouw: "vrouw",
+    female: "vrouw",
+    woman: "vrouw",
+    v: "vrouw",
+    f: "vrouw",
+    man: "man",
+    male: "man",
+    m: "man"
+  };
+  const gender = aliases[normalizedValue] || null;
+  if (gender && PLAYER_GENDERS.has(gender)) {
+    return gender;
+  }
+
+  if (fallback === null) {
+    return null;
+  }
+
+  return fallback && PLAYER_GENDERS.has(fallback) ? fallback : "vrouw";
+}
+
+function normalizeRestrictionGender(value) {
+  return normalizePlayerGender(value, null);
+}
+
+function getRadioValue(radios, fallback) {
+  const selected = [...radios].find((radio) => radio.checked);
+  return normalizePlayerGender(selected?.value, fallback);
+}
+
+function setRadioValue(radios, value) {
+  const normalizedValue = normalizePlayerGender(value, "vrouw");
+  radios.forEach((radio) => {
+    radio.checked = radio.value === normalizedValue;
+  });
 }
 
 function isNonEmptyValue(value) {
@@ -4257,6 +5362,24 @@ function formatDuration(totalSeconds) {
   return `${minutes}m ${remainingSeconds}s`;
 }
 
+function formatDutchCount(value) {
+  const count = Number(value) || 0;
+  const labels = {
+    1: "één",
+    2: "twee",
+    3: "drie",
+    4: "vier",
+    5: "vijf",
+    10: "tien"
+  };
+  return labels[count] || String(count);
+}
+
+function capitalizeFirst(value) {
+  const text = String(value || "");
+  return text ? `${text.charAt(0).toUpperCase()}${text.slice(1)}` : "";
+}
+
 function formatLevelUnlocks() {
   return Object.entries(stats.levelUnlockedAt)
     .sort((a, b) => Number(a[0]) - Number(b[0]))
@@ -4300,24 +5423,43 @@ window.DateRouletteTestHooks = {
   isCardEligible,
   isPlayerAllowed,
   getAvailableCards,
+  pickRandomCard,
   getCardById,
   isSpecialCard,
   handleSpecialCard,
+  completePendingTurnAdvance,
   createNewGame,
   createDefaultStats,
   createDefaultSettings,
   migrateGameState,
   normalizeStats,
   recalculateStatsFromHistory,
+  createPlaytestExportData,
   addLipstickKiss,
+  rateCurrentCard,
   switchTurn,
+  getTimerRemainingSeconds,
+  getActiveTimerRemainingSeconds,
+  getDisplayCardTitle,
+  getDisplayCardText,
+  stopTimerForResolvedCard,
+  normalizeActiveTimers,
+  stopActiveTimerInterval,
+  createCardReportPayload,
   validateCards: () => getCardValidationResult(),
+  setRandomSource(nextRandomSource) {
+    randomSource = typeof nextRandomSource === "function" ? nextRandomSource : Math.random;
+  },
+  resetRandomSource() {
+    randomSource = Math.random;
+  },
   setTestState(nextGame, nextStats = {}, nextSettings = {}) {
     settings = normalizeSettings({
       ...createDefaultSettings(),
       ...nextSettings
     });
     stats = normalizeStats(nextStats);
+    cardRatings = {};
     game = migrateGameState({
       activeGame: true,
       ...nextGame
@@ -4341,6 +5483,9 @@ window.DateRouletteTestHooks = {
   },
   getStats() {
     return stats;
+  },
+  getCardRatings() {
+    return cardRatings;
   },
   getSettings() {
     return settings;

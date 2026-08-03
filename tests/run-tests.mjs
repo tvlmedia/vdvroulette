@@ -81,7 +81,8 @@ await run("calculateEarnedLevel follows shared-player thresholds", () => {
   assert.equal(hooks.calculateEarnedLevel(players(4, 4)), 2);
   assert.equal(hooks.calculateEarnedLevel(players(8, 7)), 2);
   assert.equal(hooks.calculateEarnedLevel(players(8, 8)), 3);
-  assert.equal(hooks.calculateEarnedLevel(players(12, 12)), 4);
+  assert.equal(hooks.calculateEarnedLevel(players(9, 9)), 3);
+  assert.equal(hooks.calculateEarnedLevel(players(10, 10)), 4);
   assert.equal(hooks.calculateEarnedLevel(players(16, 16)), 5);
 });
 
@@ -97,23 +98,70 @@ await run("isCardEligible respects levels", () => {
   assert.equal(hooks.isCardEligible(hooks.getCardById("blindfold_001"), state, player), true);
   state.currentLevel = 4;
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_001"), state, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_003"), state, player), false);
+  state.currentLevel = 5;
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_003"), state, player), true);
 });
 
-await run("Jacuzzi filter includes only suitable cards", () => {
+await run("Jacuzzi filter uses only Jacuzzi source cards", () => {
   const player = { id: "player_1", name: "Winnie" };
   const state = { levelSystemEnabled: false, currentLevel: 5, jacuzziMode: false };
   assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_fun_001"), state, player), false);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_bubble_001"), state, player), false);
   state.jacuzziMode = true;
   assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_fun_001"), state, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_bubble_001"), state, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_special_001"), state, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("makeup_001"), state, player), false);
-  assert.equal(hooks.isCardEligible(hooks.getCardById("flirty_001"), state, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_002"), state, player), false);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("flirty_001"), state, player), false);
 });
 
-await run("playerRestriction stays tied to player_1", () => {
-  const state = { levelSystemEnabled: false, currentLevel: 5, jacuzziMode: false };
+await run("Jacuzzi draw excludes regular jacuzziAllowed cards", () => {
+  const game = hooks.createNewGame("Winnie", "Tijgertje");
+  game.levelSystemEnabled = false;
+  game.currentLevel = 5;
+  game.jacuzziMode = true;
+  game.usedCardIds = deck.cards
+    .filter((card) => !["jacuzzi_fun_001", "flirty_001"].includes(card.id))
+    .map((card) => card.id);
+  hooks.setTestState(game, {}, { levelSystemEnabled: false });
+  assert.equal(hooks.pickRandomCard().id, "jacuzzi_fun_001");
+});
+
+await run("flirty_020 is male-only and targets the female player name", () => {
   const restrictedCard = hooks.getCardById("flirty_020");
-  assert.equal(hooks.isCardEligible(restrictedCard, state, { id: "player_1", name: "Nieuwe naam" }), true);
-  assert.equal(hooks.isCardEligible(restrictedCard, state, { id: "player_2", name: "Winnie" }), false);
+  const game = hooks.createNewGame("Kyra", "Timo", "vrouw", "man");
+  game.levelSystemEnabled = false;
+  game.currentLevel = 5;
+  game.currentPlayerIndex = 1;
+
+  assert.equal(restrictedCard.playerRestriction, "man");
+  assert.equal(hooks.isCardEligible(restrictedCard, game, game.players[1]), true);
+  assert.equal(hooks.isCardEligible(restrictedCard, game, game.players[0]), false);
+  assert.equal(hooks.getDisplayCardTitle(restrictedCard, game, 1), "Voetmassage voor Kyra");
+  assert.equal(hooks.getDisplayCardText(restrictedCard, game, 1), "Geef Kyra vijf minuten een voetmassage.");
+
+  const noFemaleGame = hooks.createNewGame("Timo", "Sam", "man", "man");
+  noFemaleGame.levelSystemEnabled = false;
+  noFemaleGame.currentLevel = 5;
+  assert.equal(hooks.isCardEligible(restrictedCard, noFemaleGame, noFemaleGame.players[0]), false);
+});
+
+await run("playerRestriction can target player gender", () => {
+  assert.equal(hooks.isPlayerAllowed({ playerRestriction: "vrouw" }, { id: "player_1", name: "Alex", gender: "vrouw" }), true);
+  assert.equal(hooks.isPlayerAllowed({ playerRestriction: "vrouw" }, { id: "player_2", name: "Sam", gender: "man" }), false);
+  assert.equal(hooks.isPlayerAllowed({ playerRestriction: "male" }, { id: "player_2", name: "Sam", gender: "man" }), true);
+
+  const validation = deck.validateCards([
+    ...deck.cards,
+    {
+      ...hooks.getCardById("cute_001"),
+      id: "test_gender_restricted_card",
+      playerRestriction: "vrouw"
+    }
+  ]);
+  assert.equal(validation.errors.length, 0, validation.errors.join("\n"));
 });
 
 await run("getAvailableCards excludes used cards", () => {
@@ -152,9 +200,25 @@ await run("Roulette candidates are ordinary eligible cards", () => {
   hooks.handleSpecialCard(hooks.getCardById("special_roulette_001"), hooks.getGame());
   const session = hooks.getGame().specialSession;
   assert.equal(session.type, "roulette");
+  assert.equal(session.requiredCount, 3);
   assert.ok(session.candidateCardIds.length <= 10);
   assert.ok(session.candidateCardIds.length >= 3);
   assert.equal(session.candidateCardIds.some((id) => hooks.isSpecialCard(hooks.getCardById(id))), false);
+});
+
+await run("Flirty-keuze excludes previously played cards when alternatives exist", () => {
+  const game = hooks.createNewGame("Winnie", "Tijgertje");
+  game.levelSystemEnabled = false;
+  game.currentLevel = 5;
+  game.completedCardIds = ["flirty_001"];
+  game.cardHistory = [
+    { cardId: "flirty_001", result: "completed", variant: "normal", playerIndex: 0 }
+  ];
+  hooks.setTestState(game, {}, { levelSystemEnabled: false });
+  hooks.handleSpecialCard(hooks.getCardById("special_flirty_choice_001"), hooks.getGame());
+  const session = hooks.getGame().specialSession;
+  assert.equal(session.type, "flirtyChoice");
+  assert.equal(session.candidateCardIds.includes("flirty_001"), false);
 });
 
 await run("Perfecte Run creates a bounded normal-card sequence", () => {
@@ -193,6 +257,39 @@ await run("migrateGameState filters unknown card IDs safely", () => {
   assert.equal(migrated.cardHistory[0].variant, "golden");
 });
 
+await run("migrateGameState resumes resolved cards without running timers", () => {
+  const migrated = hooks.migrateGameState({
+    activeGame: true,
+    players: players(1, 0),
+    currentPlayerIndex: 0,
+    currentCardId: "cute_012",
+    cardResolved: true,
+    timer: {
+      cardId: "cute_012",
+      remainingSeconds: 90,
+      isRunning: true,
+      startedAt: Date.now()
+    }
+  });
+  assert.equal(migrated.pendingTurnAdvance, true);
+  assert.equal(migrated.timer.remainingSeconds, 0);
+  assert.equal(migrated.timer.isRunning, false);
+});
+
+await run("completePendingTurnAdvance safely finishes a saved turn", () => {
+  const game = hooks.createNewGame("Winnie", "Tijgertje");
+  game.currentCardId = "cute_001";
+  game.cardResolved = true;
+  game.pendingTurnAdvance = true;
+  game.turnAdvanceDueAt = Date.now() - 1;
+  hooks.setTestState(game);
+  assert.equal(hooks.completePendingTurnAdvance(), true);
+  const updated = hooks.getGame();
+  assert.equal(updated.currentPlayerIndex, 1);
+  assert.equal(updated.currentCardId, null);
+  assert.equal(updated.pendingTurnAdvance, false);
+});
+
 await run("recalculateStatsFromHistory rebuilds key counters", () => {
   const rebuilt = hooks.recalculateStatsFromHistory({
     players: players(2, 1),
@@ -213,6 +310,98 @@ await run("recalculateStatsFromHistory rebuilds key counters", () => {
   assert.equal(rebuilt.completedByPlayer.player_1, 2);
   assert.equal(rebuilt.completedByPlayer.player_2, 1);
   assert.equal(rebuilt.jacuzziUseCount, 2);
+});
+
+await run("running card timers keep real-second pace", () => {
+  const originalNow = Date.now;
+  let now = 1_000_000;
+  Date.now = () => now;
+
+  try {
+    const game = hooks.createNewGame("Winnie", "Tijgertje");
+    game.currentCardId = "flirty_001";
+    game.timer = {
+      cardId: "flirty_001",
+      remainingSeconds: 60,
+      isRunning: true,
+      startedAt: now
+    };
+    hooks.setTestState(game);
+
+    assert.equal(hooks.getTimerRemainingSeconds(), 60);
+    now += 250;
+    assert.equal(hooks.getTimerRemainingSeconds(), 60);
+    now += 750;
+    assert.equal(hooks.getTimerRemainingSeconds(), 59);
+    now += 1000;
+    assert.equal(hooks.getTimerRemainingSeconds(), 58);
+  } finally {
+    Date.now = originalNow;
+  }
+});
+
+await run("done running card timer becomes an active timer", () => {
+  const originalNow = Date.now;
+  let now = 2_000_000;
+  Date.now = () => now;
+  hooks.setRandomSource(() => 0.12345);
+
+  try {
+    const game = hooks.createNewGame("Winnie", "Tijgertje");
+    game.currentCardId = "flirty_001";
+    game.timer = {
+      cardId: "flirty_001",
+      remainingSeconds: 300,
+      isRunning: true,
+      startedAt: now
+    };
+    hooks.setTestState(game);
+    hooks.stopTimerForResolvedCard({ persist: true });
+    hooks.stopActiveTimerInterval();
+
+    const activeTimer = hooks.getGame().activeTimers[0];
+    assert.equal(hooks.getGame().activeTimers.length, 1);
+    assert.equal(activeTimer.cardId, "flirty_001");
+    assert.equal(activeTimer.playerName, "Winnie");
+    assert.equal(activeTimer.endsAt, 2_300_000);
+
+    now += 120_000;
+    assert.equal(hooks.getActiveTimerRemainingSeconds(activeTimer), 180);
+  } finally {
+    hooks.stopActiveTimerInterval();
+    hooks.resetRandomSource();
+    Date.now = originalNow;
+  }
+});
+
+await run("card report payload includes original and suggested fix", () => {
+  const card = hooks.getCardById("makeup_001");
+  const payload = hooks.createCardReportPayload(card, {
+    problem: "Vraag klopt niet.",
+    title: "Nieuwe titel",
+    text: "Nieuwe kloppende opdracht.",
+    safetyNote: "Nieuwe veiligheidsnotitie."
+  });
+
+  assert.equal(payload.type, "date_roulette_card_report");
+  assert.equal(payload.targetFile, "cards/makeup.js");
+  assert.equal(payload.original.id, "makeup_001");
+  assert.equal(payload.original.title, card.title);
+  assert.equal(payload.suggested.title, "Nieuwe titel");
+  assert.equal(payload.suggested.text, "Nieuwe kloppende opdracht.");
+  assert.deepEqual(payload.changedFields.sort(), ["safetyNote", "text", "title"]);
+});
+
+await run("local card ratings are included in playtest export", () => {
+  const game = hooks.createNewGame("Winnie", "Tijgertje");
+  game.currentCardId = "cute_001";
+  hooks.setTestState(game, {}, { cardRatingsEnabled: true });
+  hooks.rateCurrentCard("liked");
+  const ratings = hooks.getCardRatings();
+  assert.equal(ratings.cute_001.ratings.liked, 1);
+  const exported = hooks.createPlaytestExportData();
+  assert.equal(exported.appVersion, "v1.3.4");
+  assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 
 console.log("All Date Roulette tests passed.");

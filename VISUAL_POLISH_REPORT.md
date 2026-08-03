@@ -37,7 +37,7 @@ Categorie-effecten:
 
 ## PWA en Offline
 
-`manifest.webmanifest` gebruikt `display: standalone`, relatieve `start_url: ./` en lokale iconen. `service-worker.js` gebruikt cacheversie `date-roulette-v1`.
+`manifest.webmanifest` gebruikt `display: standalone`, relatieve `start_url: ./` en lokale iconen. `service-worker.js` gebruikt cacheversie `date-roulette-v1.1.0`.
 
 Strategie:
 

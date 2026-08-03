@@ -34,7 +34,21 @@ export function validateCards(cards = ALL_CARDS) {
     "chaos", "makeup", "blindfold", "cute", "flirty",
     "oohlala", "disney", "jacuzzi", "special"
   ]);
-  const validRestrictions = new Set([null, "player_1", "player_2", "winnie", "tijgertje"]);
+  const validRestrictions = new Set([
+    null,
+    "player_1",
+    "player_2",
+    "winnie",
+    "tijgertje",
+    "man",
+    "vrouw",
+    "male",
+    "female",
+    "woman",
+    "m",
+    "v",
+    "f"
+  ]);
 
   for (const card of cards) {
     if (!card.id || typeof card.id !== "string") errors.push("Kaart zonder geldige id.");

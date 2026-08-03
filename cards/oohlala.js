@@ -253,7 +253,7 @@ export const OOHLALA_CARDS = [
     "category": "oohlala",
     "emoji": "🔥",
     "title": "Donkere Knuffel",
-    "text": "Dim de lichten en knuffel en kus vijf minuten samen op bed. Laat voldoende oriëntatielicht aan.",
+    "text": "Dim de lichten en knuffel en kus vijf minuten samen op bed.",
     "level": 4,
     "timerSeconds": 300,
     "jacuzziAllowed": false,
@@ -268,7 +268,7 @@ export const OOHLALA_CARDS = [
       "hugging",
       "kissing"
     ],
-    "safetyNote": "Niet volledig donker maken rond natte vloeren of de jacuzzi."
+    "safetyNote": null
   },
   {
     "id": "oohlala_014",

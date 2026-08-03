@@ -207,6 +207,13 @@ await run("reported oohlala_011 text is corrected", () => {
   assert.equal(card.safetyNote, "Alleen met iets dat direct los kan. Stop meteen bij WALIBI.");
 });
 
+await run("reported oohlala_013 text is corrected", () => {
+  const card = hooks.getCardById("oohlala_013");
+  assert.equal(card.title, "Donkere Knuffel");
+  assert.equal(card.text, "Dim de lichten en knuffel en kus vijf minuten samen op bed.");
+  assert.equal(card.safetyNote, null);
+});
+
 await run("reported chaos_009 text is corrected", () => {
   const card = hooks.getCardById("chaos_009");
   assert.equal(card.title, "Slok en Kus");
@@ -463,7 +470,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.17");
+  assert.equal(exported.appVersion, "v1.3.18");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

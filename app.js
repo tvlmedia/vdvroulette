@@ -11,7 +11,7 @@ const STORAGE_KEYS = {
   corruptBackupPrefix: "dateRoulette_corruptBackup_"
 };
 
-const APP_VERSION = "v1.3.4";
+const APP_VERSION = "v1.3.5";
 const STATE_VERSION = 6;
 const MAX_LEVEL = 5;
 const ACTIVE_TIMERS_LIMIT = 12;
@@ -2920,7 +2920,7 @@ function renderGame() {
   ui.scorePlayerTwo.textContent = `${players[1].name}: ${players[1].lipstickKisses || 0} 💋`;
   ui.gameLevel.textContent = String(getEffectiveLevel());
   if (ui.deckPlayer) {
-    ui.deckPlayer.textContent = `${currentPlayer.name} trekt`;
+    ui.deckPlayer.textContent = `${currentPlayer.name} is aan de beurt`;
   }
   if (ui.cardPlayer) {
     ui.cardPlayer.textContent = `${currentPlayer.name} is aan de beurt`;

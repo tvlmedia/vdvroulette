@@ -400,7 +400,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.4");
+  assert.equal(exported.appVersion, "v1.3.5");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

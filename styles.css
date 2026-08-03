@@ -106,6 +106,11 @@ button:disabled {
   opacity: 0.46;
 }
 
+.card-stack:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
 input,
 textarea,
 select {
@@ -664,17 +669,19 @@ button:not(:disabled):active {
 
 .deck-title {
   align-self: end;
-  color: var(--muted);
-  font-weight: 900;
+  color: #fff7f9;
+  font-weight: 1000;
   text-align: center;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
 }
 
 .deck-player {
-  color: var(--text);
-  font-size: 0.86rem;
+  color: var(--gold);
+  font-size: 0.92rem;
   font-weight: 1000;
   text-align: center;
   overflow-wrap: anywhere;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
 }
 
 .card-front {
@@ -707,8 +714,8 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 7px 10px;
   color: var(--accent-gold);
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 0 0 1px var(--border);
+  background: rgba(242, 198, 109, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(242, 198, 109, 0.26);
   font-size: 0.74rem;
   font-weight: 950;
   line-height: 1.2;
@@ -733,7 +740,7 @@ button:not(:disabled):active {
 
 .card-title {
   width: 100%;
-  color: var(--text);
+  color: #fff7f9;
   font-size: var(--card-title-size, 2.35rem);
   font-weight: 1000;
   line-height: 1.04;
@@ -741,15 +748,17 @@ button:not(:disabled):active {
   overflow-wrap: anywhere;
   hyphens: auto;
   text-wrap: balance;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.28);
 }
 
 .card-text {
   max-width: 100%;
-  color: var(--muted);
+  color: #ffe8f0;
   font-size: clamp(1.08rem, 4.9vw, 1.3rem);
   line-height: 1.48;
   overflow-wrap: break-word;
   text-wrap: pretty;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.24);
 }
 
 .safety-note {

@@ -195,6 +195,13 @@ await run("reported blindfold_005 text is corrected", () => {
   assert.equal(card.text, "Blijf geblinddoekt. De ander mag met een zachte make-upkwast langzaam langs je lichaam strijken en je speels kietelen op afgesproken plekken.");
 });
 
+await run("reported oohlala_011 text is corrected", () => {
+  const card = hooks.getCardById("oohlala_011");
+  assert.equal(card.title, "Voetenkietel");
+  assert.equal(card.text, "De ander bindt je enkels losjes vast en kietelt je maximaal zestig seconden onder je voeten. Stopwoord: WALIBI.");
+  assert.equal(card.safetyNote, "Alleen met iets dat direct los kan. Stop meteen bij WALIBI.");
+});
+
 await run("getAvailableCards excludes used cards", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   game.levelSystemEnabled = false;
@@ -435,7 +442,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.12");
+  assert.equal(exported.appVersion, "v1.3.13");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

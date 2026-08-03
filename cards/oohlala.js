@@ -211,7 +211,7 @@ export const OOHLALA_CARDS = [
     "category": "oohlala",
     "emoji": "🔥",
     "title": "Voetenkietel",
-    "text": "De ander houdt je enkels losjes vast en kietelt je maximaal zestig seconden onder je voeten. Stopwoord: WALIBI.",
+    "text": "De ander bindt je enkels losjes vast en kietelt je maximaal zestig seconden onder je voeten. Stopwoord: WALIBI.",
     "level": 4,
     "timerSeconds": 60,
     "jacuzziAllowed": false,
@@ -225,7 +225,7 @@ export const OOHLALA_CARDS = [
       "feet",
       "tickling"
     ],
-    "safetyNote": "Niet vastbinden en direct stoppen bij WALIBI."
+    "safetyNote": "Alleen met iets dat direct los kan. Stop meteen bij WALIBI."
   },
   {
     "id": "oohlala_012",

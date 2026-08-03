@@ -235,7 +235,7 @@ export const CHAOS_CARDS = [
     "category": "chaos",
     "emoji": "😂",
     "title": "Dichterbij",
-    "text": "Pak allebei een uiteinde van een sjaal, panty of badjasriem vast en trek elkaar langzaam dichterbij voor een kus of knuffel.",
+    "text": "Leg een sjaal, panty of badjasriem losjes over de schouders van de ander en trek diegene rustig dichterbij voor een kus of knuffel.",
     "level": 1,
     "timerSeconds": null,
     "jacuzziAllowed": true,
@@ -249,7 +249,7 @@ export const CHAOS_CARDS = [
       "kissing",
       "clothing"
     ],
-    "safetyNote": "Leg niets om de nek en trek niet hard."
+    "safetyNote": "Niet om de nek leggen en trek niet hard."
   },
   {
     "id": "chaos_013",

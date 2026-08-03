@@ -182,6 +182,13 @@ await run("reported flirty_022 text is corrected", () => {
   assert.equal(card.text, "Trek een panty over je handen en streel daarmee twee minuten langzaam over het lichaam van de ander.");
 });
 
+await run("reported chaos_012 text is corrected", () => {
+  const card = hooks.getCardById("chaos_012");
+  assert.equal(card.title, "Dichterbij");
+  assert.equal(card.text, "Leg een sjaal, panty of badjasriem losjes over de schouders van de ander en trek diegene rustig dichterbij voor een kus of knuffel.");
+  assert.equal(card.safetyNote, "Niet om de nek leggen en trek niet hard.");
+});
+
 await run("getAvailableCards excludes used cards", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   game.levelSystemEnabled = false;
@@ -422,7 +429,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.9");
+  assert.equal(exported.appVersion, "v1.3.10");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

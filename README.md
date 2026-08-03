@@ -2,7 +2,7 @@
 
 Date Roulette is een mobile-first kaartspel voor twee spelers. Deze versie bevat de basisgame, LocalStorage-opslag, levelprogressie per speler, categorie-unlocks, timerkaarten, volledige Jacuzzi-modus, instellingen, statistieken, ontwikkelmodus, lokale speeltestexport, optionele kaartbeoordeling en een herbruikbare engine voor speciale kaarten.
 
-Huidige appversie: `v1.3.9`.
+Huidige appversie: `v1.3.10`.
 
 ## Bestandstructuur
 
@@ -11,7 +11,7 @@ Huidige appversie: `v1.3.9`.
 - `app.js`: ES-module met spelengine, migratie, levelberekening, kaartselectie, Jacuzzi-logica, timers, special-cardengine, instellingen en statistieken.
 - `cards/`: definitieve modulaire kaartdatabase met 144 kaarten, `CARD_COUNTS`, `validateCards()` en `GAME_RULES`.
 - `manifest.webmanifest`: PWA-manifest voor installatie als standalone app.
-- `service-worker.js`: offline cache en updateafhandeling met cacheversie `date-roulette-v1.3.9`.
+- `service-worker.js`: offline cache en updateafhandeling met cacheversie `date-roulette-v1.3.10`.
 - `icons/`: lokale SVG- en PNG-iconen voor Android, iOS en maskable PWA-installatie.
 - `card-audit.md`: gegenereerd auditoverzicht van de huidige kaartdatabase.
 - `BUGFIX_REPORT.md`: overzicht van opgeloste betrouwbaarheidspunten en testresultaten.
@@ -40,7 +40,7 @@ Rechtstreeks dubbelklikken op `index.html` kan door browserbeveiliging rond ES-m
 
 De app is installeerbaar als Progressive Web App via `manifest.webmanifest`. Op Android/Chrome verschijnt waar ondersteund een subtiele eigen prompt: `Zet Date Roulette op je beginscherm`. Op iPhone Safari toont de app alleen een korte uitleg om via Delen naar `Zet op beginscherm` te gaan.
 
-Na het eerste bezoek cachet `service-worker.js` de app-shell, kaartmodules, manifest en lokale iconen onder cacheversie `date-roulette-v1.3.9`. Navigatie gebruikt network-first, zodat online bezoeken verse HTML ophalen. Offline valt de app terug op de gecachte `index.html`; assets worden cache-first geladen en op de achtergrond bijgewerkt.
+Na het eerste bezoek cachet `service-worker.js` de app-shell, kaartmodules, manifest en lokale iconen onder cacheversie `date-roulette-v1.3.10`. Navigatie gebruikt network-first, zodat online bezoeken verse HTML ophalen. Offline valt de app terug op de gecachte `index.html`; assets worden cache-first geladen en op de achtergrond bijgewerkt.
 
 Bij een nieuwe service worker toont de app `Er is een update beschikbaar.` met een knop `Nu vernieuwen`. Vernieuwen gebeurt alleen na een tik en vraagt bevestiging als er nog een actieve ronde bezig is.
 

@@ -170,6 +170,12 @@ await run("reported cute_005 text is corrected", () => {
   assert.equal(card.text, "Doe een sensuele dans voor de ander");
 });
 
+await run("reported cute_014 text is corrected", () => {
+  const card = hooks.getCardById("cute_014");
+  assert.equal(card.title, "Hotelshop Missie");
+  assert.equal(card.text, "Ga naar het hotelwinkeltje en koop iets lekkers. De ander heeft ondertussen even tijd voor zichzelf of om zich om te kleden.");
+});
+
 await run("getAvailableCards excludes used cards", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   game.levelSystemEnabled = false;
@@ -406,7 +412,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.6");
+  assert.equal(exported.appVersion, "v1.3.7");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

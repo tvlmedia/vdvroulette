@@ -267,7 +267,7 @@ export const CUTE_CARDS = [
     "category": "cute",
     "emoji": "❤️",
     "title": "Hotelshop Missie",
-    "text": "Ga samen naar het winkeltje in het hotel en haal iets lekkers.",
+    "text": "Ga naar het hotelwinkeltje en koop iets lekkers. De ander heeft ondertussen even tijd voor zichzelf of om zich om te kleden.",
     "level": 1,
     "timerSeconds": null,
     "jacuzziAllowed": false,

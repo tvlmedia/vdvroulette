@@ -1128,7 +1128,9 @@ button:not(:disabled):active {
 }
 
 .special-backdrop.is-selection-flow #special-modal-content {
+  height: min(760px, calc(100svh - 36px));
   max-height: calc(100svh - 36px);
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
   overflow: hidden;
 }
 
@@ -1160,29 +1162,33 @@ button:not(:disabled):active {
 }
 
 .selection-grid {
-  display: grid;
-  align-content: start;
-  gap: 12px;
-  max-height: clamp(190px, 42svh, 430px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  max-height: none;
   overflow-y: auto;
-  padding: 0 2px 8px 0;
+  padding: 0 4px 10px 0;
   scroll-padding-bottom: 20px;
 }
 
 .selection-card {
+  flex: 0 0 auto;
   width: 100%;
   min-height: 0;
-  border-radius: 18px;
-  padding: 14px;
-  display: grid;
-  grid-template-rows: auto auto auto;
-  align-content: start;
-  gap: 8px;
+  height: auto;
+  border-radius: 16px;
+  padding: 12px 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
   text-align: left;
   color: var(--text);
   background: rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 0 0 1px var(--border);
-  overflow: visible;
+  overflow: hidden;
+  white-space: normal;
 }
 
 .selection-card.is-selected {
@@ -1200,20 +1206,28 @@ button:not(:disabled):active {
 }
 
 .selection-card-title {
-  font-size: clamp(0.98rem, 4.3vw, 1.08rem);
+  width: 100%;
+  font-size: 1rem;
 }
 
 .selection-card-text {
   display: block;
-  font-size: clamp(0.9rem, 3.9vw, 1rem);
-  line-height: 1.38;
+  width: 100%;
+  font-size: 0.92rem;
+  line-height: 1.35;
   overflow-wrap: break-word;
 }
 
 .selection-indicator {
-  display: block;
-  margin-top: 2px;
+  display: inline-flex;
+  width: fit-content;
+  min-height: 24px;
+  align-items: center;
+  margin-top: 1px;
+  border-radius: 999px;
+  padding: 4px 9px;
   color: var(--gold);
+  background: rgba(242, 198, 109, 0.1);
   font-size: 0.78rem;
   font-weight: 1000;
   line-height: 1.1;

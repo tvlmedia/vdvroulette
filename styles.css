@@ -1627,6 +1627,8 @@ body.theme-soft .bottom-nav button.is-active {
 }
 
 .kiss-animation.is-active {
+  pointer-events: auto;
+  cursor: pointer;
   animation: kissBackdrop 1500ms ease both;
 }
 
@@ -1658,6 +1660,11 @@ body.theme-soft .bottom-nav button.is-active {
   font-size: clamp(1rem, 4.4vw, 1.2rem);
   font-weight: 950;
   line-height: 1.18;
+}
+
+.kiss-animation:focus-visible .kiss-animation-text {
+  outline: 3px solid rgba(255, 215, 122, 0.72);
+  outline-offset: 4px;
 }
 
 .help-panel {
@@ -2170,13 +2177,12 @@ body.theme-soft .bottom-nav button.is-active {
 }
 
 @keyframes kissBackdrop {
-  0%,
-  100% {
+  0% {
     opacity: 0;
     background: rgba(7, 2, 6, 0);
   }
   18%,
-  78% {
+  100% {
     opacity: 1;
     background: rgba(7, 2, 6, 0.2);
   }
@@ -2199,8 +2205,8 @@ body.theme-soft .bottom-nav button.is-active {
     transform: rotate(-12deg) scale(1);
   }
   100% {
-    opacity: 0;
-    transform: rotate(-10deg) scale(1.16);
+    opacity: 1;
+    transform: rotate(-12deg) scale(1);
   }
 }
 

@@ -11,7 +11,7 @@ const STORAGE_KEYS = {
   corruptBackupPrefix: "dateRoulette_corruptBackup_"
 };
 
-const APP_VERSION = "v1.3.15";
+const APP_VERSION = "v1.3.16";
 const STATE_VERSION = 6;
 const MAX_LEVEL = 5;
 const ACTIVE_TIMERS_LIMIT = 12;
@@ -20,7 +20,6 @@ const DEFAULT_PLAYER_GENDERS = ["vrouw", "man"];
 const PLAYER_GENDERS = new Set(["vrouw", "man"]);
 const CARD_ANIMATION_LOCK_MS = 620;
 const ACTION_LOCK_MS = 420;
-const KISS_ANIMATION_MS = 1500;
 const INSTALL_PROMPT_DELAY_MS = 1200;
 const THEMES = new Set(["dark", "soft"]);
 const RATING_TYPES = ["liked", "neutral", "disliked", "impractical", "unclear"];
@@ -187,7 +186,6 @@ let serviceWorkerRegistration = null;
 let wakeLockSentinel = null;
 let onboardingStepIndex = 0;
 let audioContext = null;
-let kissAnimationTimeoutId = null;
 let updateWaitingWorker = null;
 let randomSource = Math.random;
 
@@ -422,6 +420,8 @@ function bindEvents() {
   ui.levelContinueButton.addEventListener("click", continueAfterLevelUnlock);
   ui.cardReportCloseButton.addEventListener("click", closeCardReportModal);
   ui.cardReportCopyButton.addEventListener("click", copyCardReportJson);
+  ui.kissAnimation.addEventListener("click", dismissKissAnimation);
+  ui.kissAnimation.addEventListener("keydown", handleKissAnimationKeydown);
   ui.cardReportModal.addEventListener("click", (event) => {
     if (event.target === ui.cardReportModal) {
       closeCardReportModal();
@@ -3968,21 +3968,39 @@ function showToast(message) {
   }, 2200);
 }
 
+function handleKissAnimationKeydown(event) {
+  if (!["Escape", "Enter", " "].includes(event.key)) {
+    return;
+  }
+
+  event.preventDefault();
+  dismissKissAnimation();
+}
+
+function dismissKissAnimation() {
+  if (!ui.kissAnimation) {
+    return;
+  }
+
+  ui.kissAnimation.classList.remove("is-active");
+  ui.kissAnimation.setAttribute("aria-hidden", "true");
+  ui.kissAnimation.setAttribute("tabindex", "-1");
+}
+
 function triggerKissAnimation() {
-  if (kissAnimationTimeoutId) {
-    window.clearTimeout(kissAnimationTimeoutId);
+  if (!ui.kissAnimation) {
+    return;
   }
 
   if (ui.kissAnimationText) {
     ui.kissAnimationText.textContent = LIPSTICK_PENALTY_TASK;
   }
   ui.kissAnimation.classList.remove("is-active");
+  ui.kissAnimation.setAttribute("aria-hidden", "false");
+  ui.kissAnimation.setAttribute("tabindex", "0");
   window.requestAnimationFrame(() => {
     ui.kissAnimation.classList.add("is-active");
   });
-  kissAnimationTimeoutId = window.setTimeout(() => {
-    ui.kissAnimation.classList.remove("is-active");
-  }, KISS_ANIMATION_MS);
   playSound("kiss");
   vibrate(60);
 }

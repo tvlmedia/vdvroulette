@@ -1,0 +1,495 @@
+export const FLIRTY_CARDS = [
+  {
+    "id": "flirty_001",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Vijf Minuten Massage",
+    "text": "Geef de ander vijf minuten een massage.",
+    "level": 2,
+    "timerSeconds": 300,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": "Geef de ander tien minuten een massage en laat diegene het tempo en de plek bepalen.",
+    "lighterText": "Geef de ander twee minuten een schoudermassage.",
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "massage"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_002",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Knuffelhouding",
+    "text": "De ander kiest hoe jullie de komende vijf minuten knuffelen.",
+    "level": 2,
+    "timerSeconds": 300,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": "De ander kiest tien minuten lang hoe jullie knuffelen.",
+    "lighterText": "De ander kiest één knuffelhouding voor één minuut.",
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "hugging"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_003",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Iets Liefs Fluisteren",
+    "text": "Fluister iets liefs in het oor van de ander.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "whisper"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_004",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Kusplek Kiezen",
+    "text": "De ander bepaalt waar de volgende kus komt, binnen jullie afgesproken grenzen.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": "De ander kiest tussen wang, voorhoofd of lippen.",
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_005",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Handen Vast",
+    "text": "Houd elkaars handen twee minuten vast.",
+    "level": 2,
+    "timerSeconds": 120,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "hands"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_006",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Tien Kusjes",
+    "text": "Geef tien kusjes verspreid over voorhoofd, neus, wangen, kaak en hals.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": "Geef twintig kusjes en laat de ander na ieder vijfde kusje een nieuwe plek kiezen.",
+    "lighterText": "Geef vijf kusjes op het gezicht.",
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_007",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Op Schoot",
+    "text": "Ga vijf minuten bij elkaar op schoot zitten.",
+    "level": 2,
+    "timerSeconds": 300,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": "Blijf tien minuten op schoot en geef elkaar tussendoor rustige kusjes.",
+    "lighterText": "Ga één minuut dicht tegen elkaar aan zitten.",
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "lap",
+      "body-contact"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_008",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Hand Begeleiden",
+    "text": "De ander mag je hand begeleiden en neerleggen waar diegene dat prettig vindt, binnen jullie afgesproken grenzen.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "hands",
+      "body-contact"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_009",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Volgende Knuffel",
+    "text": "De ander kiest de volgende knuffelhouding.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "hugging"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_010",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Negentig Seconden Zoenen",
+    "text": "Zet een timer op negentig seconden en zoen elkaar tot de timer afloopt.",
+    "level": 2,
+    "timerSeconds": 90,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": "Zoen elkaar drie minuten en laat de ander het tempo bepalen.",
+    "lighterText": "Geef elkaar tien rustige kusjes.",
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_011",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Niet Wegkijken",
+    "text": "Kijk elkaar twee minuten aan zonder te lachen of weg te kijken.",
+    "level": 2,
+    "timerSeconds": 120,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": "Kijk elkaar dertig seconden aan.",
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "eye-contact"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_012",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Complimentenregen",
+    "text": "Geef de ander dertig seconden lang complimentjes terwijl jullie elkaars handen vasthouden.",
+    "level": 2,
+    "timerSeconds": 30,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "compliments",
+      "hands"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_013",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Wijs de Kusplek",
+    "text": "Wijs allebei een plek aan waar je een kusje wilt, binnen jullie afgesproken grenzen.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_014",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Kusmarathon",
+    "text": "Geef elkaar in dertig seconden zoveel mogelijk kusjes.",
+    "level": 2,
+    "timerSeconds": 30,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": "Doe een kusmarathon van zestig seconden.",
+    "lighterText": "Geef elkaar tien snelle kusjes.",
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_015",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Niet Loslaten",
+    "text": "Geef de ander een knuffel en laat pas los wanneer de timer van twee minuten afloopt.",
+    "level": 2,
+    "timerSeconds": 120,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "hugging"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_016",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Aantrekkelijk",
+    "text": "Fluister om de beurt iets wat je aantrekkelijk vindt aan de ander.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "whisper",
+      "compliments"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_017",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Handenvrije Kus",
+    "text": "Geef elkaar een kus zonder je handen te gebruiken.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_018",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Alleen Ontvangen",
+    "text": "Laat je drie minuten door de ander kussen en zacht aanraken op afgesproken plekken. Houd je eigen handen op je rug.",
+    "level": 2,
+    "timerSeconds": 180,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing",
+      "touch"
+    ],
+    "safetyNote": "WALIBI betekent direct stoppen."
+  },
+  {
+    "id": "flirty_019",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Sokken Zonder Handen",
+    "text": "Trek zonder handen langzaam de sokken of pantoffels van de ander uit.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "feet",
+      "challenge"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_020",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Voetmassage voor Tijgertje",
+    "text": "Geef Tijgertje vijf minuten een voetmassage.",
+    "level": 2,
+    "timerSeconds": 300,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": "player_1",
+    "contentTags": [
+      "massage",
+      "feet",
+      "player-specific"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_021",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Onder Shirt of Badjas",
+    "text": "De ander mag negentig seconden met de handen onder je shirt of badjas de blote huid van je rug of zij strelen. Jij mag niets terugdoen.",
+    "level": 2,
+    "timerSeconds": 90,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "touch",
+      "clothing"
+    ],
+    "safetyNote": "Alleen op vooraf afgesproken plekken."
+  },
+  {
+    "id": "flirty_022",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Pantyhandschoenen",
+    "text": "Trek een panty over je handen en streel daarmee twee minuten langzaam over de blote armen en benen van de ander.",
+    "level": 2,
+    "timerSeconds": 120,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "panty",
+      "touch"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_023",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Chocolade tussen de Tanden",
+    "text": "Houd een chocolaatje of aardbei tussen je tanden. De ander pakt het andere uiteinde met de tanden. Deel het en sluit af met een kus.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "food",
+      "kissing"
+    ],
+    "safetyNote": "Gebruik een groot, zacht hapje en blijf rechtop zitten."
+  },
+  {
+    "id": "flirty_024",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Bijna Kussen",
+    "text": "Ga schrijlings of dicht op schoot zitten. Breng jullie lippen tot minder dan een centimeter van elkaar en kijk elkaar één minuut aan zonder te kussen. Wie als eerste toegeeft, krijgt een lippenstiftstraf.",
+    "level": 2,
+    "timerSeconds": 60,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "lap",
+      "eye-contact",
+      "kissing"
+    ],
+    "safetyNote": null
+  }
+];

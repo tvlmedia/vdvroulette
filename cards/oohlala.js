@@ -1,0 +1,402 @@
+export const OOHLALA_CARDS = [
+  {
+    "id": "oohlala_001",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Twee Minuten Kusregie",
+    "text": "De ander bepaalt twee minuten waar jij kusjes geeft, binnen jullie afgesproken grenzen.",
+    "level": 4,
+    "timerSeconds": 120,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": "De ander kiest drie kusplekken boven de schouders.",
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "oohlala_002",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Handen Geleid",
+    "text": "De ander mag je handen twee minuten begeleiden naar afgesproken plekken waar diegene graag wordt aangeraakt.",
+    "level": 4,
+    "timerSeconds": 120,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "hands",
+      "touch"
+    ],
+    "safetyNote": "WALIBI betekent direct stoppen."
+  },
+  {
+    "id": "oohlala_003",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Drie Minuten Knuffelregie",
+    "text": "De ander bepaalt drie minuten hoe jullie knuffelen.",
+    "level": 4,
+    "timerSeconds": 180,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "hugging"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "oohlala_004",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Eén Laag Minder",
+    "text": "Trek één kledingstuk of accessoire uit, bijvoorbeeld schoenen, badjas, trui of sokken.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "clothing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "oohlala_005",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Langzaam Begeleiden",
+    "text": "De ander mag je hand langzaam begeleiden naar een afgesproken plek waar diegene graag wordt aangeraakt.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "hands",
+      "touch"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "oohlala_006",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Kus Terug",
+    "text": "De ander geeft jou ergens een kus. Daarna geef jij op dezelfde plek een kus terug.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "oohlala_007",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Massage met Kusjes",
+    "text": "Geef drie minuten een sensuele massage op een afgesproken lichaamsdeel met zachte kusjes en aanrakingen.",
+    "level": 4,
+    "timerSeconds": 180,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "massage",
+      "kissing"
+    ],
+    "safetyNote": "Vermijd ogen, oren en andere gevoelige openingen."
+  },
+  {
+    "id": "oohlala_008",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Langzaam Uit",
+    "text": "Trek heel langzaam één kledingstuk uit terwijl je de ander blijft aankijken.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "clothing",
+      "eye-contact"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "oohlala_009",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Stil Ontvangen",
+    "text": "De ander masseert en plaagt je drie minuten op afgesproken plekken. Jij blijft stil en raakt de ander niet aan.",
+    "level": 4,
+    "timerSeconds": 180,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "massage",
+      "touch"
+    ],
+    "safetyNote": "WALIBI betekent direct stoppen."
+  },
+  {
+    "id": "oohlala_010",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Losse Polsen",
+    "text": "De ander houdt je polsen drie minuten losjes bij elkaar met een badjasriem of sjaal en kiest uit kusjes, knuffelen of zachte aanrakingen.",
+    "level": 4,
+    "timerSeconds": 180,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "restraint",
+      "kissing",
+      "touch"
+    ],
+    "safetyNote": "Niet vastmaken aan meubels; er moeten twee vingers tussen passen; direct los bij WALIBI."
+  },
+  {
+    "id": "oohlala_011",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Voetenkietel",
+    "text": "De ander houdt je enkels losjes vast en kietelt je maximaal zestig seconden onder je voeten. Stopwoord: WALIBI.",
+    "level": 4,
+    "timerSeconds": 60,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "feet",
+      "tickling"
+    ],
+    "safetyNote": "Niet vastbinden en direct stoppen bij WALIBI."
+  },
+  {
+    "id": "oohlala_012",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Lapdance",
+    "text": "Geef de ander een speelse lapdance van maximaal twee minuten.",
+    "level": 4,
+    "timerSeconds": 120,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "dance",
+      "lap"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "oohlala_013",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Donkere Knuffel",
+    "text": "Dim de lichten en knuffel en kus vijf minuten samen op bed. Laat voldoende oriëntatielicht aan.",
+    "level": 4,
+    "timerSeconds": 300,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "dark",
+      "hugging",
+      "kissing"
+    ],
+    "safetyNote": "Niet volledig donker maken rond natte vloeren of de jacuzzi."
+  },
+  {
+    "id": "oohlala_014",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Panty om de Polsen",
+    "text": "Laat de ander je polsen drie minuten losjes bij elkaar houden met een panty en kiezen uit zachte kusjes, knuffelen of aanrakingen.",
+    "level": 4,
+    "timerSeconds": 180,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "panty",
+      "restraint",
+      "touch"
+    ],
+    "safetyNote": "Niet vastmaken aan meubels; direct los bij WALIBI."
+  },
+  {
+    "id": "oohlala_015",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Panty Langzaam Uit",
+    "text": "De ander trekt je panty in minimaal twee minuten langzaam uit en geeft onderweg zachte kusjes op de huid die vrijkomt.",
+    "level": 4,
+    "timerSeconds": 120,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "panty",
+      "clothing",
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "oohlala_016",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Zoete Plek",
+    "text": "Leg een beetje slagroom, chocoladepasta of een aardbei op nek, sleutelbeen of buik en eet of kus het er zonder handen af.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "food",
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "oohlala_017",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Chocoladelijn",
+    "text": "Teken een dunne lijn chocoladepasta van hals via borstkas naar navel en kus of lik die langzaam weg.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "food",
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "oohlala_018",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Geblinddoekt Ontvangen",
+    "text": "Draag twee minuten een blinddoek terwijl de ander kiest uit zachte aanrakingen, kusjes of knuffelen op vooraf afgesproken plekken.",
+    "level": 4,
+    "timerSeconds": 120,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "touch",
+      "kissing"
+    ],
+    "safetyNote": "WALIBI betekent direct stoppen."
+  },
+  {
+    "id": "oohlala_019",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Eén Lange Lijn",
+    "text": "De ander trekt langzaam met vingertoppen één lijn van je voet langs de buiten- of voorkant van je been, over je buik, tot aan je lippen. Blijf zo stil mogelijk liggen.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "touch",
+      "feet"
+    ],
+    "safetyNote": "Vermijd de binnenkant van de bovenbenen als dat niet vooraf is afgesproken."
+  }
+];

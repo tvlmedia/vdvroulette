@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Date Roulette app icon</title>
+  <defs>
+    <linearGradient id="bg" x1="84" y1="40" x2="428" y2="472" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4b1020"/>
+      <stop offset="0.52" stop-color="#17070d"/>
+      <stop offset="1" stop-color="#070205"/>
+    </linearGradient>
+    <linearGradient id="card" x1="142" y1="104" x2="364" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff8fb"/>
+      <stop offset="1" stop-color="#ffdfe9"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="118" fill="url(#bg)"/>
+  <path d="M151 116c-18 4-29 22-25 40l45 221c4 19 22 31 41 27l171-35c19-4 31-22 27-41l-45-221c-4-19-22-31-41-27l-173 36Z" fill="#f2c66d" opacity=".92"/>
+  <path d="M162 104h188c20 0 36 16 36 36v236c0 20-16 36-36 36H162c-20 0-36-16-36-36V140c0-20 16-36 36-36Z" fill="url(#card)"/>
+  <path d="M190 158h132" stroke="#f2c66d" stroke-width="16" stroke-linecap="round"/>
+  <path d="M254 348c-13-20-62-53-70-88-6-28 12-54 41-54 16 0 27 7 34 20 7-13 19-20 35-20 29 0 47 26 41 54-8 35-57 68-70 88-3 5-8 5-11 0Z" fill="#c91f43"/>
+  <path d="M205 280c31 15 74 15 105 0" stroke="#ff8ab3" stroke-width="18" stroke-linecap="round"/>
+</svg>

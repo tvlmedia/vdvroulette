@@ -1,0 +1,341 @@
+export const BLINDFOLD_CARDS = [
+  {
+    "id": "blindfold_001",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Twee Minuten Verrassing",
+    "text": "Draag twee minuten een blinddoek. De ander kiest uit zachte aanrakingen, kusjes, knuffelen of plagen binnen jullie afgesproken grenzen.",
+    "level": 3,
+    "timerSeconds": 120,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "body-contact"
+    ],
+    "safetyNote": "WALIBI betekent direct stoppen."
+  },
+  {
+    "id": "blindfold_002",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Raad de Smaak",
+    "text": "Proef geblinddoekt iets kleins en raad wat het is.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "food"
+    ],
+    "safetyNote": "Blijf rechtop zitten en gebruik geen harde of verstikkingsgevoelige snacks."
+  },
+  {
+    "id": "blindfold_003",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Drie Kusplekken",
+    "text": "De ander kust je geblinddoekt op drie verschillende, afgesproken plekken. Raad waar.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "blindfold_004",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Raad de Aanraking",
+    "text": "Raad welk lichaamsdeel de ander zachtjes aanraakt.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "touch"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "blindfold_005",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Make-upkwast Challenge",
+    "text": "Raad geblinddoekt waar en hoe vaak de make-upkwast je aanraakt.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "makeup"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "blindfold_006",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Raad het Voorwerp",
+    "text": "Voel geblinddoekt één voorwerp en raad wat het is.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "object"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "blindfold_007",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Zestig Seconden Kietelen",
+    "text": "Je mag de ander zestig seconden geblinddoekt kietelen op afgesproken plekken. Stopwoord: WALIBI.",
+    "level": 3,
+    "timerSeconds": 60,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "tickling"
+    ],
+    "safetyNote": "Stop onmiddellijk bij WALIBI."
+  },
+  {
+    "id": "blindfold_008",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Mysterie-accessoire",
+    "text": "De ander zet je geblinddoekt een accessoire op. Raad wat het is.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "dressup"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "blindfold_009",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Zoek het Attribuut",
+    "text": "De ander verstopt één attribuut in de kamer. Zoek het geblinddoekt met gesproken aanwijzingen.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "search"
+    ],
+    "safetyNote": "Blijf uit de buurt van natte vloeren, trappen en scherpe hoeken."
+  },
+  {
+    "id": "blindfold_010",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Blinde Lippenstift",
+    "text": "Breng geblinddoekt lippenstift aan op de ander.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "lipstick"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "blindfold_011",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Knuffelattribuut",
+    "text": "Raad welk zacht attribuut of knuffeltje de ander tegen je aan houdt.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "object"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "blindfold_012",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Zoete Sleutelbeenproef",
+    "text": "De ander smeert een klein beetje chocoladepasta of slagroom op hals of sleutelbeen. Lik het er geblinddoekt af.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "food",
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "blindfold_013",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Aan of Uit",
+    "text": "Laat je blinddoeken. De ander trekt één eenvoudig kledingstuk of accessoire uit, of doet juist iets extra’s bij je aan.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "clothing"
+    ],
+    "safetyNote": "Blijf zitten en kies alleen makkelijke kledingstukken of accessoires."
+  },
+  {
+    "id": "blindfold_014",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Vind Elkaar",
+    "text": "Begin allebei aan een andere kant van het bed met een blinddoek. Kruip rustig naar elkaar toe en probeer elkaar een kus te geven.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "kissing"
+    ],
+    "safetyNote": "Alleen op het bed uitvoeren; niet staand of op een natte vloer."
+  },
+  {
+    "id": "blindfold_015",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Koud en Warm",
+    "text": "De ander beweegt kort een ijsblokje langs buik of borstkas en volgt met warme adem of zachte kusjes.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "ice",
+      "kissing"
+    ],
+    "safetyNote": "Blijf bewegen met het ijs en gebruik het slechts enkele seconden per plek."
+  },
+  {
+    "id": "blindfold_016",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Zoek de Aardbei",
+    "text": "De ander legt een groot, zacht stukje fruit op een afgesproken plek op het lichaam. Zoek het geblinddoekt met je lippen en eet het op.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "food",
+      "body-contact"
+    ],
+    "safetyNote": "Gebruik geen kleine harde snoepjes en blijf rechtop of halfzittend."
+  }
+];

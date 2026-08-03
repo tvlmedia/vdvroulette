@@ -1,0 +1,21 @@
+Werk verder in de bestaande Date Roulette-repository.
+
+Voeg de meegeleverde map `date-roulette-cards` toe als `cards/` in het project.
+
+Taken:
+1. Importeer `ALL_CARDS`, `CARD_COUNTS` en `validateCards` uit `cards/index.js`.
+2. Importeer `GAME_RULES` uit `cards/rules.js`.
+3. Verwijder alle tijdelijke testkaarten.
+4. Gebruik uitsluitend deze database als bron voor gewone kaarten, Jacuzzi-kaarten en Specials.
+5. Koppel `specialType` aan de bestaande Special-card-engine.
+6. Respecteer `level`, `timerSeconds`, `jacuzziAllowed`, `requiresJacuzzi`, `playerRestriction`, `upgradeText`, `lighterText`, `safetyNote`, `contentTags` en `intensity`.
+7. Toon `safetyNote` subtiel maar duidelijk op de kaart.
+8. De kaart `flirty_020` mag alleen verschijnen wanneer player_1 aan de beurt is.
+9. Jacuzzi-kaarten verschijnen alleen als Jacuzzi-modus actief is.
+10. Voer bij het opstarten in ontwikkelmodus `validateCards(ALL_CARDS)` uit en toon eventuele fouten in de console.
+11. Behoud bestaande LocalStorage-migraties; filter onbekende oude testkaart-ID’s veilig weg.
+12. Verander geen kaart-ID’s of teksten zonder dit expliciet te rapporteren.
+13. Zorg dat GitHub Pages en de PWA blijven werken.
+14. Rapporteer na afloop het exacte aantal kaarten per categorie en bevestig dat de validator nul fouten geeft.
+
+Bouw de game-engine niet opnieuw. Integreer alleen de definitieve kaartdatabase en pas de bestaande selectie-, timer-, level-, Jacuzzi- en Special-logica daarop aan.

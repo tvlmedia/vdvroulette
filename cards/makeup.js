@@ -1,0 +1,259 @@
+export const MAKEUP_CARDS = [
+  {
+    "id": "makeup_001",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Make-up Upgrade",
+    "text": "De ander mag je make-up uitbreiden met één of meer extra details.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "makeup"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "makeup_002",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Rode Kusafdruk",
+    "text": "Geef de ander een kus met rode lippenstift. De afdruk blijft tot het einde van de avond zitten.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "lipstick",
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "makeup_003",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Nagels Lakken",
+    "text": "Laat de ander je nagels lakken.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "nails",
+      "makeover"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "makeup_004",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Disney-look",
+    "text": "Maak samen een over-the-top Disney-look voor degene die de kaart trok.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "makeup",
+      "disney",
+      "dressup"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "makeup_005",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Kwastenkriebels",
+    "text": "Laat je blinddoeken en laat de ander je twee minuten met een zachte make-upkwast kriebelen.",
+    "level": 2,
+    "timerSeconds": 120,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "makeup",
+      "tickling"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "makeup_006",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Kus op Hals of Wang",
+    "text": "De ander mag één lipafdruk op je hals of wang achterlaten.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "lipstick",
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "makeup_007",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Verborgen Boodschap",
+    "text": "Schrijf met lippenstift een klein hartje of speels woord op een afgesproken, verborgen plek op het lichaam van de ander. Het blijft tot het einde van de avond zitten.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "lipstick",
+      "body-art"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "makeup_008",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Boter-kaas-en-eieren",
+    "text": "Teken met lippenstift een klein boter-kaas-en-eierenbord op de buik of rug van de ander en speel één potje. De winnaar krijgt vijf minuten massage.",
+    "level": 2,
+    "timerSeconds": 300,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "lipstick",
+      "game",
+      "massage"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "makeup_009",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Blinde Lippenstiftkus",
+    "text": "Doe geblinddoekt lippenstift op en probeer de ander op de lippen te kussen. Mis je, dan blijft de afdruk tien minuten zitten.",
+    "level": 2,
+    "timerSeconds": 600,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "lipstick",
+      "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "makeup_010",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Niet Bewegen",
+    "text": "Ga op je rug liggen met je ogen dicht. De ander kriebelt je twee minuten met een zachte make-upkwast op afgesproken kietelplekken. Blijf zo stil mogelijk liggen.",
+    "level": 2,
+    "timerSeconds": 120,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "makeup",
+      "tickling"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "makeup_011",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Lippenstift met je Tenen",
+    "text": "Klem de gesloten lippenstift voorzichtig tussen je tenen en probeer zonder je handen een kleine streep op de hand of wang van de ander te zetten.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "lipstick",
+      "feet",
+      "challenge"
+    ],
+    "safetyNote": "Gebruik alleen een gesloten, afgeronde lipstick en blijf zitten."
+  },
+  {
+    "id": "makeup_012",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Spiegelmake-up",
+    "text": "Ga samen voor de spiegel staan. De ander staat achter je, slaat de armen om je heen en werkt je lippenstift of make-up bij. Kijk elkaar alleen via de spiegel aan.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "makeup",
+      "mirror",
+      "body-contact"
+    ],
+    "safetyNote": null
+  }
+];

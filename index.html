@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#17070d">
+    <meta
+      name="description"
+      content="Date Roulette is een romantisch, grappig en spannend kaartspel voor twee spelers."
+    >
+    <meta name="application-name" content="Date Roulette">
+    <meta name="apple-mobile-web-app-title" content="Date Roulette">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Date Roulette</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <main class="app-frame" aria-live="polite">
+        <section id="home-screen" class="screen is-active" data-screen="home">
+          <div class="brand-block">
+            <p class="eyebrow">Voor twee spelers</p>
+            <h1>Date Roulette 💋</h1>
+            <p class="subtitle">Een luxe mini-spel voor lieve chaos, zachte opdrachten en kleine lef-momenten.</p>
+          </div>
+
+          <div class="status-panel glass-panel">
+            <div class="status-row">
+              <span>Speler 1</span>
+              <strong id="home-player-one">Winnie</strong>
+            </div>
+            <div class="status-row">
+              <span>Speler 2</span>
+              <strong id="home-player-two">Tijgertje</strong>
+            </div>
+            <div class="status-grid">
+              <div>
+                <span>Level</span>
+                <strong id="home-level">1</strong>
+              </div>
+              <div>
+                <span>Kusjes</span>
+                <strong id="home-kisses">0 - 0</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="button-stack">
+            <button id="new-game-button" class="primary-button" type="button">Start nieuw spel</button>
+            <button id="continue-button" class="secondary-button" type="button">Doorgaan</button>
+            <button id="settings-button" class="secondary-button" type="button">Instellingen</button>
+            <button id="help-button" class="ghost-button" type="button">Hoe werkt het?</button>
+            <button id="stats-button" class="ghost-button" type="button">Statistieken</button>
+          </div>
+        </section>
+
+        <section id="setup-screen" class="screen" data-screen="setup">
+          <div class="screen-topbar">
+            <button class="icon-button" type="button" data-action="home" aria-label="Terug naar home">←</button>
+            <p class="topbar-title">Spelers instellen</p>
+          </div>
+
+          <form id="setup-form" class="glass-panel form-panel">
+            <label class="field-label" for="setup-player-one">Naam speler 1</label>
+            <input id="setup-player-one" name="playerOne" type="text" autocomplete="off" maxlength="24" required>
+
+            <label class="field-label" for="setup-player-two">Naam speler 2</label>
+            <input id="setup-player-two" name="playerTwo" type="text" autocomplete="off" maxlength="24" required>
+
+            <button class="primary-button" type="submit">Spel starten</button>
+          </form>
+        </section>
+
+        <section id="game-screen" class="screen" data-screen="game">
+          <div class="game-header">
+            <div>
+              <p class="eyebrow">Aan de beurt</p>
+              <h2 id="turn-player">Winnie</h2>
+            </div>
+            <div class="header-actions">
+              <button id="end-game-button" class="mini-button end-round-button" type="button">Spel beëindigen</button>
+              <button class="icon-button" type="button" data-action="home" aria-label="Terug naar home">⌂</button>
+            </div>
+          </div>
+
+          <div class="game-meta glass-panel">
+            <div class="kiss-score">
+              <span id="score-player-one">Winnie: 0 💋</span>
+              <span id="score-player-two">Tijgertje: 0 💋</span>
+            </div>
+            <div class="level-row">
+              <span>Level <strong id="game-level">1</strong></span>
+              <label class="toggle-label" for="jacuzzi-toggle">
+                <input id="jacuzzi-toggle" type="checkbox">
+                <span class="toggle-track" aria-hidden="true"></span>
+                <span>🛁 Jacuzzi-modus</span>
+              </label>
+            </div>
+            <div class="mode-row">
+              <span id="jacuzzi-status" class="mode-pill" hidden>🛁 Jacuzzi-modus</span>
+              <span id="bubble-meter" class="bubble-meter" aria-hidden="true" hidden>🫧🫧🫧○○</span>
+              <span id="wake-status" class="mode-pill wake-pill" hidden>Scherm blijft wakker</span>
+            </div>
+            <div class="level-progress">
+              <div class="level-progress-head">
+                <strong id="level-status-title">Level 1</strong>
+                <span id="level-next-text">Level 2 bij 4 kaarten per speler</span>
+              </div>
+              <div class="progress-line">
+                <span id="progress-player-one-label">Winnie: 0 / 4</span>
+                <span class="progress-track" aria-hidden="true">
+                  <span id="progress-bar-one" class="progress-fill"></span>
+                </span>
+              </div>
+              <div class="progress-line">
+                <span id="progress-player-two-label">Tijgertje: 0 / 4</span>
+                <span class="progress-track" aria-hidden="true">
+                  <span id="progress-bar-two" class="progress-fill"></span>
+                </span>
+              </div>
+            </div>
+            <div id="available-categories" class="category-strip" aria-label="Beschikbare categorieën"></div>
+          </div>
+
+          <div id="toast" class="toast" role="status" aria-live="polite"></div>
+          <div id="kiss-animation" class="kiss-animation" aria-hidden="true">
+            <span class="kiss-mark">💋</span>
+            <span id="kiss-animation-text" class="kiss-animation-text">Lippenstiftkus!</span>
+          </div>
+
+          <button id="card-stack" class="card-stack" type="button" aria-label="Trek een kaart">
+            <span class="stack-shadow"></span>
+            <span class="card-face card-back">
+              <span class="deck-mark">DR</span>
+              <span class="deck-title">Tik om een kaart te trekken</span>
+              <span id="deck-count" class="deck-count">0 kaarten klaar</span>
+            </span>
+            <span class="card-face card-front">
+              <span class="card-context">
+                <span id="card-category" class="card-category">Cute</span>
+                <span id="card-progress" class="card-progress" hidden></span>
+              </span>
+              <span id="card-emoji" class="card-emoji">❤️</span>
+              <span id="card-title" class="card-title">Kaarttitel</span>
+              <span id="card-text" class="card-text">Opdracht</span>
+              <span id="card-timer-badge" class="card-timer-badge" hidden></span>
+              <span id="card-safety-note" class="safety-note" hidden></span>
+            </span>
+          </button>
+
+          <div id="timer-panel" class="timer-panel glass-panel" hidden>
+            <div class="timer-readout" id="timer-readout">00:00</div>
+            <div class="timer-controls">
+              <button id="timer-start" class="mini-button" type="button">Start</button>
+              <button id="timer-pause" class="mini-button" type="button">Pauze</button>
+              <button id="timer-reset" class="mini-button" type="button">Reset</button>
+            </div>
+          </div>
+
+          <div id="empty-state" class="empty-state glass-panel" hidden>
+            <p id="empty-message">Alle beschikbare kaarten zijn gespeeld.</p>
+            <div id="normal-empty-actions" class="empty-actions">
+              <button id="reshuffle-button" class="secondary-button" type="button">Kaarten opnieuw schudden</button>
+            </div>
+            <div id="jacuzzi-empty-actions" class="empty-actions" hidden>
+              <button id="jacuzzi-off-empty-button" class="secondary-button" type="button">Jacuzzi-modus uitzetten</button>
+              <button id="reshuffle-jacuzzi-button" class="secondary-button" type="button">Gebruikte jacuzzi-kaarten opnieuw schudden</button>
+              <button id="home-empty-button" class="ghost-button" type="button">Terug naar beginscherm</button>
+            </div>
+          </div>
+
+          <div class="game-actions">
+            <button id="done-button" class="primary-button success-button" type="button">✓ Gedaan</button>
+            <button id="not-done-button" class="secondary-button kiss-button" type="button">💋 Niet gedaan</button>
+            <button id="jacuzzi-replace-button" class="ghost-button" type="button">🔄 Niet handig in de jacuzzi</button>
+            <button id="new-card-button" class="ghost-button" type="button">Nieuwe kaart</button>
+          </div>
+        </section>
+
+        <section id="settings-screen" class="screen" data-screen="settings">
+          <div class="screen-topbar">
+            <button class="icon-button" type="button" data-action="home" aria-label="Terug naar home">←</button>
+            <p class="topbar-title">Instellingen</p>
+          </div>
+
+          <form id="settings-form" class="glass-panel form-panel">
+            <label class="field-label" for="settings-player-one">Naam speler 1</label>
+            <input id="settings-player-one" name="playerOne" type="text" autocomplete="off" maxlength="24" required>
+
+            <label class="field-label" for="settings-player-two">Naam speler 2</label>
+            <input id="settings-player-two" name="playerTwo" type="text" autocomplete="off" maxlength="24" required>
+
+            <label class="field-label" for="theme-setting">Thema</label>
+            <select id="theme-setting" name="theme">
+              <option value="dark">Luxe donker</option>
+              <option value="soft">Zacht romantisch</option>
+            </select>
+
+            <label class="switch-row" for="sound-setting">
+              <span>Geluid</span>
+              <input id="sound-setting" name="soundEnabled" type="checkbox">
+            </label>
+
+            <label class="switch-row" for="vibration-setting">
+              <span>Trillingen</span>
+              <input id="vibration-setting" name="vibrationEnabled" type="checkbox">
+            </label>
+
+            <label class="switch-row" for="levels-setting">
+              <span>Levelsysteem <strong id="levels-setting-state">Aan</strong></span>
+              <input id="levels-setting" name="levelSystemEnabled" type="checkbox">
+            </label>
+
+            <label class="switch-row" for="fullscreen-setting">
+              <span>Fullscreenmodus <strong id="fullscreen-setting-state">Uit</strong></span>
+              <input id="fullscreen-setting" name="fullscreenEnabled" type="checkbox">
+            </label>
+
+            <label class="switch-row" for="wake-lock-setting">
+              <span>Scherm wakker houden tijdens spelen</span>
+              <input id="wake-lock-setting" name="wakeLockEnabled" type="checkbox">
+            </label>
+
+            <label class="switch-row" for="developer-setting">
+              <span>Ontwikkelmodus</span>
+              <input id="developer-setting" name="developerMode" type="checkbox">
+            </label>
+
+            <div id="developer-tools" class="developer-tools" hidden>
+              <p>Alleen voor testen</p>
+              <button id="dev-add-player-one" class="mini-button" type="button">+1 afgeronde kaart voor Winnie</button>
+              <button id="dev-add-player-two" class="mini-button" type="button">+1 afgeronde kaart voor Tijgertje</button>
+              <button id="dev-reset-progress" class="mini-button" type="button">Levelprogressie resetten</button>
+              <button id="dev-unlock-all" class="mini-button" type="button">Alle levels vrijspelen</button>
+              <button id="dev-reset-jacuzzi" class="mini-button" type="button">Jacuzzi-deck resetten</button>
+              <button id="dev-log-state" class="mini-button" type="button">Hele game state tonen in console</button>
+              <button id="dev-add-skips" class="mini-button" type="button">Voeg drie voorbeeld-skips toe</button>
+              <button id="dev-add-upgrades" class="mini-button" type="button">Voeg drie voorbeeld-completions met upgradeText toe</button>
+              <button id="dev-start-roulette" class="mini-button" type="button">Start Roulette direct</button>
+              <button id="dev-start-perfect-run" class="mini-button" type="button">Start Perfecte Run direct</button>
+              <button id="dev-start-tension" class="mini-button" type="button">Start Spelen met spanning direct</button>
+              <button id="dev-start-double" class="mini-button" type="button">Start Dubbel zo spannend direct</button>
+              <button id="dev-clear-special" class="mini-button" type="button">Wis actieve specialSession</button>
+              <button id="dev-log-history" class="mini-button" type="button">Toon cardHistory in console</button>
+              <button id="dev-validate-cards" class="mini-button" type="button">Kaartvalidator draaien</button>
+              <button id="dev-recalculate-stats" class="mini-button" type="button">Statistieken opnieuw berekenen</button>
+              <div id="dev-card-report" class="developer-report" aria-live="polite"></div>
+            </div>
+
+            <button class="primary-button" type="submit">Opslaan</button>
+          </form>
+        </section>
+
+        <section id="stats-screen" class="screen" data-screen="stats">
+          <div class="screen-topbar">
+            <button class="icon-button" type="button" data-action="home" aria-label="Terug naar home">←</button>
+            <p class="topbar-title">Statistieken</p>
+          </div>
+
+          <div class="glass-panel stats-list">
+            <div class="stat-row">
+              <span>Totaal getrokken</span>
+              <strong id="stat-total">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Gedaan</span>
+              <strong id="stat-done">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Niet gedaan</span>
+              <strong id="stat-not-done">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Kusjes speler 1</span>
+              <strong id="stat-kisses-one">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Kusjes speler 2</span>
+              <strong id="stat-kisses-two">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Afgerond speler 1</span>
+              <strong id="stat-completed-one">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Afgerond speler 2</span>
+              <strong id="stat-completed-two">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Meest getrokken</span>
+              <strong id="stat-top-category">-</strong>
+            </div>
+            <div class="stat-row">
+              <span>Huidig level</span>
+              <strong id="stat-level">1</strong>
+            </div>
+            <div class="stat-row">
+              <span>Jacuzzi-modus gebruikt</span>
+              <strong id="stat-jacuzzi">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Jacuzzi-kaarten getrokken</span>
+              <strong id="stat-jacuzzi-cards">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Vervangen in jacuzzi</span>
+              <strong id="stat-jacuzzi-replaced">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Tijd in Jacuzzi-modus</span>
+              <strong id="stat-jacuzzi-time">0s</strong>
+            </div>
+            <div class="stat-row stat-row-wide">
+              <span>Levels vrijgespeeld</span>
+              <strong id="stat-level-unlocks">Level 1</strong>
+            </div>
+            <div class="stat-row stat-row-wide">
+              <span>Specials</span>
+              <strong id="stat-specials">Nog geen specials</strong>
+            </div>
+            <div class="stat-row">
+              <span>Totaal kaarten</span>
+              <strong id="stat-cards-total">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Nu speelbaar</span>
+              <strong id="stat-cards-playable">0</strong>
+            </div>
+            <div class="stat-row stat-row-wide">
+              <span>Kaarten per categorie</span>
+              <strong id="stat-card-categories">-</strong>
+            </div>
+          </div>
+        </section>
+
+        <section id="help-screen" class="screen" data-screen="help">
+          <div class="screen-topbar">
+            <button class="icon-button" type="button" data-action="home" aria-label="Terug naar home">←</button>
+            <p class="topbar-title">Hoe werkt het?</p>
+          </div>
+
+          <div class="glass-panel help-panel">
+            <details open>
+              <summary>De basis</summary>
+              <p>Speel om de beurt. Trek een kaart, doe de opdracht of kies samen een aangepaste versie.</p>
+            </details>
+            <details>
+              <summary>Gedaan of Niet gedaan</summary>
+              <p>Gedaan telt als voltooid. Niet gedaan telt ook mee voor voortgang, maar de speler krijgt volgens jullie spelregel een lippenstiftkus.</p>
+            </details>
+            <details>
+              <summary>Levels</summary>
+              <p>Nieuwe categorieën openen zodra beide spelers genoeg kaarten hebben afgerond. Het laagste spelersaantal bepaalt het level.</p>
+            </details>
+            <details>
+              <summary>Jacuzzi en Specials</summary>
+              <p>Jacuzzi-modus toont alleen opdrachten die daar handig zijn. Specials starten korte keuze- of reeksopdrachten met eigen regels.</p>
+            </details>
+            <details>
+              <summary>WALIBI</summary>
+              <p>WALIBI betekent direct stoppen. Alles is optioneel, opdrachten mogen altijd worden aangepast of overgeslagen.</p>
+            </details>
+            <p class="privacy-note">Spelgegevens blijven alleen op dit apparaat opgeslagen.</p>
+          </div>
+        </section>
+
+        <section id="end-screen" class="screen" data-screen="end">
+          <div class="screen-topbar">
+            <button class="icon-button" type="button" data-action="home" aria-label="Terug naar home">←</button>
+            <p class="topbar-title">Ronde afgelopen</p>
+          </div>
+
+          <div class="brand-block end-hero">
+            <p class="eyebrow">Samenvatting</p>
+            <h1>Goed gespeeld 💋</h1>
+            <p id="end-winner-line" class="subtitle">Jullie ronde staat netjes opgeslagen.</p>
+          </div>
+
+          <div id="end-summary-list" class="glass-panel stats-list end-summary-list"></div>
+
+          <div class="button-stack">
+            <button id="end-home-button" class="primary-button" type="button">Terug naar homescreen</button>
+            <button id="end-new-round-button" class="secondary-button" type="button">Nog een ronde</button>
+            <button id="end-stats-button" class="ghost-button" type="button">Statistieken bekijken</button>
+          </div>
+        </section>
+
+        <nav id="bottom-nav" class="bottom-nav" aria-label="Hoofdnavigatie">
+          <button type="button" data-nav-screen="game">Spel</button>
+          <button type="button" data-nav-screen="stats">Statistieken</button>
+          <button type="button" data-nav-screen="settings">Instellingen</button>
+        </nav>
+
+        <div id="onboarding-modal" class="modal-backdrop onboarding-backdrop" role="dialog" aria-modal="true" aria-labelledby="onboarding-title" hidden>
+          <div class="onboarding-modal glass-panel">
+            <p id="onboarding-step-label" class="eyebrow">Stap 1 van 3</p>
+            <h3 id="onboarding-title">Date Roulette 💋</h3>
+            <p id="onboarding-text">Een kaartspel voor twee, vol grappige, lieve en spannende opdrachten.</p>
+            <div id="onboarding-dots" class="onboarding-dots" aria-hidden="true"></div>
+            <div class="modal-actions">
+              <button id="onboarding-skip-button" class="ghost-button" type="button">Overslaan</button>
+              <button id="onboarding-next-button" class="primary-button" type="button">Volgende</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="install-prompt" class="install-prompt glass-panel" role="dialog" aria-live="polite" aria-label="Installatieprompt" hidden>
+          <div>
+            <strong>Zet Date Roulette op je beginscherm</strong>
+            <p id="install-prompt-text">Installeer de app voor fullscreen en offline spelen.</p>
+          </div>
+          <div class="install-actions">
+            <button id="install-button" class="primary-button" type="button">Installeren</button>
+            <button id="install-dismiss-button" class="ghost-button" type="button">Niet nu</button>
+          </div>
+        </div>
+
+        <div id="update-prompt" class="install-prompt update-prompt glass-panel" role="dialog" aria-live="polite" aria-label="Update beschikbaar" hidden>
+          <div>
+            <strong>Er is een update beschikbaar.</strong>
+            <p>Vernieuwen gebeurt alleen wanneer jij op de knop tikt.</p>
+          </div>
+          <div class="install-actions">
+            <button id="update-refresh-button" class="primary-button" type="button">Nu vernieuwen</button>
+            <button id="update-dismiss-button" class="ghost-button" type="button">Later</button>
+          </div>
+        </div>
+        <div id="level-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="level-modal-title" hidden>
+          <div class="level-modal glass-panel">
+            <div class="unlock-icon" aria-hidden="true">🔓</div>
+            <h3 id="level-modal-title">Level vrijgespeeld</h3>
+            <p id="level-modal-text">Nieuwe categorieën zijn nu beschikbaar.</p>
+            <div id="level-modal-categories" class="unlock-categories" aria-hidden="true"></div>
+            <button id="level-continue-button" class="primary-button" type="button">Verder spelen</button>
+          </div>
+        </div>
+        <div id="special-modal" class="modal-backdrop special-backdrop" role="dialog" aria-modal="true" aria-labelledby="special-modal-title" hidden>
+          <div class="special-modal glass-panel">
+            <div id="special-modal-content"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

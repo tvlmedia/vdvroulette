@@ -1,7 +1,8 @@
 export const GAME_RULES = {
   safeWord: "WALIBI",
   lipstickRule:
-    "Durf of wil je een opdracht niet doen? Dan krijgt de huidige speler één lippenstiftkus op een afgesproken plek. De afdruk blijft zitten tot het einde van het spel.",
+    "Durf of wil je een opdracht niet doen? Dan krijgt de huidige speler één lippenstiftafdruk op een afgesproken plek. De afdruk blijft zitten tot het einde van het spel.",
+  lipstickPenaltyTask: "Laat de ander een lippenstiftafdruk achterlaten.",
   consentNotice:
     "Alle opdrachten zijn optioneel en mogen altijd worden aangepast of gestopt. WALIBI betekent onmiddellijk stoppen en loslaten.",
   levelRequirementsPerPlayer: {

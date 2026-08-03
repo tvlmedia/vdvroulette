@@ -404,6 +404,10 @@ await run("card report payload includes original and suggested fix", () => {
   assert.deepEqual(payload.changedFields.sort(), ["safetyNote", "text", "title"]);
 });
 
+await run("lipstick penalty copy explains the imprint task", () => {
+  assert.equal(hooks.getLipstickPenaltyTask(), "Laat de ander een lippenstiftafdruk achterlaten.");
+});
+
 await run("local card ratings are included in playtest export", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   game.currentCardId = "cute_001";
@@ -412,7 +416,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.7");
+  assert.equal(exported.appVersion, "v1.3.8");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

@@ -11,7 +11,7 @@ const STORAGE_KEYS = {
   corruptBackupPrefix: "dateRoulette_corruptBackup_"
 };
 
-const APP_VERSION = "v1.3.7";
+const APP_VERSION = "v1.3.8";
 const STATE_VERSION = 6;
 const MAX_LEVEL = 5;
 const ACTIVE_TIMERS_LIMIT = 12;
@@ -31,8 +31,9 @@ const ROULETTE_REQUIRED_COUNT = Math.max(1, Number(SPECIAL_RULES.roulette?.requi
 const PERFECT_RUN_REQUIRED_COUNT = Math.max(1, Number(SPECIAL_RULES.perfectRun?.requiredCount) || 5);
 const SAFE_WORD = GAME_RULES.safeWord || "WALIBI";
 const CONSENT_NOTICE = GAME_RULES.consentNotice || `${SAFE_WORD} betekent onmiddellijk stoppen.`;
-const LIPSTICK_RULE = GAME_RULES.lipstickRule || "Durf of wil je een opdracht niet doen? Dan krijgt de huidige speler één lippenstiftkus.";
+const LIPSTICK_RULE = GAME_RULES.lipstickRule || "Durf of wil je een opdracht niet doen? Dan krijgt de huidige speler één lippenstiftafdruk.";
 const LIPSTICK_PENALTY_MESSAGE = "💋 Lippenstiftstraf!";
+const LIPSTICK_PENALTY_TASK = GAME_RULES.lipstickPenaltyTask || "Laat de ander een lippenstiftafdruk achterlaten.";
 
 const CATEGORY_STYLES = {
   chaos: {
@@ -2145,7 +2146,7 @@ function resolvePerfectRunStep(wasDone) {
     if (player.lipstickKisses > 0) {
       player.lipstickKisses -= 1;
       stats.lipstickKissesRemoved += 1;
-      session.resultText = "Perfecte Run voltooid! 🎯 Eén lippenstiftkus is verwijderd.";
+      session.resultText = "Perfecte Run voltooid! 🎯 Eén lippenstiftafdruk is verwijderd.";
     } else {
       session.resultText = "Perfect gespeeld! Je had alleen geen kusafdruk om weg te halen.";
     }
@@ -3949,7 +3950,7 @@ function triggerKissAnimation() {
   }
 
   if (ui.kissAnimationText) {
-    ui.kissAnimationText.textContent = LIPSTICK_PENALTY_MESSAGE;
+    ui.kissAnimationText.textContent = LIPSTICK_PENALTY_TASK;
   }
   ui.kissAnimation.classList.remove("is-active");
   window.requestAnimationFrame(() => {
@@ -5446,6 +5447,7 @@ window.DateRouletteTestHooks = {
   normalizeActiveTimers,
   stopActiveTimerInterval,
   createCardReportPayload,
+  getLipstickPenaltyTask: () => LIPSTICK_PENALTY_TASK,
   validateCards: () => getCardValidationResult(),
   setRandomSource(nextRandomSource) {
     randomSource = typeof nextRandomSource === "function" ? nextRandomSource : Math.random;

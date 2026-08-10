@@ -398,5 +398,26 @@ export const OOHLALA_CARDS = [
       "feet"
     ],
     "safetyNote": "Vermijd de binnenkant van de bovenbenen als dat niet vooraf is afgesproken."
+  },
+  {
+    "id": "oohlala_020",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Slagroom-Kus",
+    "text": "Neem allebei een kleine hap slagroom in je mond en geef elkaar een lange, romige kus voordat jullie doorslikken.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "food",
+      "kissing"
+    ],
+    "safetyNote": "Gebruik weinig slagroom, blijf rechtop zitten en stop meteen bij hoesten of verslikken."
   }
 ];

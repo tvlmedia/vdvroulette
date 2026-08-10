@@ -337,5 +337,27 @@ export const BLINDFOLD_CARDS = [
       "body-contact"
     ],
     "safetyNote": "Gebruik geen kleine harde snoepjes en blijf rechtop of halfzittend."
+  },
+  {
+    "id": "blindfold_017",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Blinde Smaaktest",
+    "text": "Doe de ander een blinddoek om. Doe een kleine toef slagroom op een afgesproken plek op je lichaam. De ander zoekt die zonder handen en kust of likt hem weg.",
+    "level": 3,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "food",
+      "body-contact"
+    ],
+    "safetyNote": "Gebruik weinig slagroom, vermijd ogen en gevoelige openingen en blijf rechtop of halfzittend."
   }
 ];

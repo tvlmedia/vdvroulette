@@ -72,14 +72,14 @@ await run("validateCards returns no schema errors", () => {
   const validation = hooks.validateCards();
   assert.equal(validation.errors.length, 0, validation.errors.join("\n"));
   assert.equal(new Set(deck.cards.map((card) => card.id)).size, deck.cards.length);
-  assert.equal(deck.cards.length, 172);
+  assert.equal(deck.cards.length, 174);
   assert.deepEqual(deck.cardCounts.byCategory, {
     chaos: 29,
     makeup: 15,
-    blindfold: 16,
+    blindfold: 17,
     cute: 23,
     flirty: 28,
-    oohlala: 19,
+    oohlala: 20,
     disney: 3,
     jacuzzi: 28,
     special: 11
@@ -236,6 +236,15 @@ await run("reported oohlala_013 text is corrected", () => {
   assert.equal(card.title, "Donkere Knuffel");
   assert.equal(card.text, "Dim de lichten en knuffel en kus vijf minuten samen op bed.");
   assert.equal(card.safetyNote, null);
+});
+
+await run("new whipped cream cards are available", () => {
+  const blindfoldCard = hooks.getCardById("blindfold_017");
+  const oohlalaCard = hooks.getCardById("oohlala_020");
+  assert.equal(blindfoldCard.title, "Blinde Smaaktest");
+  assert.equal(blindfoldCard.contentTags.includes("food"), true);
+  assert.equal(oohlalaCard.title, "Slagroom-Kus");
+  assert.equal(oohlalaCard.safetyNote.includes("verslikken"), true);
 });
 
 await run("reported chaos_009 text is corrected", () => {
@@ -494,7 +503,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.20");
+  assert.equal(exported.appVersion, "v1.3.21");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

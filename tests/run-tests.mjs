@@ -293,6 +293,13 @@ await run("reported chaos_012 text is corrected", () => {
   assert.equal(card.safetyNote, "Niet om de nek leggen en trek niet hard.");
 });
 
+await run("reported chaos_010 text is corrected", () => {
+  const card = hooks.getCardById("chaos_010");
+  assert.equal(card.title, "Drie Lagen Extra");
+  assert.equal(card.text, "De ander kiest drie extra kledingstukken of accessoires uit. Draag de complete combinatie twintig minuten.");
+  assert.equal(card.safetyNote, null);
+});
+
 await run("reported blindfold_005 text is corrected", () => {
   const card = hooks.getCardById("blindfold_005");
   assert.equal(card.title, "Make-upkwast Challenge");
@@ -623,7 +630,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.26");
+  assert.equal(exported.appVersion, "v1.3.27");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

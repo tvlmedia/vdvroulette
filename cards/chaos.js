@@ -192,7 +192,7 @@ export const CHAOS_CARDS = [
     "category": "chaos",
     "emoji": "😂",
     "title": "Drie Lagen Extra",
-    "text": "De ander kiest drie extra kledingstukken of accessoires uit je tas. Draag de complete combinatie twintig minuten.",
+    "text": "De ander kiest drie extra kledingstukken of accessoires uit. Draag de complete combinatie twintig minuten.",
     "level": 1,
     "timerSeconds": 1200,
     "jacuzziAllowed": false,

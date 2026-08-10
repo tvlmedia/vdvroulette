@@ -422,6 +422,46 @@ await run("getAvailableCards excludes used cards", () => {
   assert.equal(availableIds.includes("chaos_001"), false);
 });
 
+await run("getAvailableCards spreads similar recent cards when alternatives exist", () => {
+  const game = hooks.createNewGame("Winnie", "Tijgertje");
+  game.levelSystemEnabled = false;
+  game.currentLevel = 5;
+  game.cardHistory = [
+    { cardId: "flirty_019", result: "completed", variant: "normal", playerIndex: 0 }
+  ];
+  hooks.setTestState(game, {}, { levelSystemEnabled: false });
+  const availableIds = hooks.getAvailableCards({ includeUsed: true, ignoreTemporaryRejected: true }).map((card) => card.id);
+  assert.equal(availableIds.includes("chaos_033"), false);
+  assert.equal(availableIds.includes("chaos_001"), true);
+});
+
+await run("getAvailableCards falls back when only similar cards remain", () => {
+  const game = hooks.createNewGame("Winnie", "Tijgertje");
+  game.levelSystemEnabled = false;
+  game.currentLevel = 5;
+  game.usedCardIds = deck.cards
+    .filter((card) => card.id !== "chaos_033")
+    .map((card) => card.id);
+  game.cardHistory = [
+    { cardId: "flirty_019", result: "completed", variant: "normal", playerIndex: 0 }
+  ];
+  hooks.setTestState(game, {}, { levelSystemEnabled: false });
+  assert.deepEqual(hooks.getAvailableCards().map((card) => card.id), ["chaos_033"]);
+});
+
+await run("getAvailableCards can spread from a replaced current card", () => {
+  const game = hooks.createNewGame("Winnie", "Tijgertje");
+  game.levelSystemEnabled = false;
+  game.currentLevel = 5;
+  game.usedCardIds = ["flirty_019"];
+  hooks.setTestState(game, {}, { levelSystemEnabled: false });
+  const availableIds = hooks.getAvailableCards({
+    additionalSimilarityCardIds: ["flirty_019"],
+    ignoreTemporaryRejected: true
+  }).map((card) => card.id);
+  assert.equal(availableIds.includes("chaos_033"), false);
+});
+
 await run("addLipstickKiss adds exactly one kiss event", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   hooks.setTestState(game);
@@ -663,7 +703,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.31");
+  assert.equal(exported.appVersion, "v1.3.32");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

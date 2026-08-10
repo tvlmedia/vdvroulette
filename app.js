@@ -11,10 +11,11 @@ const STORAGE_KEYS = {
   corruptBackupPrefix: "dateRoulette_corruptBackup_"
 };
 
-const APP_VERSION = "v1.3.31";
+const APP_VERSION = "v1.3.32";
 const STATE_VERSION = 6;
 const MAX_LEVEL = 5;
 const ACTIVE_TIMERS_LIMIT = 12;
+const RECENT_SIMILAR_CARD_LIMIT = 3;
 const DEFAULT_PLAYERS = ["Winnie", "Tijgertje"];
 const DEFAULT_PLAYER_GENDERS = ["vrouw", "man"];
 const PLAYER_GENDERS = new Set(["vrouw", "man"]);
@@ -173,6 +174,29 @@ const SPICE_LEVEL_COPY = {
     toast: "Oohlala aangezet: alleen level 5-kaarten."
   }
 };
+
+const CARD_SPREAD_TAGS = new Set([
+  "blindfold",
+  "clothing",
+  "dance",
+  "dark",
+  "dressup",
+  "drink",
+  "feet",
+  "food",
+  "ice",
+  "kissing",
+  "lipstick",
+  "makeup",
+  "massage",
+  "panty",
+  "restraint",
+  "roleplay",
+  "shopping",
+  "tickling",
+  "touch",
+  "voice"
+]);
 
 let recoveryNotice = null;
 let settings = loadSettings();
@@ -818,8 +842,11 @@ function drawReplacementCard() {
     return;
   }
 
+  const previousCard = getCurrentCard();
   clearCurrentCard();
-  const nextCard = pickRandomCard();
+  const nextCard = pickRandomCard({
+    additionalSimilarityCardIds: previousCard ? [previousCard.id] : []
+  });
   if (!nextCard) {
     renderEmptyState();
     saveGame();
@@ -845,7 +872,10 @@ function replaceJacuzziCard() {
   stats.jacuzziReplacementCount += 1;
   showToast("Nieuwe jacuzzi-geschikte opdracht zoeken… 🛁");
 
-  const nextCard = pickRandomCard({ additionalExcludedIds: [currentCard.id] });
+  const nextCard = pickRandomCard({
+    additionalExcludedIds: [currentCard.id],
+    additionalSimilarityCardIds: [currentCard.id]
+  });
   if (!nextCard) {
     game.temporaryRejectedCardIds = [];
     game.emptyDeckReason = "jacuzzi";
@@ -1100,7 +1130,7 @@ function getAvailableCards(options = {}) {
     getHistoricallyPlayedCardIds().forEach((id) => excludedIds.add(id));
   }
 
-  return deck.cards.filter((card) => {
+  const eligibleCards = deck.cards.filter((card) => {
     if (excludedIds.has(card.id)) {
       return false;
     }
@@ -1119,6 +1149,12 @@ function getAvailableCards(options = {}) {
 
     return isCardEligible(card, options.state || game, options.player || getCurrentPlayer());
   });
+
+  if (options.ignoreRecentSimilar) {
+    return eligibleCards;
+  }
+
+  return filterRecentSimilarCards(eligibleCards, options);
 }
 
 function getMatchingCards() {
@@ -1210,6 +1246,49 @@ function getCategoryWeightMultiplier(category) {
   }
 
   return Math.min(2, Math.max(0, multiplier));
+}
+
+function filterRecentSimilarCards(cards, options = {}) {
+  if (!cards.length) {
+    return cards;
+  }
+
+  const recentTags = getRecentCardSpreadTags(options);
+  if (!recentTags.size) {
+    return cards;
+  }
+
+  const spreadCards = cards.filter((card) => !sharesAnySpreadTag(card, recentTags));
+  return spreadCards.length ? spreadCards : cards;
+}
+
+function getRecentCardSpreadTags(options = {}) {
+  const state = options.state || game;
+  const tags = new Set();
+  const recentIds = [
+    ...(options.additionalSimilarityCardIds || []),
+    ...(state?.cardHistory || [])
+      .slice(-RECENT_SIMILAR_CARD_LIMIT)
+      .reverse()
+      .map((entry) => entry.cardId)
+  ];
+
+  recentIds.forEach((cardId) => {
+    getCardSpreadTags(getCardById(cardId)).forEach((tag) => tags.add(tag));
+  });
+  return tags;
+}
+
+function sharesAnySpreadTag(card, tags) {
+  return getCardSpreadTags(card).some((tag) => tags.has(tag));
+}
+
+function getCardSpreadTags(card) {
+  if (!card || !Array.isArray(card.contentTags)) {
+    return [];
+  }
+
+  return uniqueStrings(card.contentTags.filter((tag) => CARD_SPREAD_TAGS.has(tag)));
 }
 
 function getHistoricallyPlayedCardIds() {

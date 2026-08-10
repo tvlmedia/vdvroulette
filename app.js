@@ -11,7 +11,7 @@ const STORAGE_KEYS = {
   corruptBackupPrefix: "dateRoulette_corruptBackup_"
 };
 
-const APP_VERSION = "v1.3.22";
+const APP_VERSION = "v1.3.23";
 const STATE_VERSION = 6;
 const MAX_LEVEL = 5;
 const ACTIVE_TIMERS_LIMIT = 12;
@@ -1246,6 +1246,10 @@ function getDisplayCardText(card, state = game, playerIndex = state.currentPlaye
   return resolveCardTemplateText(card?.text || "", state, playerIndex);
 }
 
+function getDisplayCardSafetyNote(card, state = game, playerIndex = state.currentPlayerIndex) {
+  return resolveCardTemplateText(card?.safetyNote || "", state, playerIndex);
+}
+
 function isPlayerChoiceSpecialType(type) {
   return type === "winnieChoice" || type === "tijgertjeChoice";
 }
@@ -1266,13 +1270,27 @@ function getPlayerChoiceName(state = game, playerIndex = state.currentPlayerInde
 
 function resolveCardTemplateText(value, state = game, playerIndex = state.currentPlayerIndex) {
   const text = String(value || "");
-  if (!text.includes("{{")) {
+  const resolvedText = text
+    .replace(/\{\{\s*femalePlayer\s*\}\}/gi, getPlayerNameByGender("vrouw", state, playerIndex) || "de vrouwelijke speler")
+    .replace(/\{\{\s*malePlayer\s*\}\}/gi, getPlayerNameByGender("man", state, playerIndex) || "de mannelijke speler");
+  return personalizeOtherPlayerReferences(resolvedText, state, playerIndex);
+}
+
+function personalizeOtherPlayerReferences(text, state = game, playerIndex = state.currentPlayerIndex) {
+  const otherPlayerName = getOtherPlayerName(state, playerIndex);
+  if (!otherPlayerName) {
     return text;
   }
 
-  return text
-    .replace(/\{\{\s*femalePlayer\s*\}\}/gi, getPlayerNameByGender("vrouw", state, playerIndex) || "de vrouwelijke speler")
-    .replace(/\{\{\s*malePlayer\s*\}\}/gi, getPlayerNameByGender("man", state, playerIndex) || "de mannelijke speler");
+  return String(text || "")
+    .replace(/\bDe andere speler\b/g, otherPlayerName)
+    .replace(/\bde andere speler\b/g, otherPlayerName)
+    .replace(/\bDe ander\b/g, otherPlayerName)
+    .replace(/\bde ander\b/g, otherPlayerName);
+}
+
+function getLipstickPenaltyTask(state = game, playerIndex = state.currentPlayerIndex) {
+  return personalizeOtherPlayerReferences(LIPSTICK_PENALTY_TASK, state, playerIndex);
 }
 
 function getPlayerNameByGender(gender, state = game, preferredExcludeIndex = null) {
@@ -1843,8 +1861,9 @@ function renderTaskCard(card, activeText, session = game.specialSession) {
     panel.append(createElement("p", "special-active-text", activeText));
   }
 
-  if (card.safetyNote) {
-    panel.append(createElement("p", "safety-note", card.safetyNote));
+  const displaySafetyNote = getDisplayCardSafetyNote(card, game, session?.playerIndex);
+  if (displaySafetyNote) {
+    panel.append(createElement("p", "safety-note", displaySafetyNote));
   }
 
   return panel;
@@ -2371,8 +2390,11 @@ function getCardById(cardId) {
   return deck.cards.find((card) => card.id === cardId) || null;
 }
 
-function getOtherPlayerName() {
-  return game.players[game.currentPlayerIndex === 0 ? 1 : 0].name;
+function getOtherPlayerName(state = game, playerIndex = state?.currentPlayerIndex ?? game.currentPlayerIndex) {
+  const players = getStatePlayers(state);
+  const index = clampPlayerIndex(playerIndex);
+  const otherIndex = index === 0 ? 1 : 0;
+  return players[otherIndex]?.name || players.find((_, candidateIndex) => candidateIndex !== index)?.name || "";
 }
 
 function shuffleCards(cards) {
@@ -3017,8 +3039,9 @@ function renderGame() {
       ui.cardTimerBadge.hidden = !currentCard.timerSeconds;
     }
     if (ui.cardSafetyNote) {
-      ui.cardSafetyNote.textContent = currentCard.safetyNote || "";
-      ui.cardSafetyNote.hidden = !currentCard.safetyNote;
+      const displaySafetyNote = getDisplayCardSafetyNote(currentCard, game, game.currentPlayerIndex);
+      ui.cardSafetyNote.textContent = displaySafetyNote;
+      ui.cardSafetyNote.hidden = !displaySafetyNote;
     }
     ui.emptyState.hidden = true;
   } else {
@@ -4018,7 +4041,7 @@ function triggerKissAnimation() {
   }
 
   if (ui.kissAnimationText) {
-    ui.kissAnimationText.textContent = LIPSTICK_PENALTY_TASK;
+    ui.kissAnimationText.textContent = getLipstickPenaltyTask(game, game.currentPlayerIndex);
   }
   ui.kissAnimation.classList.remove("is-active");
   ui.kissAnimation.setAttribute("aria-hidden", "false");
@@ -5512,13 +5535,14 @@ window.DateRouletteTestHooks = {
   getActiveTimerRemainingSeconds,
   getDisplayCardTitle,
   getDisplayCardText,
+  getDisplayCardSafetyNote,
   getCardWeight,
   isJacuzziCompatibleCard,
   stopTimerForResolvedCard,
   normalizeActiveTimers,
   stopActiveTimerInterval,
   createCardReportPayload,
-  getLipstickPenaltyTask: () => LIPSTICK_PENALTY_TASK,
+  getLipstickPenaltyTask,
   validateCards: () => getCardValidationResult(),
   setRandomSource(nextRandomSource) {
     randomSource = typeof nextRandomSource === "function" ? nextRandomSource : Math.random;

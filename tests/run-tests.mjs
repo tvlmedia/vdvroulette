@@ -171,6 +171,33 @@ await run("flirty_020 is male-only and targets the female player name", () => {
   assert.equal(hooks.isCardEligible(restrictedCard, noFemaleGame, noFemaleGame.players[0]), false);
 });
 
+await run("display card text personalizes partner references", () => {
+  const game = hooks.createNewGame("Kyra", "Timo", "vrouw", "man");
+  game.levelSystemEnabled = false;
+  game.currentLevel = 5;
+
+  assert.equal(
+    hooks.getDisplayCardText(hooks.getCardById("flirty_001"), game, 0),
+    "Geef Timo vijf minuten een massage."
+  );
+  assert.equal(
+    hooks.getDisplayCardText(hooks.getCardById("flirty_002"), game, 0),
+    "Timo kiest hoe jullie de komende vijf minuten knuffelen."
+  );
+  assert.equal(
+    hooks.getDisplayCardText(hooks.getCardById("special_roulette_001"), game, 0),
+    "Timo krijgt tien kaarten te zien en kiest drie opdrachten die jij achter elkaar moet proberen."
+  );
+  assert.equal(
+    hooks.getDisplayCardText(hooks.getCardById("chaos_006"), game, 1),
+    "Wissel vijf minuten van persoonlijkheid: jij speelt Kyra en Kyra speelt jou."
+  );
+  assert.equal(
+    hooks.getDisplayCardSafetyNote({ safetyNote: "Blijf uit de buurt van de ander." }, game, 1),
+    "Blijf uit de buurt van Kyra."
+  );
+});
+
 await run("playerRestriction can target player gender", () => {
   assert.equal(hooks.isPlayerAllowed({ playerRestriction: "vrouw" }, { id: "player_1", name: "Alex", gender: "vrouw" }), true);
   assert.equal(hooks.isPlayerAllowed({ playerRestriction: "vrouw" }, { id: "player_2", name: "Sam", gender: "man" }), false);
@@ -526,8 +553,10 @@ await run("card report payload includes original and suggested fix", () => {
   assert.deepEqual(payload.changedFields.sort(), ["safetyNote", "text", "title"]);
 });
 
-await run("lipstick penalty copy explains the imprint task", () => {
-  assert.equal(hooks.getLipstickPenaltyTask(), "Laat de ander een lippenstiftafdruk achterlaten.");
+await run("lipstick penalty copy names the partner", () => {
+  const game = hooks.createNewGame("Kyra", "Timo", "vrouw", "man");
+  game.currentPlayerIndex = 0;
+  assert.equal(hooks.getLipstickPenaltyTask(game, 0), "Laat Timo een lippenstiftafdruk achterlaten.");
 });
 
 await run("local card ratings are included in playtest export", () => {
@@ -538,7 +567,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.22");
+  assert.equal(exported.appVersion, "v1.3.23");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

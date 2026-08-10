@@ -33,8 +33,8 @@ console.log(validateCards());
 - Make-up: 18
 - Blinddoek: 21
 - Cute: 23
-- Flirty: 28
-- Oohlala: 29
+- Flirty: 30
+- Oohlala: 27
 - Disney: 3
 - Jacuzzi: 29
 - Specials: 11

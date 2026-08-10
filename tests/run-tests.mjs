@@ -78,18 +78,18 @@ await run("validateCards returns no schema errors", () => {
     makeup: 18,
     blindfold: 21,
     cute: 23,
-    flirty: 28,
-    oohlala: 29,
+    flirty: 30,
+    oohlala: 27,
     disney: 3,
     jacuzzi: 29,
     special: 11
   });
   assert.deepEqual(deck.cardCounts.byLevel, {
     1: 85,
-    2: 41,
+    2: 43,
     3: 18,
     4: 38,
-    5: 14
+    5: 12
   });
 });
 
@@ -480,6 +480,20 @@ await run("new requested date-night cards are imported with metadata", () => {
   );
 });
 
+await run("reported oohlala kissing cards are moved to flirty level 2", () => {
+  const slowKiss = hooks.getCardById("oohlala_025");
+  const soundBarrier = hooks.getCardById("oohlala_027");
+
+  assert.equal(slowKiss.title, "Slow-Motion Kus");
+  assert.equal(slowKiss.category, "flirty");
+  assert.equal(slowKiss.emoji, "😏");
+  assert.equal(slowKiss.level, 2);
+  assert.equal(soundBarrier.title, "Geluidsbarrière");
+  assert.equal(soundBarrier.category, "flirty");
+  assert.equal(soundBarrier.emoji, "😏");
+  assert.equal(soundBarrier.level, 2);
+});
+
 await run("reported chaos_009 text is corrected", () => {
   const card = hooks.getCardById("chaos_009");
   assert.equal(card.title, "Slok en Kus");
@@ -778,7 +792,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.35");
+  assert.equal(exported.appVersion, "v1.3.36");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

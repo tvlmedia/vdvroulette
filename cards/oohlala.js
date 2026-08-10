@@ -509,27 +509,6 @@ export const OOHLALA_CARDS = [
     "safetyNote": "WALIBI betekent direct stoppen."
   },
   {
-    "id": "oohlala_025",
-    "category": "oohlala",
-    "emoji": "🔥",
-    "title": "Slow-Motion Kus",
-    "text": "Zoen elkaar één minuut in extreme slow-motion. Elke beweging gaat overdreven langzaam, zonder tussendoor te versnellen.",
-    "level": 5,
-    "timerSeconds": 60,
-    "jacuzziAllowed": true,
-    "requiresJacuzzi": false,
-    "repeatable": false,
-    "upgradeText": null,
-    "lighterText": null,
-    "specialType": null,
-    "playerRestriction": null,
-    "contentTags": [
-      "kissing",
-      "slow"
-    ],
-    "safetyNote": "Blijf rustig ademen en stop bij ongemak."
-  },
-  {
     "id": "oohlala_026",
     "category": "oohlala",
     "emoji": "🔥",
@@ -550,28 +529,6 @@ export const OOHLALA_CARDS = [
       "blindfold"
     ],
     "safetyNote": "Kies alleen wat binnen jullie grenzen past; WALIBI stopt alles."
-  },
-  {
-    "id": "oohlala_027",
-    "category": "oohlala",
-    "emoji": "🔥",
-    "title": "Geluidsbarrière",
-    "text": "Plaag en kus de ander één minuut op afgesproken gevoelige plekken. De ander blijft muisstil. Maakt diegene toch geluid, voeg dan dertig seconden toe.",
-    "level": 5,
-    "timerSeconds": 60,
-    "jacuzziAllowed": false,
-    "requiresJacuzzi": false,
-    "repeatable": false,
-    "upgradeText": null,
-    "lighterText": null,
-    "specialType": null,
-    "playerRestriction": null,
-    "contentTags": [
-      "teasing",
-      "kissing",
-      "silence"
-    ],
-    "safetyNote": "Alleen op afgesproken plekken en stop direct bij WALIBI."
   },
   {
     "id": "oohlala_028",

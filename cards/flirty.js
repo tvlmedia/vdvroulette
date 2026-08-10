@@ -577,5 +577,48 @@ export const FLIRTY_CARDS = [
       "flirt"
     ],
     "safetyNote": null
+  },
+  {
+    "id": "oohlala_025",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Slow-Motion Kus",
+    "text": "Zoen elkaar één minuut in extreme slow-motion. Elke beweging gaat overdreven langzaam, zonder tussendoor te versnellen.",
+    "level": 2,
+    "timerSeconds": 60,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing",
+      "slow"
+    ],
+    "safetyNote": "Blijf rustig ademen en stop bij ongemak."
+  },
+  {
+    "id": "oohlala_027",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Geluidsbarrière",
+    "text": "Plaag en kus de ander één minuut op afgesproken gevoelige plekken. De ander blijft muisstil. Maakt diegene toch geluid, voeg dan dertig seconden toe.",
+    "level": 2,
+    "timerSeconds": 60,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "teasing",
+      "kissing",
+      "silence"
+    ],
+    "safetyNote": "Alleen op afgesproken plekken en stop direct bij WALIBI."
   }
 ];

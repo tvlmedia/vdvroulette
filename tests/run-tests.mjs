@@ -115,13 +115,20 @@ await run("isCardEligible respects levels", () => {
   state.currentLevel = 3;
   assert.equal(hooks.isCardEligible(hooks.getCardById("blindfold_001"), state, player), true);
   state.currentLevel = 4;
-  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_001"), state, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_001"), state, player), false);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_003"), state, player), false);
   state.currentLevel = 5;
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_001"), state, player), false);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_003"), state, player), false);
+  state.levelOverride = 4;
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_001"), state, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_003"), state, player), false);
+  state.levelOverride = 5;
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_001"), state, player), false);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_003"), state, player), true);
 });
 
-await run("spice level override filters to exact level 4 and 5", () => {
+await run("spice level override gates exact level 4 and 5", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   const player = game.players[0];
   game.levelSystemEnabled = true;
@@ -152,6 +159,19 @@ await run("spice level override filters to exact level 4 and 5", () => {
 });
 
 await run("spice level draw pools contain only the selected level", () => {
+  const normalHighProgressGame = hooks.createNewGame("Winnie", "Tijgertje");
+  normalHighProgressGame.levelSystemEnabled = true;
+  normalHighProgressGame.currentLevel = 5;
+  const normalCards = hooks.getAvailableCards({
+    includeUsed: true,
+    ignoreTemporaryRejected: true,
+    ignoreRecentSimilar: true,
+    state: normalHighProgressGame,
+    player: normalHighProgressGame.players[0]
+  });
+  assert.ok(normalCards.length > 0);
+  assert.equal(normalCards.every((card) => Number(card.level) <= 3), true);
+
   const levelFourGame = hooks.createNewGame("Winnie", "Tijgertje");
   levelFourGame.levelSystemEnabled = true;
   levelFourGame.currentLevel = 1;
@@ -171,7 +191,26 @@ await run("spice level draw pools contain only the selected level", () => {
   assert.equal(levelFiveCards.every((card) => Number(card.level) === 5), true);
 });
 
-await run("wild card is only available from level 4", () => {
+await run("stale spicy current card is cleared when spice buttons are off", () => {
+  const staleGame = hooks.createNewGame("Winnie", "Tijgertje");
+  staleGame.levelSystemEnabled = true;
+  staleGame.players.forEach((player) => {
+    player.completedCards = 10;
+  });
+  staleGame.currentLevel = 4;
+  staleGame.levelOverride = null;
+  staleGame.currentCardId = "oohlala_001";
+  staleGame.usedCardIds = ["oohlala_001"];
+  hooks.setTestState(staleGame);
+
+  assert.equal(hooks.getGame().currentLevel, 4);
+  assert.equal(hooks.getGame().currentCardId, "oohlala_001");
+  assert.equal(hooks.clearIneligibleCurrentCard(), true);
+  assert.equal(hooks.getGame().currentCardId, null);
+  assert.equal(hooks.getGame().usedCardIds.includes("oohlala_001"), false);
+});
+
+await run("wild card requires the level 4 spice button", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   const player = game.players[0];
   const wildCard = hooks.getCardById("special_wild_001");
@@ -182,10 +221,13 @@ await run("wild card is only available from level 4", () => {
   assert.equal(hooks.isCardEligible(wildCard, game, player), false);
 
   game.currentLevel = 4;
+  assert.equal(hooks.isCardEligible(wildCard, game, player), false);
+
+  game.levelOverride = 4;
   assert.equal(hooks.isCardEligible(wildCard, game, player), true);
 });
 
-await run("golden card is only available from level 4", () => {
+await run("golden card requires the level 4 spice button", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   const player = game.players[0];
   const goldenCard = hooks.getCardById("special_golden_001");
@@ -196,10 +238,13 @@ await run("golden card is only available from level 4", () => {
   assert.equal(hooks.isCardEligible(goldenCard, game, player), false);
 
   game.currentLevel = 4;
+  assert.equal(hooks.isCardEligible(goldenCard, game, player), false);
+
+  game.levelOverride = 4;
   assert.equal(hooks.isCardEligible(goldenCard, game, player), true);
 });
 
-await run("player choice specials unlock at level 4 and 5", () => {
+await run("player choice specials require level 4 and 5 spice buttons", () => {
   const game = hooks.createNewGame("Kyra", "Timo");
   const player = game.players[0];
   const levelFourChoice = hooks.getCardById("special_winnie_001");
@@ -214,10 +259,18 @@ await run("player choice specials unlock at level 4 and 5", () => {
   assert.equal(hooks.isCardEligible(levelFiveChoice, game, player), false);
 
   game.currentLevel = 4;
+  assert.equal(hooks.isCardEligible(levelFourChoice, game, player), false);
+  assert.equal(hooks.isCardEligible(levelFiveChoice, game, player), false);
+  game.levelOverride = 4;
   assert.equal(hooks.isCardEligible(levelFourChoice, game, player), true);
   assert.equal(hooks.isCardEligible(levelFiveChoice, game, player), false);
 
   game.currentLevel = 5;
+  game.levelOverride = null;
+  assert.equal(hooks.isCardEligible(levelFourChoice, game, player), false);
+  assert.equal(hooks.isCardEligible(levelFiveChoice, game, player), false);
+  game.levelOverride = 5;
+  assert.equal(hooks.isCardEligible(levelFourChoice, game, player), false);
   assert.equal(hooks.isCardEligible(levelFiveChoice, game, player), true);
 });
 
@@ -717,7 +770,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.33");
+  assert.equal(exported.appVersion, "v1.3.34");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

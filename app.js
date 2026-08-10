@@ -11,9 +11,10 @@ const STORAGE_KEYS = {
   corruptBackupPrefix: "dateRoulette_corruptBackup_"
 };
 
-const APP_VERSION = "v1.3.33";
+const APP_VERSION = "v1.3.34";
 const STATE_VERSION = 6;
 const MAX_LEVEL = 5;
+const NORMAL_MAX_LEVEL_WITHOUT_SPICE = 3;
 const ACTIVE_TIMERS_LIMIT = 12;
 const RECENT_SIMILAR_CARD_LIMIT = 3;
 const DEFAULT_PLAYERS = ["Winnie", "Tijgertje"];
@@ -649,10 +650,7 @@ function handleSettingsSubmit(event) {
     game.currentLevel = calculateEarnedLevel(game.players);
   }
 
-  const currentCard = getCurrentCard();
-  if (currentCard && !isCardEligible(currentCard)) {
-    clearCurrentCard({ releaseUsed: true });
-  }
+  clearIneligibleCurrentCard();
 
   saveGame();
   saveSettings();
@@ -744,10 +742,7 @@ function handleSpiceLevelButtonClick(event) {
   game.levelOverride = nextLevelOverride;
   game.emptyDeckReason = null;
 
-  const currentCard = getCurrentCard();
-  if (currentCard && !isCardEligible(currentCard)) {
-    clearCurrentCard({ releaseUsed: true });
-  }
+  clearIneligibleCurrentCard();
 
   saveGame();
   renderGame();
@@ -768,9 +763,7 @@ function enableJacuzziMode() {
   playSound("special");
   vibrate([18, 28, 18]);
 
-  const currentCard = getCurrentCard();
-  if (currentCard && !isCardEligible(currentCard)) {
-    clearCurrentCard({ releaseUsed: true });
+  if (clearIneligibleCurrentCard()) {
     showToast("Nieuwe jacuzzi-geschikte opdracht zoeken… 🛁");
   }
 }
@@ -788,10 +781,7 @@ function disableJacuzziMode() {
   debugLog("jacuzzi_disabled", { playerIndex: game.currentPlayerIndex });
   vibrate(12);
 
-  const currentCard = getCurrentCard();
-  if (currentCard && isJacuzziModeCard(currentCard)) {
-    clearCurrentCard({ releaseUsed: true });
-  }
+  clearIneligibleCurrentCard();
 }
 
 function turnOffJacuzziFromEmpty() {
@@ -1068,6 +1058,23 @@ function clearCurrentCard(options = {}) {
   game.timer = createDefaultTimer();
 }
 
+function clearIneligibleCurrentCard() {
+  const currentCard = getCurrentCard();
+  if (!currentCard || isCardEligible(currentCard)) {
+    return false;
+  }
+
+  if (game.specialSession) {
+    game.specialSession = null;
+    game.activePerfectRun = null;
+    stopSpecialTimerInterval();
+  }
+
+  clearCurrentCard({ releaseUsed: true });
+  game.emptyDeckReason = null;
+  return true;
+}
+
 function getCurrentPlayer() {
   return game.players[game.currentPlayerIndex] || game.players[0];
 }
@@ -1176,7 +1183,7 @@ function isCardEligible(card, state = game, player = getCurrentPlayer()) {
     if (cardLevel !== spiceLevel) {
       return false;
     }
-  } else if (cardLevel > getEffectiveLevel(state)) {
+  } else if (cardLevel > getNormalPlayableLevel(state)) {
     return false;
   }
 
@@ -1517,6 +1524,14 @@ function getEffectiveLevel(state = game) {
   }
 
   return getActiveSpiceLevel(state) || clampLevel(state.currentLevel);
+}
+
+function getNormalPlayableLevel(state = game) {
+  if (!state?.levelSystemEnabled) {
+    return MAX_LEVEL;
+  }
+
+  return Math.min(clampLevel(state.currentLevel), NORMAL_MAX_LEVEL_WITHOUT_SPICE);
 }
 
 function getActiveSpiceLevel(state = game) {
@@ -3115,7 +3130,11 @@ function renderHome() {
 function renderGame() {
   const players = game.players || createDefaultPlayers();
   const currentPlayer = getCurrentPlayer();
-  const currentCard = getCurrentCard();
+  let currentCard = getCurrentCard();
+  if (clearIneligibleCurrentCard()) {
+    saveGame();
+    currentCard = null;
+  }
   const availableCards = getAvailableCards();
   const hasAvailableCards = availableCards.length > 0;
   const emptyDeckActive = !currentCard && (!hasAvailableCards || game.emptyDeckReason);
@@ -3230,8 +3249,8 @@ function renderLevelProgress() {
 
   if (game.currentLevel >= MAX_LEVEL) {
     const requirement = levelRequirements[MAX_LEVEL];
-    ui.levelStatusTitle.textContent = "Level 5 — Alles vrijgespeeld";
-    ui.levelNextText.textContent = "";
+    ui.levelStatusTitle.textContent = "Level 5 — rustige mix";
+    ui.levelNextText.textContent = "Level 4/5-kaarten alleen via Pittig of Oohlala";
     renderPlayerProgressLine(0, players[0].completedCards, requirement, false);
     renderPlayerProgressLine(1, players[1].completedCards, requirement, false);
     return;
@@ -3239,8 +3258,12 @@ function renderLevelProgress() {
 
   const nextLevel = game.currentLevel + 1;
   const requirement = levelRequirements[nextLevel];
-  ui.levelStatusTitle.textContent = `Level ${game.currentLevel}`;
-  ui.levelNextText.textContent = `Level ${nextLevel} bij ${requirement} kaarten per speler`;
+  ui.levelStatusTitle.textContent = game.currentLevel >= 4
+    ? `Level ${game.currentLevel} — rustige mix`
+    : `Level ${game.currentLevel}`;
+  ui.levelNextText.textContent = game.currentLevel >= 4
+    ? `Level ${nextLevel} bij ${requirement} kaarten per speler · level 4/5 via knoppen`
+    : `Level ${nextLevel} bij ${requirement} kaarten per speler`;
   renderPlayerProgressLine(0, players[0].completedCards, requirement, false);
   renderPlayerProgressLine(1, players[1].completedCards, requirement, false);
 }
@@ -5711,11 +5734,13 @@ window.DateRouletteTestHooks = {
   getDisplayCardText,
   getDisplayCardSafetyNote,
   getEffectiveLevel,
+  getNormalPlayableLevel,
   getCardWeight,
   isJacuzziCompatibleCard,
   stopTimerForResolvedCard,
   normalizeActiveTimers,
   stopActiveTimerInterval,
+  clearIneligibleCurrentCard,
   createCardReportPayload,
   getLipstickPenaltyTask,
   validateCards: () => getCardValidationResult(),

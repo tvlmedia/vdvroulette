@@ -538,6 +538,30 @@ export const JACUZZI_CARDS = [
     "intensity": "oohlala"
   },
   {
+    "id": "jacuzzi_oohlala_009",
+    "category": "jacuzzi",
+    "emoji": "🛁",
+    "title": "Jacuzzi Freeze",
+    "text": "Ga dicht tegen elkaar aan zitten. Eén van jullie laat een ijsblokje onder water langzaam over rug of benen van de ander glijden totdat het smelt.",
+    "level": 5,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": true,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "jacuzzi",
+      "ice",
+      "temperature",
+      "touch"
+    ],
+    "safetyNote": "Houd gezichten boven water, blijf bewegen met het ijs en stop direct bij WALIBI.",
+    "intensity": "oohlala"
+  },
+  {
     "id": "jacuzzi_special_001",
     "category": "jacuzzi",
     "emoji": "🛁",

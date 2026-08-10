@@ -72,17 +72,24 @@ await run("validateCards returns no schema errors", () => {
   const validation = hooks.validateCards();
   assert.equal(validation.errors.length, 0, validation.errors.join("\n"));
   assert.equal(new Set(deck.cards.map((card) => card.id)).size, deck.cards.length);
-  assert.equal(deck.cards.length, 174);
+  assert.equal(deck.cards.length, 196);
   assert.deepEqual(deck.cardCounts.byCategory, {
-    chaos: 29,
-    makeup: 15,
-    blindfold: 17,
+    chaos: 34,
+    makeup: 18,
+    blindfold: 21,
     cute: 23,
     flirty: 28,
-    oohlala: 20,
+    oohlala: 29,
     disney: 3,
-    jacuzzi: 28,
+    jacuzzi: 29,
     special: 11
+  });
+  assert.deepEqual(deck.cardCounts.byLevel, {
+    1: 87,
+    2: 45,
+    3: 18,
+    4: 35,
+    5: 11
   });
 });
 
@@ -245,6 +252,34 @@ await run("new whipped cream cards are available", () => {
   assert.equal(blindfoldCard.contentTags.includes("food"), true);
   assert.equal(oohlalaCard.title, "Slagroom-Kus");
   assert.equal(oohlalaCard.safetyNote.includes("verslikken"), true);
+});
+
+await run("new requested date-night cards are imported with metadata", () => {
+  const clothingTwist = hooks.getCardById("chaos_030");
+  const makeUpQuiz = hooks.getCardById("makeup_017");
+  const jacuzziFreeze = hooks.getCardById("jacuzzi_oohlala_009");
+  const soundBarrier = hooks.getCardById("oohlala_027");
+  const blindCream = hooks.getCardById("blindfold_020");
+
+  assert.equal(clothingTwist.title, "Kledingruil Twist");
+  assert.equal(clothingTwist.level, 4);
+  assert.equal(makeUpQuiz.playerRestriction, "man");
+  assert.equal(makeUpQuiz.text.includes("Kyra"), false);
+  assert.equal(jacuzziFreeze.requiresJacuzzi, true);
+  assert.equal(jacuzziFreeze.level, 5);
+  assert.equal(soundBarrier.timerSeconds, 60);
+  assert.equal(blindCream.level, 5);
+
+  const game = hooks.createNewGame("Kyra", "Timo", "vrouw", "man");
+  game.levelSystemEnabled = false;
+  game.currentLevel = 5;
+  game.currentPlayerIndex = 1;
+  assert.equal(hooks.isCardEligible(makeUpQuiz, game, game.players[1]), true);
+  assert.equal(hooks.isCardEligible(makeUpQuiz, game, game.players[0]), false);
+  assert.equal(
+    hooks.getDisplayCardText(makeUpQuiz, game, 1),
+    "Kyra laat jou drie willekeurige make-upproducten zien. Raad waar elk product voor dient. Voor elk fout antwoord mag zij met een kwastje of potlood een stip op je gezicht zetten."
+  );
 });
 
 await run("reported chaos_009 text is corrected", () => {
@@ -503,7 +538,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.21");
+  assert.equal(exported.appVersion, "v1.3.22");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

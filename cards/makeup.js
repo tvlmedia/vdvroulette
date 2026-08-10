@@ -319,5 +319,71 @@ export const MAKEUP_CARDS = [
       "kissing"
     ],
     "safetyNote": "Maak alleen een foto als jullie allebei willen."
+  },
+  {
+    "id": "makeup_016",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Blinde Make-over",
+    "text": "Doe een blinddoek om. Teken op de tast met lippenstift of eyeliner een klein stipje, hartje of speels detail op de wang of het voorhoofd van de ander.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "makeup",
+      "blindfold",
+      "body-art"
+    ],
+    "safetyNote": "Blijf weg van de ogen terwijl je geblinddoekt bent."
+  },
+  {
+    "id": "makeup_017",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Make-up Quiz-Straf",
+    "text": "{{femalePlayer}} laat jou drie willekeurige make-upproducten zien. Raad waar elk product voor dient. Voor elk fout antwoord mag zij met een kwastje of potlood een stip op je gezicht zetten.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": "man",
+    "contentTags": [
+      "makeup",
+      "quiz",
+      "player-specific"
+    ],
+    "safetyNote": "Gebruik alleen huidveilige producten en blijf weg van de ogen."
+  },
+  {
+    "id": "makeup_018",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Lipstick Gijzeling",
+    "text": "Stift je lippen. De ander houdt de handen achter de rug. Je hebt twee minuten om een spoor van zachte kusjes te zetten vanaf de kaaklijn via de hals richting borstkas.",
+    "level": 4,
+    "timerSeconds": 120,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "lipstick",
+      "kissing",
+      "body-contact"
+    ],
+    "safetyNote": "Alleen op afgesproken plekken en stop direct bij WALIBI."
   }
 ];

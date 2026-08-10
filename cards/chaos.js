@@ -621,5 +621,115 @@ export const CHAOS_CARDS = [
       "humor"
     ],
     "safetyNote": null
+  },
+  {
+    "id": "chaos_030",
+    "category": "chaos",
+    "emoji": "😂",
+    "title": "Kledingruil Twist",
+    "text": "Kies één kledingstuk of accessoire dat je nu draagt en trek het zo theatraal mogelijk uit. De ander draagt het tot de volgende kaart bovenop de eigen outfit.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "clothing",
+      "dressup",
+      "roleplay"
+    ],
+    "safetyNote": "Kies iets dat makkelijk en veilig over de eigen outfit gedragen kan worden."
+  },
+  {
+    "id": "chaos_031",
+    "category": "chaos",
+    "emoji": "😂",
+    "title": "Kleding-Kakofonie",
+    "text": "Kies één fout of opvallend kledingstuk van jezelf. De ander trekt het nu bovenop de eigen outfit aan en houdt het drie speelrondes aan.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "clothing",
+      "dressup",
+      "humor"
+    ],
+    "safetyNote": "Alleen kleding die comfortabel en veilig over de outfit past."
+  },
+  {
+    "id": "chaos_032",
+    "category": "chaos",
+    "emoji": "😂",
+    "title": "De Nee-Ronde",
+    "text": "Speel twee minuten alsof het antwoord op elke speelse vraag alleen maar 'nee' mag zijn. De vragensteller probeert de ander uit de rol te krijgen zonder echte grenzen te pushen.",
+    "level": 1,
+    "timerSeconds": 120,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "roleplay",
+      "conversation",
+      "humor"
+    ],
+    "safetyNote": "Een echt nee blijft altijd nee; houd het spel luchtig."
+  },
+  {
+    "id": "chaos_033",
+    "category": "chaos",
+    "emoji": "😂",
+    "title": "Sokken-Roof",
+    "text": "Probeer binnen negentig seconden de sokken van de ander uit te trekken met alleen je voeten. Je handen blijven uit het spel.",
+    "level": 4,
+    "timerSeconds": 90,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "feet",
+      "challenge",
+      "humor"
+    ],
+    "safetyNote": "Doe dit zittend of op bed, zonder hard te trekken."
+  },
+  {
+    "id": "chaos_034",
+    "category": "chaos",
+    "emoji": "😂",
+    "title": "Steen-Papier-Schaar Straf",
+    "text": "Speel één potje steen-papier-schaar. De winnaar krijgt vijftien seconden om de verliezer speels te kietelen in de nek of zij.",
+    "level": 4,
+    "timerSeconds": 15,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "game",
+      "tickling",
+      "humor"
+    ],
+    "safetyNote": "Stop meteen als iemand wegtrekt of WALIBI zegt."
   }
 ];

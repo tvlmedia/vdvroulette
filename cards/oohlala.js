@@ -419,5 +419,202 @@ export const OOHLALA_CARDS = [
       "kissing"
     ],
     "safetyNote": "Gebruik weinig slagroom, blijf rechtop zitten en stop meteen bij hoesten of verslikken."
+  },
+  {
+    "id": "oohlala_021",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Temperatuur Schok",
+    "text": "Maak je vingers koel onder de kraan of juist warm met warm water. Glijd daarna zestig seconden langzaam onder het shirt van de ander over rug, buik of zij.",
+    "level": 4,
+    "timerSeconds": 60,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "temperature",
+      "touch",
+      "clothing"
+    ],
+    "safetyNote": "Test de temperatuur eerst op jezelf en gebruik niets extreems."
+  },
+  {
+    "id": "oohlala_022",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Stropdas Gijzeling",
+    "text": "Gebruik een stropdas of sjaal zodat de ander de handen losjes achter de rug houdt. Jij leidt de opdracht en geeft drie intense, plagerige kusjes op plekken naar keuze, behalve op de mond.",
+    "level": 5,
+    "timerSeconds": 120,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "restraint",
+      "kissing",
+      "teasing"
+    ],
+    "safetyNote": "Niet knopen of vastmaken; direct los bij WALIBI."
+  },
+  {
+    "id": "oohlala_023",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Knopen Koning",
+    "text": "Kies een kledingstuk met knopen of een rits bij de ander. Open het binnen negentig seconden met alleen je tanden, terwijl je handen op je eigen rug blijven.",
+    "level": 4,
+    "timerSeconds": 90,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "clothing",
+      "challenge",
+      "teeth"
+    ],
+    "safetyNote": "Doe rustig en blijf weg van huid, haar en sieraden."
+  },
+  {
+    "id": "oohlala_024",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Handen Thuis",
+    "text": "Leg de handen van de ander plat op tafel of bed. De ander laat ze daar twee minuten liggen terwijl jij kust en aanraakt op vooraf afgesproken plekken. Verplaatst de ander de handen, dan stopt de beurt.",
+    "level": 5,
+    "timerSeconds": 120,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "hands",
+      "touch",
+      "kissing"
+    ],
+    "safetyNote": "WALIBI betekent direct stoppen."
+  },
+  {
+    "id": "oohlala_025",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Slow-Motion Kus",
+    "text": "Zoen elkaar één minuut in extreme slow-motion. Elke beweging gaat overdreven langzaam, zonder tussendoor te versnellen.",
+    "level": 5,
+    "timerSeconds": 60,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing",
+      "slow"
+    ],
+    "safetyNote": "Blijf rustig ademen en stop bij ongemak."
+  },
+  {
+    "id": "oohlala_026",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Ultieme Keuze",
+    "text": "Kies je dilemma: trek nu twee kledingstukken of accessoires van jezelf uit, óf laat de ander jou blinddoeken en twee minuten plagen op afgesproken plekken.",
+    "level": 5,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "choice",
+      "clothing",
+      "blindfold"
+    ],
+    "safetyNote": "Kies alleen wat binnen jullie grenzen past; WALIBI stopt alles."
+  },
+  {
+    "id": "oohlala_027",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Geluidsbarrière",
+    "text": "Plaag en kus de ander één minuut op afgesproken gevoelige plekken. De ander blijft muisstil. Maakt diegene toch geluid, voeg dan dertig seconden toe.",
+    "level": 5,
+    "timerSeconds": 60,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "teasing",
+      "kissing",
+      "silence"
+    ],
+    "safetyNote": "Alleen op afgesproken plekken en stop direct bij WALIBI."
+  },
+  {
+    "id": "oohlala_028",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Bijna-Kus Boete",
+    "text": "Maak de ander één minuut gek door heel dichtbij te komen, de hals te kussen en te knuffelen. Probeert de ander jou op de mond te kussen, trek je lachend terug.",
+    "level": 4,
+    "timerSeconds": 60,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing",
+      "teasing",
+      "hugging"
+    ],
+    "safetyNote": "Houd het speels en stop bij WALIBI."
+  },
+  {
+    "id": "oohlala_029",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Kleding-Wissel",
+    "text": "Je krijgt zestig seconden om één kledingstuk of accessoire van jezelf uit te trekken en bij de ander aan te trekken. De ander helpt, maar mag alleen de tanden gebruiken om stof vast te pakken.",
+    "level": 4,
+    "timerSeconds": 60,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "clothing",
+      "challenge",
+      "teeth"
+    ],
+    "safetyNote": "Niet trekken aan huid, haar, sieraden of kwetsbare stof."
   }
 ];

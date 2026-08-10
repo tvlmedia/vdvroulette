@@ -359,5 +359,93 @@ export const BLINDFOLD_CARDS = [
       "body-contact"
     ],
     "safetyNote": "Gebruik weinig slagroom, vermijd ogen en gevoelige openingen en blijf rechtop of halfzittend."
+  },
+  {
+    "id": "blindfold_018",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Blinde Tekenaar",
+    "text": "De ander sluit de ogen of draagt een blinddoek. Teken met je vingertop langzaam een woord of vorm op de blote huid van de ander. Raden mag pas als je klaar bent.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "touch",
+      "guessing"
+    ],
+    "safetyNote": "Kies alleen vooraf afgesproken plekken zoals rug, buik of bovenbeen."
+  },
+  {
+    "id": "blindfold_019",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Blinde Massage Roulette",
+    "text": "Blinddoek de ander en masseer twee minuten op afgesproken plekken. Wissel onverwacht af tussen handen, lippen, haren of zachte stof. De ander raadt waarmee je aanraakt.",
+    "level": 4,
+    "timerSeconds": 120,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "massage",
+      "guessing"
+    ],
+    "safetyNote": "Blijf binnen afgesproken grenzen en stop direct bij WALIBI."
+  },
+  {
+    "id": "blindfold_020",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Blind Proeven: Slagroom",
+    "text": "Blinddoek de ander. Doe op drie afgesproken plekken op je lichaam een klein toefje slagroom. De ander zoekt ze zonder handen en kust of likt ze weg.",
+    "level": 5,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "food",
+      "body-contact"
+    ],
+    "safetyNote": "Gebruik weinig slagroom, vermijd ogen en gevoelige openingen en blijf rechtop of halfzittend."
+  },
+  {
+    "id": "blindfold_021",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Blinde Inbraak",
+    "text": "Doe een blinddoek om. De ander gaat ergens op bed of op de bank liggen. Zoek diegene op de tast en vang de ander in een stevige knuffel. Daarna mag de blinddoek af.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "search",
+      "hugging"
+    ],
+    "safetyNote": "Alleen op bed of bank uitvoeren en rustig bewegen."
   }
 ];

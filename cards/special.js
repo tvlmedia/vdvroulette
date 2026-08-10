@@ -5,7 +5,7 @@ export const SPECIAL_CARDS = [
     "emoji": "🏆",
     "title": "Golden Card",
     "text": "Verzin samen een eigen opdracht.",
-    "level": 1,
+    "level": 4,
     "timerSeconds": null,
     "jacuzziAllowed": true,
     "requiresJacuzzi": false,

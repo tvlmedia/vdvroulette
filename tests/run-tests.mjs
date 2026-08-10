@@ -85,10 +85,10 @@ await run("validateCards returns no schema errors", () => {
     special: 11
   });
   assert.deepEqual(deck.cardCounts.byLevel, {
-    1: 86,
+    1: 85,
     2: 41,
     3: 18,
-    4: 37,
+    4: 38,
     5: 14
   });
 });
@@ -183,6 +183,20 @@ await run("wild card is only available from level 4", () => {
 
   game.currentLevel = 4;
   assert.equal(hooks.isCardEligible(wildCard, game, player), true);
+});
+
+await run("golden card is only available from level 4", () => {
+  const game = hooks.createNewGame("Winnie", "Tijgertje");
+  const player = game.players[0];
+  const goldenCard = hooks.getCardById("special_golden_001");
+  game.levelSystemEnabled = true;
+
+  game.currentLevel = 3;
+  assert.equal(goldenCard.level, 4);
+  assert.equal(hooks.isCardEligible(goldenCard, game, player), false);
+
+  game.currentLevel = 4;
+  assert.equal(hooks.isCardEligible(goldenCard, game, player), true);
 });
 
 await run("player choice specials unlock at level 4 and 5", () => {
@@ -703,7 +717,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.32");
+  assert.equal(exported.appVersion, "v1.3.33");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

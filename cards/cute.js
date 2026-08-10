@@ -93,7 +93,7 @@ export const CUTE_CARDS = [
     "upgradeText": null,
     "lighterText": null,
     "specialType": null,
-    "playerRestriction": null,
+    "playerRestriction": "vrouw",
     "contentTags": [
       "dance"
     ],

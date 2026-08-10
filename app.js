@@ -11,7 +11,7 @@ const STORAGE_KEYS = {
   corruptBackupPrefix: "dateRoulette_corruptBackup_"
 };
 
-const APP_VERSION = "v1.3.19";
+const APP_VERSION = "v1.3.20";
 const STATE_VERSION = 6;
 const MAX_LEVEL = 5;
 const ACTIVE_TIMERS_LIMIT = 12;
@@ -5389,8 +5389,10 @@ function playSound(type) {
       { frequency: 620, duration: 0.12, gain: 0.05, offset: 0.1 }
     ],
     timer: [
-      { frequency: 740, duration: 0.12, gain: 0.08 },
-      { frequency: 560, duration: 0.12, gain: 0.06, offset: 0.15 }
+      { frequency: 880, duration: 0.18, gain: 0.13, type: "square" },
+      { frequency: 660, duration: 0.18, gain: 0.12, offset: 0.2, type: "square" },
+      { frequency: 880, duration: 0.2, gain: 0.13, offset: 0.42, type: "square" },
+      { frequency: 520, duration: 0.34, gain: 0.14, offset: 0.68, type: "sawtooth" }
     ]
   };
 

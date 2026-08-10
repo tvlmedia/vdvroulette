@@ -72,13 +72,13 @@ await run("validateCards returns no schema errors", () => {
   const validation = hooks.validateCards();
   assert.equal(validation.errors.length, 0, validation.errors.join("\n"));
   assert.equal(new Set(deck.cards.map((card) => card.id)).size, deck.cards.length);
-  assert.equal(deck.cards.length, 173);
+  assert.equal(deck.cards.length, 172);
   assert.deepEqual(deck.cardCounts.byCategory, {
     chaos: 29,
     makeup: 15,
     blindfold: 16,
     cute: 23,
-    flirty: 29,
+    flirty: 28,
     oohlala: 19,
     disney: 3,
     jacuzzi: 28,
@@ -192,16 +192,14 @@ await run("reported cute_014 text is corrected", () => {
   assert.equal(card.text, "Ga naar het hotelwinkeltje en koop iets lekkers. De ander heeft ondertussen even tijd voor zichzelf of om zich om te kleden.");
 });
 
-await run("reported flirty_022 text is corrected", () => {
-  const card = hooks.getCardById("flirty_022");
-  assert.equal(card.title, "Pantyhandschoenen");
-  assert.equal(card.text, "Trek een panty over je handen en streel daarmee twee minuten langzaam over het lichaam van de ander.");
+await run("reported flirty_022 is removed", () => {
+  assert.equal(hooks.getCardById("flirty_022"), null);
 });
 
 await run("reported chaos_012 text is corrected", () => {
   const card = hooks.getCardById("chaos_012");
   assert.equal(card.title, "Dichterbij");
-  assert.equal(card.text, "Leg een sjaal, panty of badjasriem losjes over de schouders van de ander en trek diegene rustig dichterbij voor een kus of knuffel.");
+  assert.equal(card.text, "Leg een sjaal, stropdas, panty of badjasriem losjes over de schouders van de ander en trek diegene rustig dichterbij voor een kus of knuffel.");
   assert.equal(card.safetyNote, "Niet om de nek leggen en trek niet hard.");
 });
 
@@ -214,8 +212,23 @@ await run("reported blindfold_005 text is corrected", () => {
 await run("reported oohlala_011 text is corrected", () => {
   const card = hooks.getCardById("oohlala_011");
   assert.equal(card.title, "Voetenkietel");
-  assert.equal(card.text, "De ander bindt je enkels losjes vast en kietelt je maximaal zestig seconden onder je voeten. Stopwoord: WALIBI.");
+  assert.equal(card.text, "De ander bindt je enkels losjes vast en kietelt je maximaal dertig seconden onder je voeten. Stopwoord: WALIBI.");
+  assert.equal(card.timerSeconds, 30);
   assert.equal(card.safetyNote, "Alleen met iets dat direct los kan. Stop meteen bij WALIBI.");
+});
+
+await run("reported follow-up card edits are applied", () => {
+  assert.equal(hooks.getCardById("chaos_018").timerSeconds, 300);
+  assert.equal(hooks.getCardById("flirty_028").timerSeconds, 10);
+  assert.equal(hooks.getCardById("oohlala_010").text.includes("stropdas, panty"), true);
+  assert.equal(hooks.getCardById("oohlala_014").title, "Polsen Vast");
+  assert.equal(hooks.getCardById("makeup_011").playerRestriction, "vrouw");
+});
+
+await run("dance cards are woman-only", () => {
+  const danceCards = deck.cards.filter((card) => card.contentTags?.includes("dance"));
+  assert.ok(danceCards.length >= 1);
+  assert.equal(danceCards.every((card) => card.playerRestriction === "vrouw"), true);
 });
 
 await run("reported oohlala_013 text is corrected", () => {
@@ -481,7 +494,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.19");
+  assert.equal(exported.appVersion, "v1.3.20");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

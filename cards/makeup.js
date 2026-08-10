@@ -216,7 +216,7 @@ export const MAKEUP_CARDS = [
     "id": "makeup_011",
     "category": "makeup",
     "emoji": "💄",
-    "title": "Lippenstift met je Tenen",
+    "title": "Lippenstift met je Voet",
     "text": "Klem de gesloten lippenstift voorzichtig tussen je tenen en probeer zonder je handen een kleine streep op de hand of wang van de ander te zetten.",
     "level": 2,
     "timerSeconds": null,
@@ -226,7 +226,7 @@ export const MAKEUP_CARDS = [
     "upgradeText": null,
     "lighterText": null,
     "specialType": null,
-    "playerRestriction": null,
+    "playerRestriction": "vrouw",
     "contentTags": [
       "lipstick",
       "feet",

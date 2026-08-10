@@ -429,27 +429,6 @@ export const FLIRTY_CARDS = [
     "safetyNote": "Alleen op vooraf afgesproken plekken."
   },
   {
-    "id": "flirty_022",
-    "category": "flirty",
-    "emoji": "😏",
-    "title": "Pantyhandschoenen",
-    "text": "Trek een panty over je handen en streel daarmee twee minuten langzaam over het lichaam van de ander.",
-    "level": 2,
-    "timerSeconds": 120,
-    "jacuzziAllowed": false,
-    "requiresJacuzzi": false,
-    "repeatable": false,
-    "upgradeText": null,
-    "lighterText": null,
-    "specialType": null,
-    "playerRestriction": null,
-    "contentTags": [
-      "panty",
-      "touch"
-    ],
-    "safetyNote": null
-  },
-  {
     "id": "flirty_023",
     "category": "flirty",
     "emoji": "😏",
@@ -561,9 +540,9 @@ export const FLIRTY_CARDS = [
     "category": "flirty",
     "emoji": "😏",
     "title": "Mini-Kietel",
-    "text": "De ander mag je twee seconden kietelen op een plek die jij kiest.",
+    "text": "De ander mag je tien seconden kietelen op een plek die jij kiest.",
     "level": 2,
-    "timerSeconds": 2,
+    "timerSeconds": 10,
     "jacuzziAllowed": false,
     "requiresJacuzzi": false,
     "repeatable": false,

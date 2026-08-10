@@ -235,7 +235,7 @@ export const CHAOS_CARDS = [
     "category": "chaos",
     "emoji": "😂",
     "title": "Dichterbij",
-    "text": "Leg een sjaal, panty of badjasriem losjes over de schouders van de ander en trek diegene rustig dichterbij voor een kus of knuffel.",
+    "text": "Leg een sjaal, stropdas, panty of badjasriem losjes over de schouders van de ander en trek diegene rustig dichterbij voor een kus of knuffel.",
     "level": 1,
     "timerSeconds": null,
     "jacuzziAllowed": true,
@@ -365,9 +365,9 @@ export const CHAOS_CARDS = [
     "category": "chaos",
     "emoji": "😂",
     "title": "Diva-Maar",
-    "text": "Tot het einde van de date spreek je elk woord 'maar' overdreven diva-achtig uit. Hoe dramatischer, hoe beter.",
+    "text": "Spreek vijf minuten lang elk woord 'maar' overdreven diva-achtig uit. Hoe dramatischer, hoe beter.",
     "level": 1,
-    "timerSeconds": null,
+    "timerSeconds": 300,
     "jacuzziAllowed": true,
     "requiresJacuzzi": false,
     "repeatable": false,
@@ -505,7 +505,7 @@ export const CHAOS_CARDS = [
     "upgradeText": null,
     "lighterText": null,
     "specialType": null,
-    "playerRestriction": null,
+    "playerRestriction": "vrouw",
     "contentTags": [
       "dance",
       "rating",
@@ -593,7 +593,7 @@ export const CHAOS_CARDS = [
     "upgradeText": null,
     "lighterText": null,
     "specialType": null,
-    "playerRestriction": null,
+    "playerRestriction": "vrouw",
     "contentTags": [
       "dance",
       "humor"

@@ -86,10 +86,10 @@ await run("validateCards returns no schema errors", () => {
   });
   assert.deepEqual(deck.cardCounts.byLevel, {
     1: 86,
-    2: 45,
+    2: 43,
     3: 18,
-    4: 36,
-    5: 11
+    4: 37,
+    5: 12
   });
 });
 
@@ -153,6 +153,28 @@ await run("wild card is only available from level 4", () => {
 
   game.currentLevel = 4;
   assert.equal(hooks.isCardEligible(wildCard, game, player), true);
+});
+
+await run("player choice specials unlock at level 4 and 5", () => {
+  const game = hooks.createNewGame("Kyra", "Timo");
+  const player = game.players[0];
+  const levelFourChoice = hooks.getCardById("special_winnie_001");
+  const levelFiveChoice = hooks.getCardById("special_tigger_001");
+  game.levelSystemEnabled = true;
+
+  assert.equal(levelFourChoice.level, 4);
+  assert.equal(levelFiveChoice.level, 5);
+
+  game.currentLevel = 3;
+  assert.equal(hooks.isCardEligible(levelFourChoice, game, player), false);
+  assert.equal(hooks.isCardEligible(levelFiveChoice, game, player), false);
+
+  game.currentLevel = 4;
+  assert.equal(hooks.isCardEligible(levelFourChoice, game, player), true);
+  assert.equal(hooks.isCardEligible(levelFiveChoice, game, player), false);
+
+  game.currentLevel = 5;
+  assert.equal(hooks.isCardEligible(levelFiveChoice, game, player), true);
 });
 
 await run("Jacuzzi filter includes regular jacuzziAllowed cards", () => {
@@ -601,7 +623,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.25");
+  assert.equal(exported.appVersion, "v1.3.26");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

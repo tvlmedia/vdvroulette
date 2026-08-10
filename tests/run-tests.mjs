@@ -121,6 +121,26 @@ await run("isCardEligible respects levels", () => {
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_003"), state, player), true);
 });
 
+await run("spice level override unlocks level 4 and 5 without disabling levels", () => {
+  const game = hooks.createNewGame("Winnie", "Tijgertje");
+  const player = game.players[0];
+  game.levelSystemEnabled = true;
+  game.currentLevel = 1;
+
+  assert.equal(hooks.getEffectiveLevel(game), 1);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_021"), game, player), false);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_022"), game, player), false);
+
+  game.levelOverride = 4;
+  assert.equal(hooks.getEffectiveLevel(game), 4);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_021"), game, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_022"), game, player), false);
+
+  game.levelOverride = 5;
+  assert.equal(hooks.getEffectiveLevel(game), 5);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_022"), game, player), true);
+});
+
 await run("Jacuzzi filter includes regular jacuzziAllowed cards", () => {
   const player = { id: "player_1", name: "Winnie" };
   const state = { levelSystemEnabled: false, currentLevel: 5, jacuzziMode: false };
@@ -567,7 +587,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.23");
+  assert.equal(exported.appVersion, "v1.3.24");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

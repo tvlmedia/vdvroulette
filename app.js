@@ -11,7 +11,7 @@ const STORAGE_KEYS = {
   corruptBackupPrefix: "dateRoulette_corruptBackup_"
 };
 
-const APP_VERSION = "v1.3.23";
+const APP_VERSION = "v1.3.24";
 const STATE_VERSION = 6;
 const MAX_LEVEL = 5;
 const ACTIVE_TIMERS_LIMIT = 12;
@@ -163,6 +163,17 @@ const LEVEL_UNLOCK_COPY = {
   }
 };
 
+const SPICE_LEVEL_COPY = {
+  4: {
+    label: "Pittig",
+    toast: "Pittig aangezet: level 4-kaarten doen mee."
+  },
+  5: {
+    label: "Oohlala",
+    toast: "Oohlala aangezet: alles tot level 5 doet mee."
+  }
+};
+
 let recoveryNotice = null;
 let settings = loadSettings();
 let cardRatings = loadCardRatings();
@@ -244,6 +255,8 @@ function cacheElements() {
   ui.progressBarTwo = document.querySelector("#progress-bar-two");
   ui.availableCategories = document.querySelector("#available-categories");
   ui.jacuzziToggle = document.querySelector("#jacuzzi-toggle");
+  ui.spiceLevelControls = document.querySelector("#spice-level-controls");
+  ui.spiceLevelButtons = document.querySelectorAll("[data-spice-level]");
   ui.jacuzziStatus = document.querySelector("#jacuzzi-status");
   ui.bubbleMeter = document.querySelector("#bubble-meter");
   ui.wakeStatus = document.querySelector("#wake-status");
@@ -414,6 +427,9 @@ function bindEvents() {
   ui.reshuffleJacuzziButton.addEventListener("click", reshuffleJacuzziCards);
   ui.homeEmptyButton.addEventListener("click", () => showScreen("home"));
   ui.jacuzziToggle.addEventListener("change", handleJacuzziToggle);
+  ui.spiceLevelButtons.forEach((button) => {
+    button.addEventListener("click", handleSpiceLevelButtonClick);
+  });
   ui.timerStart.addEventListener("click", startTimer);
   ui.timerPause.addEventListener("click", pauseTimer);
   ui.timerReset.addEventListener("click", resetTimer);
@@ -597,6 +613,9 @@ function handleSettingsSubmit(event) {
   settings.cardRatingsEnabled = ui.cardRatingsSetting.checked;
   settings.developerMode = ui.developerSetting.checked;
   game.levelSystemEnabled = settings.levelSystemEnabled;
+  if (!game.levelSystemEnabled) {
+    game.levelOverride = null;
+  }
   applyTheme(settings.theme);
 
   if (game.levelSystemEnabled) {
@@ -689,6 +708,26 @@ function handleJacuzziToggle() {
   saveGame();
   saveStats();
   renderGame();
+}
+
+function handleSpiceLevelButtonClick(event) {
+  const targetLevel = normalizeLevelOverride(event.currentTarget.dataset.spiceLevel);
+  if (!targetLevel || !game.levelSystemEnabled) {
+    return;
+  }
+
+  const nextLevelOverride = game.levelOverride === targetLevel ? null : targetLevel;
+  game.levelOverride = nextLevelOverride;
+  game.emptyDeckReason = null;
+
+  const currentCard = getCurrentCard();
+  if (currentCard && !isCardEligible(currentCard)) {
+    clearCurrentCard({ releaseUsed: true });
+  }
+
+  saveGame();
+  renderGame();
+  showToast(nextLevelOverride ? SPICE_LEVEL_COPY[nextLevelOverride].toast : "Normale levelopbouw weer actief.");
 }
 
 function enableJacuzziMode() {
@@ -1095,7 +1134,7 @@ function isCardEligible(card, state = game, player = getCurrentPlayer()) {
     return false;
   }
 
-  const effectiveLevel = state.levelSystemEnabled ? state.currentLevel : MAX_LEVEL;
+  const effectiveLevel = getEffectiveLevel(state);
   if (Number(card.level || 1) > effectiveLevel) {
     return false;
   }
@@ -1388,8 +1427,12 @@ function calculateEarnedLevel(players) {
   return clampLevel(earnedLevel);
 }
 
-function getEffectiveLevel() {
-  return game.levelSystemEnabled ? game.currentLevel : MAX_LEVEL;
+function getEffectiveLevel(state = game) {
+  if (!state?.levelSystemEnabled) {
+    return MAX_LEVEL;
+  }
+
+  return Math.max(clampLevel(state.currentLevel), normalizeLevelOverride(state.levelOverride) || 1);
 }
 
 function isSpecialCard(card) {
@@ -2972,7 +3015,7 @@ function renderHome() {
   const players = game.players || createDefaultPlayers();
   ui.homePlayerOne.textContent = players[0].name;
   ui.homePlayerTwo.textContent = players[1].name;
-  ui.homeLevel.textContent = game.levelSystemEnabled ? String(game.currentLevel) : "5";
+  ui.homeLevel.textContent = String(getEffectiveLevel());
   ui.homeKisses.textContent = `${players[0].lipstickKisses || 0} - ${players[1].lipstickKisses || 0}`;
   ui.continueButton.disabled = !game.activeGame;
 }
@@ -2991,6 +3034,7 @@ function renderGame() {
   ui.scorePlayerOne.textContent = `${players[0].name}: ${players[0].lipstickKisses || 0} 💋`;
   ui.scorePlayerTwo.textContent = `${players[1].name}: ${players[1].lipstickKisses || 0} 💋`;
   ui.gameLevel.textContent = String(getEffectiveLevel());
+  renderSpiceLevelControls();
   if (ui.deckPlayer) {
     ui.deckPlayer.textContent = `${currentPlayer.name} is aan de beurt`;
   }
@@ -3072,11 +3116,23 @@ function renderGame() {
 
 function renderLevelProgress() {
   const players = game.players;
+  const effectiveLevel = getEffectiveLevel();
+  const levelOverride = normalizeLevelOverride(game.levelOverride);
   if (!game.levelSystemEnabled) {
     ui.levelStatusTitle.textContent = "Level 5 — Levelsysteem uit";
     ui.levelNextText.textContent = "Alle gewone en speciale categorieën beschikbaar";
     renderPlayerProgressLine(0, players[0].completedCards, 1, true);
     renderPlayerProgressLine(1, players[1].completedCards, 1, true);
+    return;
+  }
+
+  if (levelOverride && effectiveLevel > game.currentLevel) {
+    const nextLevel = Math.min(game.currentLevel + 1, MAX_LEVEL);
+    const requirement = levelRequirements[nextLevel] || 1;
+    ui.levelStatusTitle.textContent = `${SPICE_LEVEL_COPY[levelOverride].label} — t/m level ${effectiveLevel}`;
+    ui.levelNextText.textContent = `Normale progressie: level ${game.currentLevel}`;
+    renderPlayerProgressLine(0, players[0].completedCards, requirement, false);
+    renderPlayerProgressLine(1, players[1].completedCards, requirement, false);
     return;
   }
 
@@ -3095,6 +3151,23 @@ function renderLevelProgress() {
   ui.levelNextText.textContent = `Level ${nextLevel} bij ${requirement} kaarten per speler`;
   renderPlayerProgressLine(0, players[0].completedCards, requirement, false);
   renderPlayerProgressLine(1, players[1].completedCards, requirement, false);
+}
+
+function renderSpiceLevelControls() {
+  if (!ui.spiceLevelControls || !ui.spiceLevelButtons) {
+    return;
+  }
+
+  const levelSystemEnabled = Boolean(game.levelSystemEnabled);
+  const activeLevelOverride = normalizeLevelOverride(game.levelOverride);
+  ui.spiceLevelControls.hidden = !levelSystemEnabled;
+  ui.spiceLevelButtons.forEach((button) => {
+    const buttonLevel = normalizeLevelOverride(button.dataset.spiceLevel);
+    const isActive = Boolean(buttonLevel && buttonLevel === activeLevelOverride);
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+    button.disabled = !levelSystemEnabled;
+  });
 }
 
 function renderPlayerProgressLine(playerIndex, completedCards, requirement, levelSystemDisabled) {
@@ -4082,6 +4155,7 @@ function resetDeveloperProgress() {
     stats.completedByPlayer[player.id] = 0;
   });
   game.currentLevel = 1;
+  game.levelOverride = null;
   game.unlockedLevels = [1];
   stats.levelUnlockedAt = { 1: new Date().toISOString() };
   saveGame();
@@ -4317,6 +4391,7 @@ function createNewGame(playerOneName, playerTwoName, playerOneGender = DEFAULT_P
     ],
     currentPlayerIndex: 0,
     currentLevel: 1,
+    levelOverride: null,
     unlockedLevels: [1],
     levelSystemEnabled: settings.levelSystemEnabled,
     jacuzziMode: false,
@@ -4437,6 +4512,7 @@ function migrateGameState(oldState) {
   const levelSystemEnabled = readBoolean(oldState.levelSystemEnabled, settings.levelSystemEnabled);
   const earnedLevel = calculateEarnedLevel(players);
   const currentLevel = levelSystemEnabled ? earnedLevel : clampLevel(Number(oldState.currentLevel) || earnedLevel);
+  const levelOverride = levelSystemEnabled ? normalizeLevelOverride(oldState.levelOverride) : null;
   const specialSession = normalizeSpecialSession(oldState.specialSession);
   const currentCardId = getCardById(oldState.currentCardId)
     ? oldState.currentCardId
@@ -4462,6 +4538,7 @@ function migrateGameState(oldState) {
     players,
     currentPlayerIndex: clampPlayerIndex(oldState.currentPlayerIndex),
     currentLevel,
+    levelOverride,
     unlockedLevels: normalizeUnlockedLevels(oldState.unlockedLevels, currentLevel),
     levelSystemEnabled,
     jacuzziMode: Boolean(oldState.jacuzziMode),
@@ -4919,6 +4996,11 @@ function lockAction() {
 
 function clampLevel(value) {
   return Math.min(MAX_LEVEL, Math.max(1, Number(value) || 1));
+}
+
+function normalizeLevelOverride(value) {
+  const level = Number(value);
+  return level === 4 || level === 5 ? level : null;
 }
 
 function clampPlayerIndex(value) {
@@ -5536,6 +5618,7 @@ window.DateRouletteTestHooks = {
   getDisplayCardTitle,
   getDisplayCardText,
   getDisplayCardSafetyNote,
+  getEffectiveLevel,
   getCardWeight,
   isJacuzziCompatibleCard,
   stopTimerForResolvedCard,

@@ -11,7 +11,7 @@ const STORAGE_KEYS = {
   corruptBackupPrefix: "dateRoulette_corruptBackup_"
 };
 
-const APP_VERSION = "v1.3.29";
+const APP_VERSION = "v1.3.30";
 const STATE_VERSION = 6;
 const MAX_LEVEL = 5;
 const ACTIVE_TIMERS_LIMIT = 12;
@@ -166,11 +166,11 @@ const LEVEL_UNLOCK_COPY = {
 const SPICE_LEVEL_COPY = {
   4: {
     label: "Pittig",
-    toast: "Pittig aangezet: level 4-kaarten doen mee."
+    toast: "Pittig aangezet: alleen level 4-kaarten."
   },
   5: {
     label: "Oohlala",
-    toast: "Oohlala aangezet: alles tot level 5 doet mee."
+    toast: "Oohlala aangezet: alleen level 5-kaarten."
   }
 };
 
@@ -1134,8 +1134,13 @@ function isCardEligible(card, state = game, player = getCurrentPlayer()) {
     return false;
   }
 
-  const effectiveLevel = getEffectiveLevel(state);
-  if (Number(card.level || 1) > effectiveLevel) {
+  const cardLevel = Number(card.level || 1);
+  const spiceLevel = getActiveSpiceLevel(state);
+  if (spiceLevel) {
+    if (cardLevel !== spiceLevel) {
+      return false;
+    }
+  } else if (cardLevel > getEffectiveLevel(state)) {
     return false;
   }
 
@@ -1432,7 +1437,15 @@ function getEffectiveLevel(state = game) {
     return MAX_LEVEL;
   }
 
-  return Math.max(clampLevel(state.currentLevel), normalizeLevelOverride(state.levelOverride) || 1);
+  return getActiveSpiceLevel(state) || clampLevel(state.currentLevel);
+}
+
+function getActiveSpiceLevel(state = game) {
+  if (!state?.levelSystemEnabled) {
+    return null;
+  }
+
+  return normalizeLevelOverride(state.levelOverride);
 }
 
 function isSpecialCard(card) {
@@ -3126,11 +3139,11 @@ function renderLevelProgress() {
     return;
   }
 
-  if (levelOverride && effectiveLevel > game.currentLevel) {
+  if (levelOverride) {
     const nextLevel = Math.min(game.currentLevel + 1, MAX_LEVEL);
     const requirement = levelRequirements[nextLevel] || 1;
-    ui.levelStatusTitle.textContent = `${SPICE_LEVEL_COPY[levelOverride].label} — t/m level ${effectiveLevel}`;
-    ui.levelNextText.textContent = `Normale progressie: level ${game.currentLevel}`;
+    ui.levelStatusTitle.textContent = `${SPICE_LEVEL_COPY[levelOverride].label} — alleen level ${effectiveLevel}`;
+    ui.levelNextText.textContent = `Normale progressie blijft level ${game.currentLevel}`;
     renderPlayerProgressLine(0, players[0].completedCards, requirement, false);
     renderPlayerProgressLine(1, players[1].completedCards, requirement, false);
     return;

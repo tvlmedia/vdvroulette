@@ -124,11 +124,11 @@ await run("isCardEligible respects levels", () => {
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_001"), state, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_003"), state, player), false);
   state.levelOverride = 5;
-  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_001"), state, player), false);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_001"), state, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_003"), state, player), true);
 });
 
-await run("spice level override gates exact level 4 and 5", () => {
+await run("spice level override raises the playable level cap", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   const player = game.players[0];
   game.levelSystemEnabled = true;
@@ -141,14 +141,14 @@ await run("spice level override gates exact level 4 and 5", () => {
 
   game.levelOverride = 4;
   assert.equal(hooks.getEffectiveLevel(game), 4);
-  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_001"), game, player), false);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_001"), game, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_021"), game, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_022"), game, player), false);
 
   game.levelOverride = 5;
   assert.equal(hooks.getEffectiveLevel(game), 5);
-  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_001"), game, player), false);
-  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_021"), game, player), false);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_001"), game, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_021"), game, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_022"), game, player), true);
 
   game.currentLevel = 5;
@@ -158,7 +158,7 @@ await run("spice level override gates exact level 4 and 5", () => {
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_022"), game, player), false);
 });
 
-await run("spice level draw pools contain only the selected level", () => {
+await run("spice level draw pools contain cards up to the selected level", () => {
   const normalHighProgressGame = hooks.createNewGame("Winnie", "Tijgertje");
   normalHighProgressGame.levelSystemEnabled = true;
   normalHighProgressGame.currentLevel = 5;
@@ -177,18 +177,26 @@ await run("spice level draw pools contain only the selected level", () => {
   levelFourGame.currentLevel = 1;
   levelFourGame.levelOverride = 4;
   hooks.setTestState(levelFourGame);
-  const levelFourCards = hooks.getAvailableCards({ includeUsed: true, ignoreTemporaryRejected: true });
+  const levelFourCards = hooks.getAvailableCards({ includeUsed: true, ignoreTemporaryRejected: true, ignoreRecentSimilar: true });
+  const levelFourPoolLevels = new Set(levelFourCards.map((card) => Number(card.level)));
   assert.ok(levelFourCards.length > 0);
-  assert.equal(levelFourCards.every((card) => Number(card.level) === 4), true);
+  assert.equal(levelFourCards.every((card) => Number(card.level) <= 4), true);
+  assert.equal(levelFourPoolLevels.has(1), true);
+  assert.equal(levelFourPoolLevels.has(4), true);
+  assert.equal(levelFourPoolLevels.has(5), false);
 
   const levelFiveGame = hooks.createNewGame("Winnie", "Tijgertje");
   levelFiveGame.levelSystemEnabled = true;
   levelFiveGame.currentLevel = 1;
   levelFiveGame.levelOverride = 5;
   hooks.setTestState(levelFiveGame);
-  const levelFiveCards = hooks.getAvailableCards({ includeUsed: true, ignoreTemporaryRejected: true });
+  const levelFiveCards = hooks.getAvailableCards({ includeUsed: true, ignoreTemporaryRejected: true, ignoreRecentSimilar: true });
+  const levelFivePoolLevels = new Set(levelFiveCards.map((card) => Number(card.level)));
   assert.ok(levelFiveCards.length > 0);
-  assert.equal(levelFiveCards.every((card) => Number(card.level) === 5), true);
+  assert.equal(levelFiveCards.every((card) => Number(card.level) <= 5), true);
+  assert.equal(levelFivePoolLevels.has(1), true);
+  assert.equal(levelFivePoolLevels.has(4), true);
+  assert.equal(levelFivePoolLevels.has(5), true);
 });
 
 await run("stale spicy current card is cleared when spice buttons are off", () => {
@@ -270,7 +278,7 @@ await run("player choice specials require level 4 and 5 spice buttons", () => {
   assert.equal(hooks.isCardEligible(levelFourChoice, game, player), false);
   assert.equal(hooks.isCardEligible(levelFiveChoice, game, player), false);
   game.levelOverride = 5;
-  assert.equal(hooks.isCardEligible(levelFourChoice, game, player), false);
+  assert.equal(hooks.isCardEligible(levelFourChoice, game, player), true);
   assert.equal(hooks.isCardEligible(levelFiveChoice, game, player), true);
 });
 
@@ -770,7 +778,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.34");
+  assert.equal(exported.appVersion, "v1.3.35");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

@@ -255,5 +255,69 @@ export const MAKEUP_CARDS = [
       "body-contact"
     ],
     "safetyNote": null
+  },
+  {
+    "id": "makeup_013",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Blinde Make-up",
+    "text": "Breng geblinddoekt make-up aan bij de ander.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "makeup",
+      "blindfold"
+    ],
+    "safetyNote": "Gebruik geen producten rond de ogen terwijl je geblinddoekt bent."
+  },
+  {
+    "id": "makeup_014",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Verkeerde Hand",
+    "text": "Breng make-up aan bij de ander met je niet-dominante hand.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "makeup",
+      "challenge"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "makeup_015",
+    "category": "makeup",
+    "emoji": "💄",
+    "title": "Half Hartje",
+    "text": "Zet met lippenstift een half hartje op je wang. De ander drukt de wang ertegenaan zodat jullie samen een compleet hartje maken.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "lipstick",
+      "photo",
+      "kissing"
+    ],
+    "safetyNote": "Maak alleen een foto als jullie allebei willen."
   }
 ];

@@ -41,5 +41,27 @@ export const DISNEY_CARDS = [
       "roleplay"
     ],
     "safetyNote": null
+  },
+  {
+    "id": "disney_003",
+    "category": "disney",
+    "emoji": "🐻",
+    "title": "Honingzoeker",
+    "text": "Zoek zestig seconden naar honing in de hotelkamer alsof je een beer uit een tekenfilm bent.",
+    "level": 1,
+    "timerSeconds": 60,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "disney",
+      "roleplay",
+      "search"
+    ],
+    "safetyNote": null
   }
 ];

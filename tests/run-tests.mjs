@@ -72,7 +72,18 @@ await run("validateCards returns no schema errors", () => {
   const validation = hooks.validateCards();
   assert.equal(validation.errors.length, 0, validation.errors.join("\n"));
   assert.equal(new Set(deck.cards.map((card) => card.id)).size, deck.cards.length);
-  assert.equal(deck.cards.length, 144);
+  assert.equal(deck.cards.length, 173);
+  assert.deepEqual(deck.cardCounts.byCategory, {
+    chaos: 29,
+    makeup: 15,
+    blindfold: 16,
+    cute: 23,
+    flirty: 29,
+    oohlala: 19,
+    disney: 3,
+    jacuzzi: 28,
+    special: 11
+  });
 });
 
 await run("calculateEarnedLevel follows shared-player thresholds", () => {
@@ -470,7 +481,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.18");
+  assert.equal(exported.appVersion, "v1.3.19");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

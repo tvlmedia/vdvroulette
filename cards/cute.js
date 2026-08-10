@@ -388,5 +388,92 @@ export const CUTE_CARDS = [
       "kissing"
     ],
     "safetyNote": null
+  },
+  {
+    "id": "cute_020",
+    "category": "cute",
+    "emoji": "❤️",
+    "title": "Trots Geheim",
+    "text": "Vertel een klein geheim, gênante gewoonte of iets waar je je stiekem voor schaamt, maar doe alsof je er trots op bent.",
+    "level": 1,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "conversation",
+      "secret",
+      "humor"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "cute_021",
+    "category": "cute",
+    "emoji": "❤️",
+    "title": "Laatste Nummer",
+    "text": "Laat de ander je laatst afgespeelde nummer horen en vertel waarom het bij jou past.",
+    "level": 1,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "music",
+      "conversation",
+      "phone"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "cute_022",
+    "category": "cute",
+    "emoji": "❤️",
+    "title": "Beste Vriend(in)",
+    "text": "Praat één minuut over de ander alsof je bij je beste vriend(in) aan het roddelen bent. Houd het lief genoeg om samen om te lachen.",
+    "level": 1,
+    "timerSeconds": 60,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "conversation",
+      "humor"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "cute_023",
+    "category": "cute",
+    "emoji": "❤️",
+    "title": "Droomteam",
+    "text": "Stel een team van vijf personen samen dat elke missie zou winnen. Leg per persoon kort uit welke rol diegene krijgt.",
+    "level": 1,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "conversation",
+      "team",
+      "humor"
+    ],
+    "safetyNote": null
   }
 ];

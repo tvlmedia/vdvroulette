@@ -328,7 +328,7 @@ export const FLIRTY_CARDS = [
     "category": "flirty",
     "emoji": "😏",
     "title": "Handenvrije Kus",
-    "text": "Geef elkaar een kus zonder je handen te gebruiken.",
+    "text": "Geef elkaar een kus zonder je handen te gebruiken, terwijl jullie allebei expres een onhandige houding aannemen.",
     "level": 2,
     "timerSeconds": null,
     "jacuzziAllowed": true,
@@ -489,6 +489,113 @@ export const FLIRTY_CARDS = [
       "lap",
       "eye-contact",
       "kissing"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_025",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Subtiele Hint",
+    "text": "Kies in het geheim iets kleins dat je wilt dat de ander doet. Je mag één minuut niet praten en alleen blikken, houding en kleine hints gebruiken.",
+    "level": 2,
+    "timerSeconds": 60,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "body-language",
+      "challenge"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_026",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Verleidelijk Hapje",
+    "text": "Geef de ander iets te eten of te drinken op een zo verleidelijk mogelijke manier zonder te lachen.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "food",
+      "drink",
+      "flirt"
+    ],
+    "safetyNote": "Blijf rechtop zitten en gebruik kleine, zachte hapjes of kleine slokjes."
+  },
+  {
+    "id": "flirty_027",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Foute Openingszinnen",
+    "text": "Bedenk en gebruik drie zo slecht mogelijke openingszinnen om de ander te versieren.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "flirt",
+      "humor"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_028",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Mini-Kietel",
+    "text": "De ander mag je twee seconden kietelen op een plek die jij kiest.",
+    "level": 2,
+    "timerSeconds": 2,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "tickling",
+      "choice"
+    ],
+    "safetyNote": "Stop meteen als iemand wegtrekt of WALIBI zegt."
+  },
+  {
+    "id": "flirty_029",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Verleidelijke Onzin",
+    "text": "Fluister een totaal onromantische of domme zin zo verleidelijk mogelijk in het oor van de ander.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "whisper",
+      "humor",
+      "flirt"
     ],
     "safetyNote": null
   }

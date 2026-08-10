@@ -86,9 +86,9 @@ await run("validateCards returns no schema errors", () => {
   });
   assert.deepEqual(deck.cardCounts.byLevel, {
     1: 86,
-    2: 42,
+    2: 41,
     3: 18,
-    4: 37,
+    4: 38,
     5: 13
   });
 });
@@ -321,6 +321,7 @@ await run("reported follow-up card edits are applied", () => {
   assert.equal(hooks.getCardById("oohlala_010").text.includes("stropdas, panty"), true);
   assert.equal(hooks.getCardById("oohlala_014").title, "Polsen Vast");
   assert.equal(hooks.getCardById("makeup_011").playerRestriction, "vrouw");
+  assert.equal(hooks.getCardById("makeup_011").level, 4);
 });
 
 await run("dance cards are woman-only", () => {
@@ -631,7 +632,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.28");
+  assert.equal(exported.appVersion, "v1.3.29");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

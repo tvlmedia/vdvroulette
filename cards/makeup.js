@@ -218,7 +218,7 @@ export const MAKEUP_CARDS = [
     "emoji": "💄",
     "title": "Lippenstift met je Voet",
     "text": "Klem de gesloten lippenstift voorzichtig tussen je tenen en probeer zonder je handen een kleine streep op de hand of wang van de ander te zetten.",
-    "level": 2,
+    "level": 4,
     "timerSeconds": null,
     "jacuzziAllowed": false,
     "requiresJacuzzi": false,

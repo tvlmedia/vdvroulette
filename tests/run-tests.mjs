@@ -86,10 +86,10 @@ await run("validateCards returns no schema errors", () => {
   });
   assert.deepEqual(deck.cardCounts.byLevel, {
     1: 86,
-    2: 43,
+    2: 42,
     3: 18,
     4: 37,
-    5: 12
+    5: 13
   });
 });
 
@@ -216,6 +216,7 @@ await run("flirty_020 is male-only and targets the female player name", () => {
   game.currentPlayerIndex = 1;
 
   assert.equal(restrictedCard.playerRestriction, "man");
+  assert.equal(restrictedCard.level, 5);
   assert.equal(hooks.isCardEligible(restrictedCard, game, game.players[1]), true);
   assert.equal(hooks.isCardEligible(restrictedCard, game, game.players[0]), false);
   assert.equal(hooks.getDisplayCardTitle(restrictedCard, game, 1), "Voetmassage voor Kyra");
@@ -630,7 +631,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.27");
+  assert.equal(exported.appVersion, "v1.3.28");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

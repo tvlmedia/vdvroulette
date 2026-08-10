@@ -391,7 +391,7 @@ export const FLIRTY_CARDS = [
     "emoji": "😏",
     "title": "Voetmassage voor {{femalePlayer}}",
     "text": "Geef {{femalePlayer}} vijf minuten een voetmassage.",
-    "level": 2,
+    "level": 5,
     "timerSeconds": 300,
     "jacuzziAllowed": true,
     "requiresJacuzzi": false,

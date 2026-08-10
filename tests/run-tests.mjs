@@ -85,10 +85,10 @@ await run("validateCards returns no schema errors", () => {
     special: 11
   });
   assert.deepEqual(deck.cardCounts.byLevel, {
-    1: 87,
+    1: 86,
     2: 45,
     3: 18,
-    4: 35,
+    4: 36,
     5: 11
   });
 });
@@ -139,6 +139,20 @@ await run("spice level override unlocks level 4 and 5 without disabling levels",
   game.levelOverride = 5;
   assert.equal(hooks.getEffectiveLevel(game), 5);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_022"), game, player), true);
+});
+
+await run("wild card is only available from level 4", () => {
+  const game = hooks.createNewGame("Winnie", "Tijgertje");
+  const player = game.players[0];
+  const wildCard = hooks.getCardById("special_wild_001");
+  game.levelSystemEnabled = true;
+
+  game.currentLevel = 3;
+  assert.equal(wildCard.level, 4);
+  assert.equal(hooks.isCardEligible(wildCard, game, player), false);
+
+  game.currentLevel = 4;
+  assert.equal(hooks.isCardEligible(wildCard, game, player), true);
 });
 
 await run("Jacuzzi filter includes regular jacuzziAllowed cards", () => {
@@ -587,7 +601,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.24");
+  assert.equal(exported.appVersion, "v1.3.25");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

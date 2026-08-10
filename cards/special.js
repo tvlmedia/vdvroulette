@@ -25,7 +25,7 @@ export const SPECIAL_CARDS = [
     "emoji": "🏆",
     "title": "Wild Card",
     "text": "Pak willekeurig een attribuut uit de tas en verzin daar samen een opdracht mee.",
-    "level": 1,
+    "level": 4,
     "timerSeconds": null,
     "jacuzziAllowed": true,
     "requiresJacuzzi": false,

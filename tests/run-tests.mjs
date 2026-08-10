@@ -88,8 +88,8 @@ await run("validateCards returns no schema errors", () => {
     1: 86,
     2: 41,
     3: 18,
-    4: 38,
-    5: 13
+    4: 37,
+    5: 14
   });
 });
 
@@ -341,6 +341,7 @@ await run("reported oohlala_011 text is corrected", () => {
   const card = hooks.getCardById("oohlala_011");
   assert.equal(card.title, "Voetenkietel");
   assert.equal(card.text, "De ander bindt je enkels losjes vast en kietelt je maximaal dertig seconden onder je voeten. Stopwoord: WALIBI.");
+  assert.equal(card.level, 5);
   assert.equal(card.timerSeconds, 30);
   assert.equal(card.safetyNote, "Alleen met iets dat direct los kan. Stop meteen bij WALIBI.");
 });
@@ -662,7 +663,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.30");
+  assert.equal(exported.appVersion, "v1.3.31");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

@@ -212,7 +212,7 @@ export const OOHLALA_CARDS = [
     "emoji": "🔥",
     "title": "Voetenkietel",
     "text": "De ander bindt je enkels losjes vast en kietelt je maximaal dertig seconden onder je voeten. Stopwoord: WALIBI.",
-    "level": 4,
+    "level": 5,
     "timerSeconds": 30,
     "jacuzziAllowed": false,
     "requiresJacuzzi": false,

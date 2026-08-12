@@ -38,7 +38,9 @@ export const MAKEUP_CARDS = [
       "lipstick",
       "kissing"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "makeup_003",
@@ -59,7 +61,9 @@ export const MAKEUP_CARDS = [
       "nails",
       "makeover"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "makeup_004",
@@ -167,7 +171,9 @@ export const MAKEUP_CARDS = [
       "game",
       "massage"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "makeup_009",
@@ -384,6 +390,8 @@ export const MAKEUP_CARDS = [
       "kissing",
       "body-contact"
     ],
-    "safetyNote": "Alleen op afgesproken plekken en stop direct bij WALIBI."
+    "safetyNote": "Alleen op afgesproken plekken en stop direct bij WALIBI.",
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   }
 ];

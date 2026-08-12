@@ -11,7 +11,7 @@ const STORAGE_KEYS = {
   corruptBackupPrefix: "dateRoulette_corruptBackup_"
 };
 
-const APP_VERSION = "v1.3.36";
+const APP_VERSION = "v1.3.37";
 const STATE_VERSION = 6;
 const MAX_LEVEL = 5;
 const NORMAL_MAX_LEVEL_WITHOUT_SPICE = 3;

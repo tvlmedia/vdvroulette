@@ -37,7 +37,9 @@ export const FLIRTY_CARDS = [
     "contentTags": [
       "hugging"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "flirty_003",
@@ -57,7 +59,9 @@ export const FLIRTY_CARDS = [
     "contentTags": [
       "whisper"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "flirty_004",
@@ -97,7 +101,9 @@ export const FLIRTY_CARDS = [
     "contentTags": [
       "hands"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "flirty_006",
@@ -124,7 +130,7 @@ export const FLIRTY_CARDS = [
     "category": "flirty",
     "emoji": "😏",
     "title": "Op Schoot",
-    "text": "Ga vijf minuten bij elkaar op schoot zitten.",
+    "text": "Ga vijf minuten bij de ander op schoot zitten.",
     "level": 2,
     "timerSeconds": 300,
     "jacuzziAllowed": true,
@@ -133,7 +139,7 @@ export const FLIRTY_CARDS = [
     "upgradeText": "Blijf tien minuten op schoot en geef elkaar tussendoor rustige kusjes.",
     "lighterText": "Ga één minuut dicht tegen elkaar aan zitten.",
     "specialType": null,
-    "playerRestriction": null,
+    "playerRestriction": "vrouw",
     "contentTags": [
       "lap",
       "body-contact"
@@ -179,7 +185,9 @@ export const FLIRTY_CARDS = [
     "contentTags": [
       "hugging"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "flirty_010",
@@ -300,7 +308,9 @@ export const FLIRTY_CARDS = [
     "contentTags": [
       "hugging"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "flirty_016",
@@ -620,5 +630,27 @@ export const FLIRTY_CARDS = [
       "silence"
     ],
     "safetyNote": "Alleen op afgesproken plekken en stop direct bij WALIBI."
+  },
+  {
+    "id": "chaos_033",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Sokken-Roof",
+    "text": "Probeer binnen negentig seconden de sokken van de ander uit te trekken met alleen je voeten. Je handen blijven uit het spel.",
+    "level": 4,
+    "timerSeconds": 90,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "feet",
+      "challenge",
+      "humor"
+    ],
+    "safetyNote": "Doe dit zittend of op bed, zonder hard te trekken."
   }
 ];

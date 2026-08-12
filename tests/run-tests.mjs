@@ -74,11 +74,11 @@ await run("validateCards returns no schema errors", () => {
   assert.equal(new Set(deck.cards.map((card) => card.id)).size, deck.cards.length);
   assert.equal(deck.cards.length, 196);
   assert.deepEqual(deck.cardCounts.byCategory, {
-    chaos: 34,
+    chaos: 33,
     makeup: 18,
     blindfold: 21,
     cute: 23,
-    flirty: 30,
+    flirty: 31,
     oohlala: 27,
     disney: 3,
     jacuzzi: 29,
@@ -107,7 +107,7 @@ await run("calculateEarnedLevel follows shared-player thresholds", () => {
 await run("isCardEligible respects levels", () => {
   const state = { levelSystemEnabled: true, currentLevel: 1, jacuzziMode: false };
   const player = { id: "player_1", name: "Winnie" };
-  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_001"), state, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_002"), state, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("makeup_001"), state, player), false);
   state.currentLevel = 2;
   assert.equal(hooks.isCardEligible(hooks.getCardById("makeup_001"), state, player), true);
@@ -135,19 +135,19 @@ await run("spice level override raises the playable level cap", () => {
   game.currentLevel = 1;
 
   assert.equal(hooks.getEffectiveLevel(game), 1);
-  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_001"), game, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_002"), game, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_021"), game, player), false);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_022"), game, player), false);
 
   game.levelOverride = 4;
   assert.equal(hooks.getEffectiveLevel(game), 4);
-  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_001"), game, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_002"), game, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_021"), game, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_022"), game, player), false);
 
   game.levelOverride = 5;
   assert.equal(hooks.getEffectiveLevel(game), 5);
-  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_001"), game, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("chaos_002"), game, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_021"), game, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("oohlala_022"), game, player), true);
 
@@ -285,10 +285,10 @@ await run("player choice specials require level 4 and 5 spice buttons", () => {
 await run("Jacuzzi filter includes regular jacuzziAllowed cards", () => {
   const player = { id: "player_1", name: "Winnie" };
   const state = { levelSystemEnabled: false, currentLevel: 5, jacuzziMode: false };
-  assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_fun_001"), state, player), false);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_fun_003"), state, player), false);
   assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_bubble_001"), state, player), false);
   state.jacuzziMode = true;
-  assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_fun_001"), state, player), true);
+  assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_fun_003"), state, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_bubble_001"), state, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("jacuzzi_special_001"), state, player), true);
   assert.equal(hooks.isCardEligible(hooks.getCardById("makeup_001"), state, player), false);
@@ -378,14 +378,16 @@ await run("playerRestriction can target player gender", () => {
 
 await run("reported cute_005 text is corrected", () => {
   const card = hooks.getCardById("cute_005");
-  assert.equal(card.title, "Spontane Slowdance");
-  assert.equal(card.text, "Doe een sensuele dans voor de ander");
+  assert.equal(card.title, "Dans in Volle Overgave");
+  assert.equal(card.text, "Dans in volle overgave voor de ander.");
+  assert.equal(card.playerRestriction, "vrouw");
 });
 
 await run("reported cute_014 text is corrected", () => {
   const card = hooks.getCardById("cute_014");
   assert.equal(card.title, "Hotelshop Missie");
   assert.equal(card.text, "Ga naar het hotelwinkeltje en koop iets lekkers. De ander heeft ondertussen even tijd voor zichzelf of om zich om te kleden.");
+  assert.equal(card.playerRestriction, "man");
 });
 
 await run("reported flirty_022 is removed", () => {
@@ -418,6 +420,7 @@ await run("reported oohlala_011 text is corrected", () => {
   assert.equal(card.text, "De ander bindt je enkels losjes vast en kietelt je maximaal dertig seconden onder je voeten. Stopwoord: WALIBI.");
   assert.equal(card.level, 5);
   assert.equal(card.timerSeconds, 30);
+  assert.equal(card.playerRestriction, "vrouw");
   assert.equal(card.safetyNote, "Alleen met iets dat direct los kan. Stop meteen bij WALIBI.");
 });
 
@@ -494,6 +497,43 @@ await run("reported oohlala kissing cards are moved to flirty level 2", () => {
   assert.equal(soundBarrier.level, 2);
 });
 
+await run("PDF review cards are archived or adjusted", () => {
+  const disabledIds = [
+    "chaos_010", "chaos_001", "chaos_030",
+    "makeup_008", "makeup_003", "makeup_002", "makeup_018",
+    "blindfold_010", "blindfold_003", "blindfold_011", "blindfold_004", "blindfold_006", "blindfold_014", "blindfold_018",
+    "cute_015", "cute_011", "cute_018", "cute_012",
+    "flirty_005", "flirty_003", "flirty_002", "flirty_015", "flirty_009",
+    "jacuzzi_fun_001", "jacuzzi_fun_002"
+  ];
+  const game = hooks.createNewGame("Kyra", "Timo", "vrouw", "man");
+  game.levelSystemEnabled = false;
+  game.currentLevel = 5;
+
+  disabledIds.forEach((id) => {
+    const card = hooks.getCardById(id);
+    assert.equal(card.enabled, false, id);
+    assert.equal(card.disabledReason.includes("PDF-review"), true, id);
+    assert.equal(hooks.isCardEligible(card, game, game.players[0]), false, id);
+  });
+
+  const movedSocksRoof = hooks.getCardById("chaos_033");
+  assert.equal(movedSocksRoof.category, "flirty");
+  assert.equal(movedSocksRoof.emoji, "😏");
+  assert.equal(movedSocksRoof.enabled, undefined);
+
+  const blindTickle = hooks.getCardById("blindfold_007");
+  assert.equal(blindTickle.title, "Dertig Seconden Kietelen");
+  assert.equal(blindTickle.timerSeconds, 30);
+
+  assert.equal(hooks.getCardById("flirty_007").playerRestriction, "vrouw");
+  assert.equal(hooks.getCardById("oohlala_006").playerRestriction, "vrouw");
+  assert.equal(hooks.getCardById("oohlala_012").playerRestriction, "vrouw");
+  assert.equal(hooks.getCardById("oohlala_011").playerRestriction, "vrouw");
+  assert.equal(hooks.getCardById("jacuzzi_special_001").specialType, "wellnessOrChaos");
+  assert.notEqual(hooks.getCardById("jacuzzi_special_001").enabled, false);
+});
+
 await run("reported chaos_009 text is corrected", () => {
   const card = hooks.getCardById("chaos_009");
   assert.equal(card.title, "Slok en Kus");
@@ -505,10 +545,10 @@ await run("getAvailableCards excludes used cards", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   game.levelSystemEnabled = false;
   game.currentLevel = 5;
-  game.usedCardIds = ["chaos_001"];
+  game.usedCardIds = ["chaos_002"];
   hooks.setTestState(game, {}, { levelSystemEnabled: false });
   const availableIds = hooks.getAvailableCards({ excludeSpecial: true }).map((card) => card.id);
-  assert.equal(availableIds.includes("chaos_001"), false);
+  assert.equal(availableIds.includes("chaos_002"), false);
 });
 
 await run("getAvailableCards spreads similar recent cards when alternatives exist", () => {
@@ -521,7 +561,7 @@ await run("getAvailableCards spreads similar recent cards when alternatives exis
   hooks.setTestState(game, {}, { levelSystemEnabled: false });
   const availableIds = hooks.getAvailableCards({ includeUsed: true, ignoreTemporaryRejected: true }).map((card) => card.id);
   assert.equal(availableIds.includes("chaos_033"), false);
-  assert.equal(availableIds.includes("chaos_001"), true);
+  assert.equal(availableIds.includes("chaos_002"), true);
 });
 
 await run("getAvailableCards falls back when only similar cards remain", () => {
@@ -792,7 +832,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.36");
+  assert.equal(exported.appVersion, "v1.3.37");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

@@ -18,7 +18,9 @@ export const CHAOS_CARDS = [
       "makeup",
       "roomservice"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "chaos_002",
@@ -206,7 +208,9 @@ export const CHAOS_CARDS = [
       "clothing",
       "dressup"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "chaos_011",
@@ -642,7 +646,9 @@ export const CHAOS_CARDS = [
       "dressup",
       "roleplay"
     ],
-    "safetyNote": "Kies iets dat makkelijk en veilig over de eigen outfit gedragen kan worden."
+    "safetyNote": "Kies iets dat makkelijk en veilig over de eigen outfit gedragen kan worden.",
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "chaos_031",
@@ -687,28 +693,6 @@ export const CHAOS_CARDS = [
       "humor"
     ],
     "safetyNote": "Een echt nee blijft altijd nee; houd het spel luchtig."
-  },
-  {
-    "id": "chaos_033",
-    "category": "chaos",
-    "emoji": "😂",
-    "title": "Sokken-Roof",
-    "text": "Probeer binnen negentig seconden de sokken van de ander uit te trekken met alleen je voeten. Je handen blijven uit het spel.",
-    "level": 4,
-    "timerSeconds": 90,
-    "jacuzziAllowed": false,
-    "requiresJacuzzi": false,
-    "repeatable": false,
-    "upgradeText": null,
-    "lighterText": null,
-    "specialType": null,
-    "playerRestriction": null,
-    "contentTags": [
-      "feet",
-      "challenge",
-      "humor"
-    ],
-    "safetyNote": "Doe dit zittend of op bed, zonder hard te trekken."
   },
   {
     "id": "chaos_034",

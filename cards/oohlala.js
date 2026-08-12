@@ -106,7 +106,7 @@ export const OOHLALA_CARDS = [
     "category": "oohlala",
     "emoji": "🔥",
     "title": "Kus Terug",
-    "text": "De ander geeft jou ergens een kus. Daarna geef jij op dezelfde plek een kus terug.",
+    "text": "Geef de ander ergens een kus. Daarna geeft de ander jou op dezelfde plek een kus terug.",
     "level": 4,
     "timerSeconds": null,
     "jacuzziAllowed": true,
@@ -115,7 +115,7 @@ export const OOHLALA_CARDS = [
     "upgradeText": null,
     "lighterText": null,
     "specialType": null,
-    "playerRestriction": null,
+    "playerRestriction": "vrouw",
     "contentTags": [
       "kissing"
     ],
@@ -220,7 +220,7 @@ export const OOHLALA_CARDS = [
     "upgradeText": null,
     "lighterText": null,
     "specialType": null,
-    "playerRestriction": null,
+    "playerRestriction": "vrouw",
     "contentTags": [
       "feet",
       "tickling"

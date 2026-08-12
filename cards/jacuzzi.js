@@ -19,7 +19,9 @@ export const JACUZZI_CARDS = [
       "foam"
     ],
     "safetyNote": null,
-    "intensity": "fun"
+    "intensity": "fun",
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "jacuzzi_fun_002",
@@ -41,7 +43,9 @@ export const JACUZZI_CARDS = [
       "foam"
     ],
     "safetyNote": null,
-    "intensity": "fun"
+    "intensity": "fun",
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "jacuzzi_fun_003",

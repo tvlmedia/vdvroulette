@@ -83,8 +83,8 @@ export const CUTE_CARDS = [
     "id": "cute_005",
     "category": "cute",
     "emoji": "❤️",
-    "title": "Spontane Slowdance",
-    "text": "Doe een sensuele dans voor de ander",
+    "title": "Dans in Volle Overgave",
+    "text": "Dans in volle overgave voor de ander.",
     "level": 1,
     "timerSeconds": null,
     "jacuzziAllowed": true,
@@ -219,7 +219,9 @@ export const CUTE_CARDS = [
     "contentTags": [
       "conversation"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "cute_012",
@@ -239,7 +241,9 @@ export const CUTE_CARDS = [
     "contentTags": [
       "quiet"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "cute_013",
@@ -276,7 +280,7 @@ export const CUTE_CARDS = [
     "upgradeText": null,
     "lighterText": null,
     "specialType": null,
-    "playerRestriction": null,
+    "playerRestriction": "man",
     "contentTags": [
       "shopping",
       "food"
@@ -302,7 +306,9 @@ export const CUTE_CARDS = [
       "object",
       "creative"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "cute_016",
@@ -366,7 +372,9 @@ export const CUTE_CARDS = [
       "lotion",
       "eye-contact"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "cute_019",

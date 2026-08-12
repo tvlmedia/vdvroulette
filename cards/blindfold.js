@@ -60,7 +60,9 @@ export const BLINDFOLD_CARDS = [
       "blindfold",
       "kissing"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "blindfold_004",
@@ -81,7 +83,9 @@ export const BLINDFOLD_CARDS = [
       "blindfold",
       "touch"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "blindfold_005",
@@ -123,16 +127,18 @@ export const BLINDFOLD_CARDS = [
       "blindfold",
       "object"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "blindfold_007",
     "category": "blindfold",
     "emoji": "🙈",
-    "title": "Zestig Seconden Kietelen",
-    "text": "Je mag de ander zestig seconden geblinddoekt kietelen op afgesproken plekken. Stopwoord: WALIBI.",
+    "title": "Dertig Seconden Kietelen",
+    "text": "Je mag de ander dertig seconden geblinddoekt kietelen op afgesproken plekken. Stopwoord: WALIBI.",
     "level": 3,
-    "timerSeconds": 60,
+    "timerSeconds": 30,
     "jacuzziAllowed": true,
     "requiresJacuzzi": false,
     "repeatable": false,
@@ -207,7 +213,9 @@ export const BLINDFOLD_CARDS = [
       "blindfold",
       "lipstick"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "blindfold_011",
@@ -228,7 +236,9 @@ export const BLINDFOLD_CARDS = [
       "blindfold",
       "object"
     ],
-    "safetyNote": null
+    "safetyNote": null,
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "blindfold_012",
@@ -292,7 +302,9 @@ export const BLINDFOLD_CARDS = [
       "blindfold",
       "kissing"
     ],
-    "safetyNote": "Alleen op het bed uitvoeren; niet staand of op een natte vloer."
+    "safetyNote": "Alleen op het bed uitvoeren; niet staand of op een natte vloer.",
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "blindfold_015",
@@ -380,7 +392,9 @@ export const BLINDFOLD_CARDS = [
       "touch",
       "guessing"
     ],
-    "safetyNote": "Kies alleen vooraf afgesproken plekken zoals rug, buik of bovenbeen."
+    "safetyNote": "Kies alleen vooraf afgesproken plekken zoals rug, buik of bovenbeen.",
+    "enabled": false,
+    "disabledReason": "Tijdelijk uitgezet op 2026-08-12 na PDF-review; bewaren voor mogelijke heractivatie."
   },
   {
     "id": "blindfold_019",

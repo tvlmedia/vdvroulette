@@ -1,4 +1,4 @@
-const CACHE_NAME = "date-roulette-v1.3.36";
+const CACHE_NAME = "date-roulette-v1.3.37";
 
 const APP_ASSETS = [
   "./",

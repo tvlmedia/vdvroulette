@@ -28,13 +28,13 @@ console.log(validateCards());
 
 ## Aantallen
 
-- Totaal: 196
-- Chaos: 33
+- Totaal: 213
+- Chaos: 35
 - Make-up: 18
-- Blinddoek: 21
-- Cute: 23
-- Flirty: 31
-- Oohlala: 27
+- Blinddoek: 22
+- Cute: 26
+- Flirty: 41
+- Oohlala: 28
 - Disney: 3
 - Jacuzzi: 29
 - Specials: 11

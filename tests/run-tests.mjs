@@ -72,23 +72,23 @@ await run("validateCards returns no schema errors", () => {
   const validation = hooks.validateCards();
   assert.equal(validation.errors.length, 0, validation.errors.join("\n"));
   assert.equal(new Set(deck.cards.map((card) => card.id)).size, deck.cards.length);
-  assert.equal(deck.cards.length, 196);
+  assert.equal(deck.cards.length, 213);
   assert.deepEqual(deck.cardCounts.byCategory, {
-    chaos: 33,
+    chaos: 35,
     makeup: 18,
-    blindfold: 21,
-    cute: 23,
-    flirty: 31,
-    oohlala: 27,
+    blindfold: 22,
+    cute: 26,
+    flirty: 41,
+    oohlala: 28,
     disney: 3,
     jacuzzi: 29,
     special: 11
   });
   assert.deepEqual(deck.cardCounts.byLevel, {
-    1: 85,
-    2: 43,
-    3: 18,
-    4: 38,
+    1: 90,
+    2: 53,
+    3: 19,
+    4: 39,
     5: 12
   });
 });
@@ -824,6 +824,36 @@ await run("lipstick penalty copy names the partner", () => {
   assert.equal(hooks.getLipstickPenaltyTask(game, 0), "Laat Timo een lippenstiftafdruk achterlaten.");
 });
 
+await run("spoiler-proof imported card batch is available", () => {
+  const importedIds = [
+    "chaos_035",
+    "chaos_036",
+    "cute_024",
+    "cute_025",
+    "cute_026",
+    "flirty_030",
+    "flirty_031",
+    "flirty_032",
+    "flirty_033",
+    "flirty_034",
+    "flirty_035",
+    "flirty_036",
+    "flirty_037",
+    "flirty_038",
+    "flirty_039",
+    "blindfold_022",
+    "oohlala_030"
+  ];
+
+  for (const id of importedIds) {
+    const card = hooks.getCardById(id);
+    assert.ok(card, `${id} should exist`);
+    assert.notEqual(card.enabled, false, `${id} should be active`);
+    assert.ok(card.title);
+    assert.ok(card.text);
+  }
+});
+
 await run("local card ratings are included in playtest export", () => {
   const game = hooks.createNewGame("Winnie", "Tijgertje");
   game.currentCardId = "cute_001";
@@ -832,7 +862,7 @@ await run("local card ratings are included in playtest export", () => {
   const ratings = hooks.getCardRatings();
   assert.equal(ratings.cute_001.ratings.liked, 1);
   const exported = hooks.createPlaytestExportData();
-  assert.equal(exported.appVersion, "v1.3.37");
+  assert.equal(exported.appVersion, "v1.3.38");
   assert.equal(exported.ratings.cute_001.ratings.liked, 1);
 });
 

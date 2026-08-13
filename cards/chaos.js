@@ -715,5 +715,49 @@ export const CHAOS_CARDS = [
       "humor"
     ],
     "safetyNote": "Stop meteen als iemand wegtrekt of WALIBI zegt."
+  },
+  {
+    "id": "chaos_035",
+    "category": "chaos",
+    "emoji": "😂",
+    "title": "Eigen Handdruk",
+    "text": "Bedenk samen binnen één minuut een overdreven romantische handdruk en voer hem daarna bloedserieus uit.",
+    "level": 1,
+    "timerSeconds": 60,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "creative",
+      "couple",
+      "humor"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "chaos_036",
+    "category": "chaos",
+    "emoji": "😂",
+    "title": "Blind Portret",
+    "text": "Ga tegenover elkaar zitten met pen en papier. Teken twee minuten het gezicht van de ander zonder naar je papier te kijken.",
+    "level": 1,
+    "timerSeconds": 120,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "drawing",
+      "humor",
+      "eye-contact"
+    ],
+    "safetyNote": "Gebruik pen en papier, niet op huid of spullen."
   }
 ];

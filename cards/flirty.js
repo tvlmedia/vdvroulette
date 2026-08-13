@@ -652,5 +652,222 @@ export const FLIRTY_CARDS = [
       "humor"
     ],
     "safetyNote": "Doe dit zittend of op bed, zonder hard te trekken."
+  },
+  {
+    "id": "flirty_030",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Korte Intense Kus",
+    "text": "Kus elkaar dertig seconden lang zonder haast.",
+    "level": 2,
+    "timerSeconds": 30,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing",
+      "slow"
+    ],
+    "safetyNote": "Blijf rustig ademen en stop bij ongemak."
+  },
+  {
+    "id": "flirty_031",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "De Blik",
+    "text": "Probeer de ander alleen met je blik te laten lachen of blozen. Je mag één minuut niets zeggen.",
+    "level": 2,
+    "timerSeconds": 60,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "eye-contact",
+      "flirt",
+      "humor"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_032",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Ondeugend Appje",
+    "text": "Stuur de ander nu een ondeugend berichtje terwijl jullie recht tegenover elkaar zitten.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "phone",
+      "message",
+      "flirt"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "flirty_033",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Nekkus",
+    "text": "Geef de ander een kus in de nek die minstens tien seconden duurt.",
+    "level": 2,
+    "timerSeconds": 10,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing",
+      "neck"
+    ],
+    "safetyNote": "Alleen als de ander dit prettig vindt; stop bij ongemak."
+  },
+  {
+    "id": "flirty_034",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Hoofdhuidmassage",
+    "text": "Glijd één minuut zacht met je vingers door het haar van de ander en masseer rustig de hoofdhuid.",
+    "level": 2,
+    "timerSeconds": 60,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "hair",
+      "massage",
+      "touch"
+    ],
+    "safetyNote": "Niet trekken aan haar of sieraden."
+  },
+  {
+    "id": "flirty_035",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Vijf Seconden Dichterbij",
+    "text": "Leg je handen op de taille van de ander, trek diegene zacht een klein stukje naar je toe en houd vijf seconden oogcontact.",
+    "level": 2,
+    "timerSeconds": 5,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "body-contact",
+      "eye-contact",
+      "flirt"
+    ],
+    "safetyNote": "Rustig trekken en meteen loslaten bij ongemak."
+  },
+  {
+    "id": "flirty_036",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Dertig Seconden Kietelen",
+    "text": "De ander mag jou dertig seconden kietelen op een plek die jij kiest.",
+    "level": 2,
+    "timerSeconds": 30,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "tickling",
+      "choice"
+    ],
+    "safetyNote": "Stop meteen als iemand wegtrekt of WALIBI zegt."
+  },
+  {
+    "id": "flirty_037",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Romantische Slowdance",
+    "text": "Zet een favoriet romantisch nummer op en dans samen dicht tegen elkaar aan in de kamer.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "slowdance",
+      "couple",
+      "music"
+    ],
+    "safetyNote": "Zorg dat er genoeg ruimte is om veilig te bewegen."
+  },
+  {
+    "id": "flirty_038",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Til Me Op",
+    "text": "Til de ander kort op of laat je optillen, houd elkaar een paar seconden vast en zet daarna rustig weer neer.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "lifting",
+      "body-contact",
+      "hugging"
+    ],
+    "safetyNote": "Alleen als dit veilig kan; til niet bij pijn of twijfel."
+  },
+  {
+    "id": "flirty_039",
+    "category": "flirty",
+    "emoji": "😏",
+    "title": "Huidbericht",
+    "text": "Schrijf met je vingertop heel zacht een woord of korte liefdeszin op de rug of handpalm van de ander. De ander sluit de ogen en raadt wat er staat.",
+    "level": 2,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "touch",
+      "guessing",
+      "writing"
+    ],
+    "safetyNote": "Kies alleen plekken die prettig en afgesproken zijn."
   }
 ];

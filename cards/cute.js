@@ -483,5 +483,71 @@ export const CUTE_CARDS = [
       "humor"
     ],
     "safetyNote": null
+  },
+  {
+    "id": "cute_024",
+    "category": "cute",
+    "emoji": "❤️",
+    "title": "Zwakke Plek",
+    "text": "Vertel elkaar één lief ding waarmee de ander jou altijd kan overhalen of meteen verlegen maakt.",
+    "level": 1,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "conversation",
+      "compliments",
+      "flirt"
+    ],
+    "safetyNote": null
+  },
+  {
+    "id": "cute_025",
+    "category": "cute",
+    "emoji": "❤️",
+    "title": "Hartslagmoment",
+    "text": "Ga dicht tegen elkaar zitten of liggen, leg een hand op elkaars hart en blijf één minuut stil luisteren en voelen.",
+    "level": 1,
+    "timerSeconds": 60,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "quiet",
+      "body-contact",
+      "connection"
+    ],
+    "safetyNote": "Blijf comfortabel zitten of liggen."
+  },
+  {
+    "id": "cute_026",
+    "category": "cute",
+    "emoji": "❤️",
+    "title": "Memory Lane",
+    "text": "Vertel om de beurt jullie favoriete herinnering aan jullie eerste date en probeer zoveel mogelijk kleine details terug te halen.",
+    "level": 1,
+    "timerSeconds": null,
+    "jacuzziAllowed": true,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "conversation",
+      "memory",
+      "date"
+    ],
+    "safetyNote": null
   }
 ];

@@ -573,5 +573,27 @@ export const OOHLALA_CARDS = [
       "teeth"
     ],
     "safetyNote": "Niet trekken aan huid, haar, sieraden of kwetsbare stof."
+  },
+  {
+    "id": "oohlala_030",
+    "category": "oohlala",
+    "emoji": "🔥",
+    "title": "Overgavekus",
+    "text": "Pak de handen van de ander zacht vast, breng ze achter de rug en neem de leiding in een diepe kus binnen jullie grenzen.",
+    "level": 4,
+    "timerSeconds": null,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "kissing",
+      "control",
+      "hands"
+    ],
+    "safetyNote": "Niet klemmen; de ander moet direct kunnen loskomen en WALIBI stopt alles."
   }
 ];

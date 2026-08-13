@@ -461,5 +461,27 @@ export const BLINDFOLD_CARDS = [
       "hugging"
     ],
     "safetyNote": "Alleen op bed of bank uitvoeren en rustig bewegen."
+  },
+  {
+    "id": "blindfold_022",
+    "category": "blindfold",
+    "emoji": "🙈",
+    "title": "Blind Vertrouwen",
+    "text": "Blinddoek de ander twee minuten. Jij kiest uit kusjes, zachte aanrakingen, fluisteren of plagen op vooraf afgesproken plekken.",
+    "level": 3,
+    "timerSeconds": 120,
+    "jacuzziAllowed": false,
+    "requiresJacuzzi": false,
+    "repeatable": false,
+    "upgradeText": null,
+    "lighterText": null,
+    "specialType": null,
+    "playerRestriction": null,
+    "contentTags": [
+      "blindfold",
+      "trust",
+      "touch"
+    ],
+    "safetyNote": "Spreek grenzen vooraf af; WALIBI betekent direct stoppen."
   }
 ];
